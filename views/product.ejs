@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidesssrt</title>
+    <link href="https://api.fontshare.com/v2/css?f[]=gambetta@400,1,300,600,701,2,501,401,301,601,500,700&display=swap"
+        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&family=Satisfy&display=swap" rel="stylesheet">
+
+    <script src="/js/jquery-3.7.0.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="/js/bootstrap.bundle.js"></script>
+
+    <link rel="stylesheet" href="/css/product.css">
+
+</head>
+
+<body>
+    <div id="headerPage" class="page-top-position"></div>
+    <figure class="topPic_container">
+        <img src="/pic/product/product_banner.png" class="topPic" alt="dessert_picture">
+    </figure>
+    <section>
+        <div class="row_container">
+            <%for (let k = 0; k < cat.length; k++) {%>
+            <div class="column_container" onclick="window.open('./productInfo.html')">
+                <div class="productPic_container">
+                    <img class="productPic" src="<%=cat[k].p_pic %>" alt="cannelé">
+                </div>
+                <div class="productText"><%=cat[k].pd_name %></div>
+                <div class="productPrice">NT<%=cat[k].pd_number %></div>
+            </div>
+            <%}%>
+        </div>
+        <div id="footerPage"></div>
+    </section>
+</body>

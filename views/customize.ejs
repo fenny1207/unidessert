@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidesssrt</title>
+    <link href="https://api.fontshare.com/v2/css?f[]=gambetta@400,1,300,600,701,2,501,401,301,601,500,700&display=swap"
+        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&family=Satisfy&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="/js/bootstrap.bundle.js"></script>
+    <script src="/js/jquery-3.7.0.min.js"></script>
+    <script src="/js/script.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <style>
+        .step_img {
+            margin-bottom: 8%;
+            margin-top: 5%
+        }
+
+        .stepbar {
+            width: 30%;
+        }
+
+        #stepbar {
+            background-color: #EADFD9;
+        }
+
+        /* 整個stepbar */
+        .stepdiv {
+            color: #B44A60;
+            font-size: 2rem;
+        }
+
+        .homeblock {
+            color: #B44A60;
+        }
+
+        .homeblock2 {
+            margin-top: 100px;
+        }
+
+        /* 整個body都同樣背景色 同樣字體*/
+        .allcontent {
+            background-color: #EADFD9;
+            font-family: 'gambetta', 'noto sans tc';
+        }
+
+        /* 設定選項的照片大小 */
+        .cookies {
+            width: 75px;
+        }
+
+
+        #cardinput {
+            width: 100%;
+            height: 80px;
+            font-size: 1rem;
+            background-color: #EADFD9;
+            border: solid 1px #B44A60;
+
+        }
+
+        .btn1 {
+            background-color: #F0C7CD;
+            color: #702F43;
+            font-size: 2rem;
+            width: 250px;
+            border: solid #702F43;
+            border-width: 5px;
+            border-radius: 9px;
+            text-align: center;
+            text-decoration: none;
+
+        }
+
+        .btn2 {
+            background-color: #702F43;
+            color: #EADFD9;
+            width: 100px;
+            border-radius: 5px;
+            font-size: 1.5rem;
+        }
+
+
+        .stepblock {
+            font-size: 2.5rem;
+
+        }
+
+        .count {
+            margin-bottom: 8%;
+        }
+
+        .step4 {
+            margin-bottom: 8%;
+        }
+
+        .seldessert4 {
+            background-color: #B09476;
+            opacity: 56%;
+            width: 300px;
+            height: 300px;
+            padding: 10px;
+            border: 15px solid #D4C4B3;
+            float: left;
+
+        }
+
+        .seldessert9 {
+            background-color: #B09476;
+            opacity: 56%;
+            width: 200px;
+            height: 200px;
+            padding: 10px;
+            border: 15px solid #D4C4B3;
+            float: left;
+
+        }
+
+        .box9 {
+            display: none;
+            grid-template-columns: 200px 200px 200px;
+        }
+
+        .box4 {
+            display: grid;
+            grid-template-columns: 300px 300px;
+        }
+
+        blockquote {
+            height: 400px;
+            background: #eee;
+            border-radius: 5px;
+            margin: 16px 0;
+        }
+
+        blockquote p {
+            padding: 15px;
+        }
+
+        cite {
+            margin: 16px 32px;
+            font-weight: bold;
+        }
+
+        .dragging {
+            opacity: 0.4;
+        }
+
+        .hover {
+            background-color: #9e7140;
+        }
+
+        /* 拖動到4格的img會變比較大，9個的比較小 */
+        .drag_img_for_box4 {
+            width: 250px;
+        }
+
+        .drag_img_for_box9 {
+            width: 150px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="allcontent">
+        <!-- header -->
+        <div class="headerPage" class="page-top-position"></div>
+        <!-- 步驟的bar1 -->
+        <div class="step_img">
+            <img class="w-100" src="/pic/customize/stepbar6.png">
+        </div>
+        <div class="row">
+            <div class="col-lg-12 d-flex justify-content-center">
+                <a href="#step1"><button class="btn1">Start</button></a>
+            </div>
+        </div>
+        <br>
+        <!-- 設定間距跟跳到的地方 -->
+        <div id="step1"></div>
+        <div class="homeblock2 "></div>
+        <div class="container-md homeblock ">
+            <br class="p-2">
+            <p class=" d-flex justify-content-center  stepblock">Step1 挑選大小＆內容物</p>
+            <hr class="p-2">
+        </div>
+        <div class="container stepdiv">
+            <div class="row d-flex justify-content-center align-items-center">
+                <div id="box_4" class="col-lg-6 box4">
+                    <div class="seldessert4 box"></div>
+                    <div class="seldessert4 box"></div>
+                    <div class="seldessert4 box"></div>
+                    <div class="seldessert4 box"></div>
+                </div>
+
+                <div id="box_9" class="col-lg-6 box9">
+                    <div class="seldessert9 box"></div>
+                    <div class="seldessert9 box"></div>
+                    <div class="seldessert9 box"></div>
+                    <div class="seldessert9 box"></div>
+                    <div class="seldessert9 box"></div>
+                    <div class="seldessert9 box"></div>
+                    <div class="seldessert9 box"></div>
+                    <div class="seldessert9 box"></div>
+                    <div class="seldessert9 box"></div>
+                </div>
+                <div class="col-lg-6 ">
+                    <form action="" class="">
+                        <!-- 選大小 -->
+                        <span> Size：</span>
+                        <input onclick="selectTab(4)" type="radio" id="box4" name="boxsize">
+                        <label for="box4"><img src="../media/pic/customize/4.png"></label>
+
+                        <input onchange="selectTab(9)" type="radio" id="box9" name="boxsize">
+                        <label for="box9"><img src="../media/pic/customize/9.png"></label>
+                        <br>
+                        <br>
+                        <!-- 內容物 -->
+                        <span> Cookie：</span>
+
+                        <img class="cookies" src="../media/pic/customize/c1.png" draggable="true" id="c1"
+                            onmousedown="fun1()">
+                        <img class="cookies" src="../media/pic/customize/c2.png" draggable="true">
+                        <img class="cookies" src="../media/pic/customize/c3.png" draggable="true">
+                        <img class="cookies" src="../media/pic/customize/c4.png" draggable="true">
+                        <img class="cookies" src="../media/pic/customize/c5.png" draggable="true">
+                        <img class="cookies" src="../media/pic/customize/c6.png" draggable="true">
+                        <img class="cookies" src="../media/pic/customize/c7.png" draggable="true">
+                        <img class="cookies" src="../media/pic/customize/c8.png" draggable="true">
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- 這邊是最後的結束標籤 -->
+    </div>
+
+
+</body>
+
+</html>

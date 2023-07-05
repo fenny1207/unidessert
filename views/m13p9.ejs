@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    寫死的分頁：
+        <a href="/page/0">第1頁</a>
+        <a href="/page/3">第2頁</a>
+        <a href="/page/6">第3頁</a>
+       
+        
+    <table>
+        
+        <thead>
+            <tr>
+                <th>編號</th>
+                <th>名稱</th>
+                <th>種類</th>
+                <th>價格</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%for (let k = 0; k < cat.length; k++) {%>
+            <tr>
+                <td><%=cat[k].cid %></td>
+                <td><%=cat[k].ctype %></td>
+                <td><%=cat[k].cname %></td>
+                <td><%=cat[k].cprice %></td>
+            </tr>
+            <%}%>
+        </tbody>
+    </table>
+    <script>
+      
+        
+       
+       
+       
+    </script>
+</body>
+</html>

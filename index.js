@@ -20,7 +20,7 @@ conn.connect(function(err){
 app.use(express.static('media'));
 //這是首頁(可以改)
 app.get('/',function(req,res){
-    res.render('home.ejs');
+    res.render('index.ejs');
 })
 // 給路由:news 網址列：localhost:5000/news
 app.get('/customize',function(req,res){

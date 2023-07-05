@@ -1,0 +1,23 @@
+npm install  express ejs mysql express-session cors
+
+npm list express
+npm list ejs
+npm list mysql
+npm list express-session
+npm list cors
+
+node index.js應該就可以開了～可以先開localhost:5678/product
+
+var express = require('express');
+var app = express();
+app.use(express.static('dog'));
+
+//準備路由(服務)
+app.get('/',function (req,res) {
+    res.send('皮卡丘');
+})
+//啟動開店
+app.listen(3000,function(){
+    var d =new Date();
+    console.log('成功啟動' + d.toLocaleTimeString());
+})

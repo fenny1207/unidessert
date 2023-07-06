@@ -47,10 +47,8 @@ app.post('/login', express.urlencoded(), function (req, res) {
         console.log(data[0]);
 
         if (err == null && data.length == 1) {
-
             req.session.AABBCC = data[0];
-
-            res.redirect('/login');
+            res.redirect('/member');
         } else {
             res.send('登入失敗')
         }
@@ -62,6 +60,7 @@ app.get('/member',function(req,res){
   
 })
 app.post('/member',express.urlencoded(),function(req,res){
+
 })
 
 

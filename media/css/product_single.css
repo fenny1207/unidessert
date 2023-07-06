@@ -4,6 +4,9 @@
     font-family: 'gambetta', 'noto sans tc';
     background-color: #eadfd9;
 }
+section {
+    margin-top: 6%;
+}
 .productPic_container {
     width: 65%;
 }
@@ -16,4 +19,7 @@
 }
 .productPic_container img:hover {
     transform:scale(1.1,1.1);
+}
+.productPrice {
+    margin-bottom: 5%;
 }

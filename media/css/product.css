@@ -4,6 +4,9 @@ body {
     font-family: 'gambetta', 'noto sans tc';
     background-color: #eadfd9;
 }
+section {
+    margin-bottom: 10%;
+}
 
 /* 橫幅圖片 */
 .topPic_container {
@@ -21,7 +24,8 @@ body {
 .valentine_set_title {
     text-align: center;
     color: #702F43;
-    margin-bottom: 5%;
+    margin-bottom: 3%;
+    margin-top: 2%;
 }
 .row_container {
     display: grid;

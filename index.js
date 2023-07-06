@@ -30,13 +30,11 @@ app.get('/customize',function(req,res){
     res.render('customize.ejs');
 })
 app.get('/product',function(req,res){
-    conn.query('select * from product',
-    function(err,bee){
-        // console.log(bee);
-        //回傳網頁給使用者
-        res.render('product.ejs',{
-            cat:bee
-        })
+    var p_info
+    conn.query('SELECT pd_name, p_price, p_pic FROM product where p_type="set"', (err, results) => {
+        if(err) return console.log(err.message)
+        p_info = results;
+        res.render('product.ejs', {p_info: p_info});
     })
 })
 app.get('/login', function (req, res) {

@@ -16,26 +16,36 @@
     <script src="/js/bootstrap.bundle.js"></script>
 
     <link rel="stylesheet" href="/css/product.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/nav_footer.css">
 
 </head>
 
 <body>
+    <!-- <%- include("./partials/nav.ejs") %> -->
     <div id="headerPage" class="page-top-position"></div>
     <figure class="topPic_container">
         <img src="/pic/product/product_banner.png" class="topPic" alt="dessert_picture">
     </figure>
+    <h1 class="valentine_set_title">情人節禮盒</h1>
     <section>
         <div class="row_container">
-            <%for (let k = 0; k < cat.length; k++) {%>
-            <div class="column_container" onclick="window.open('./productInfo.html')">
-                <div class="productPic_container">
-                    <img class="productPic" src="<%=cat[k].p_pic %>" alt="cannelé">
+            <% for( let i = 0; i < p_info.length; i++){ %>
+                <div class="column_container">
+                    <div class="productPic_container">
+                        <img class="productPic" src=<%=p_info[i].p_pic %> alt="">
+                    </div>
+                    <div class="productText">
+                        <%= p_info[i].pd_name %>
+                    </div>
+                    <div class="productPrice">NT <%= p_info[i].p_price %>
+                    </div>
                 </div>
-                <div class="productText"><%=cat[k].pd_name %></div>
-                <div class="productPrice">NT<%=cat[k].pd_number %></div>
-            </div>
-            <%}%>
+            <% } %>
         </div>
-        <div id="footerPage"></div>
+        <!-- <div id="footerPage"></div> -->
     </section>
+    <!-- </a><a class="page-top" href="#">TOP</a> -->
+    <!-- <%- include("./partials/footer.ejs") %> -->
+
 </body>

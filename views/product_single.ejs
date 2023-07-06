@@ -11,56 +11,63 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&family=Satisfy&display=swap" rel="stylesheet">
 
-    <script src="../media/js/jquery-3.7.0.min.js"></script>
-    <link rel="stylesheet" href="../media/css/bootstrap.css">
-    <script src="../media/js/script.js"></script>
-    <script src="../media/js/bootstrap.bundle.js"></script>
-
-    <link rel="stylesheet" href="../media/css/product.css">
-    <link rel="stylesheet" href="../media/css/product_single.css">
+    <script src="/js/jquery-3.7.0.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="/js/script.js"></script>
+    <script src="/js/bootstrap.bundle.js"></script>
+    
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/nav_footer.css">
+    <link rel="stylesheet" href="/css/product.css">
+    <link rel="stylesheet" href="/css/product_single.css">
 
 </head>
 
 <body id="body">
-    <div id="headerPage" class="page-top-position"></div>
-    <figure class="topPic_container">
-        <img src="../media/pic/product/shop.png" class="topPic" alt="dessert_picture">
-    </figure>
+    <%- include("./nav.ejs") %>
+        <figure class="topPic_container">
+            <img src="/pic/product/shop.png" class="topPic" alt="dessert_picture">
+        </figure>
 
-    <section>
-        <div class="row_container">
-            <div class="column_container">
-                <div class="productPic_container">
-                    <img class="productPic" src="../media/pic/product/green_poundcake.webp" alt="cannelé">
-                </div>
-                <div class="productText">蘋果樹磅蛋糕</div>
-                <div class="productPrice">NT 50</div>
-                <button class="add_to_cart_button addtocart" onclick="">加入購物車</button>
-            </div>
-            <div class="column_container">
-                <div class="productPic_container">
-                    <img class="productPic" src="../media/pic/product/lemon_poundcake.webp" alt="">
-                </div>
-                <div class="productText">伯爵茶檸檬磅蛋糕</div>
-                <div class="productPrice">NT 55</div>
-                <button class="add_to_cart_button addtocart" onclick="">加入購物車</button>
-            </div>
-            <div class="column_container">
-                <div class="productPic_container">
-                    <img class="productPic" src="../media/pic/product/cocomadeleine.webp" alt="">
-                </div>
-                <div class="productText">可可瑪德蓮</div>
-                <div class="productPrice">NT 55</div>
-                <button class="add_to_cart_button addtocart" onclick="">加入購物車</button>
-            </div>
-            <div class="column_container">
-                <div class="productPic_container">
-                    <img class="productPic" src="../media/pic/product/coffee_cookie.webp" alt="cannelé">
-                </div>
-                <div class="productText">咖啡奶酥曲奇</div>
-                <div class="productPrice">NT 15</div>
-                <button class="add_to_cart_button addtocart" onclick="">加入購物車</button>
-            </div>
+        <section>
+            <div class="row_container">
+                <% for( let i=0; i < p_single_info.length; i++){ %>
+                    <div class="column_container">
+                        <div class="productPic_container">
+                            <img class="productPic" src=<%= p_single_info[i].p_pic %> alt="cannelé">
+                        </div>
+                        <div class="productText">
+                            <%= p_single_info[i].pd_name %>
+                        </div>
+                        <div class="productPrice">NT <%= p_single_info[i].p_price %>
+                        </div>
+                        <button class="add_to_cart_button addtocart" onclick="">加入購物車</button>
+                    </div>
+                <% } %>
+                        <!-- <div class="column_container">
+                        <div class="productPic_container">
+                            <img class="productPic" src="../media/pic/product/lemon_poundcake.webp" alt="">
+                        </div>
+                        <div class="productText">伯爵茶檸檬磅蛋糕</div>
+                        <div class="productPrice">NT 55</div>
+                        <button class="add_to_cart_button addtocart" onclick="">加入購物車</button>
+                    </div>
+                    <div class="column_container">
+                        <div class="productPic_container">
+                            <img class="productPic" src="../media/pic/product/cocomadeleine.webp" alt="">
+                        </div>
+                        <div class="productText">可可瑪德蓮</div>
+                        <div class="productPrice">NT 55</div>
+                        <button class="add_to_cart_button addtocart" onclick="">加入購物車</button>
+                    </div>
+                    <div class="column_container">
+                        <div class="productPic_container">
+                            <img class="productPic" src="../media/pic/product/coffee_cookie.webp" alt="cannelé">
+                        </div>
+                        <div class="productText">咖啡奶酥曲奇</div>
+                        <div class="productPrice">NT 15</div>
+                        <button class="add_to_cart_button addtocart" onclick="">加入購物車</button>
+                    </div>
         </div>
         <div class="row_container">
             <div class="column_container">
@@ -129,14 +136,11 @@
                 <div class="productPrice">NT 40</div>
                 <button class="add_to_cart_button addtocart" onclick="">加入購物車</button>
             </div>
-        </div>
-        <div id="footerPage"></div>
-    </section>
-    </a><a class="page-top" href="#">TOP</a>
-    <script>
-        $("#headerPage").load("./nav.html");
-        $("#footerPage").load("./footer.html");
-    </script>
+        </div> -->
+        </section>
+        <%- include("./footer.ejs") %>
+            <!-- </a><a class="page-top" href="#">TOP</a> -->
+
 </body>
 
 </html>

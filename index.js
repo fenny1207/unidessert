@@ -37,6 +37,14 @@ app.get('/product',function(req,res){
         res.render('product.ejs', {p_info: p_info});
     })
 })
+app.get('/product/single',function(req,res){
+    var p_single_info
+    conn.query('SELECT pd_name, p_price, p_pic FROM product where p_type="single"', (err, results) => {
+        if(err) return console.log(err.message)
+        p_single_info = results;
+        res.render('product_single.ejs', {p_single_info: p_single_info});
+    })
+})
 app.get('/login', function (req, res) {
     res.render('login.ejs');
 })

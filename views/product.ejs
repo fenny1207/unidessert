@@ -22,8 +22,8 @@
 </head>
 
 <body>
-    <!-- <%- include("./partials/nav.ejs") %> -->
-    <div id="headerPage" class="page-top-position"></div>
+    <%- include("./nav.ejs") %>
+    <!-- <div id="headerPage" class="page-top-position"></div> -->
     <figure class="topPic_container">
         <img src="/pic/product/product_banner.png" class="topPic" alt="dessert_picture">
     </figure>
@@ -43,9 +43,7 @@
                 </div>
             <% } %>
         </div>
-        <!-- <div id="footerPage"></div> -->
     </section>
-    <!-- </a><a class="page-top" href="#">TOP</a> -->
-    <!-- <%- include("./partials/footer.ejs") %> -->
+    <%- include("./footer.ejs") %>
 
 </body>

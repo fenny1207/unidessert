@@ -23,6 +23,13 @@ body {
   max-width: 1140px;
 }
 
+.container-nav {
+  margin: auto;
+  width: 90%;
+  max-width: 1920px;
+  height: 100px;
+}
+
 .row-uni {
   display: flex;
   flex-wrap: wrap;
@@ -131,7 +138,7 @@ body {
   letter-spacing: 2px;
   margin: 0px auto 50px;
   padding: 50px 0px;
-  font-size: 42px;
+  font-size: 2rem;
   width: 25%;
 }
 
@@ -140,7 +147,7 @@ body {
   font-weight: 200;
   color: #EADFD9;
   letter-spacing: 2px;
-  font-size: 42px;
+  font-size: 1.5rem;
 }
 
 .aboutus-text {
@@ -148,7 +155,7 @@ body {
   font-weight: 200;
   color: #EADFD9;
   letter-spacing: 2px;
-  font-size: 36px;
+  font-size: 1.5rem;
 }
 
 .aboutus-section .container-uni .new-title .row-uni .col-12-uni .aboutus-title {
@@ -156,7 +163,7 @@ body {
   font-weight: 200;
   color: #EADFD9;
   letter-spacing: 2px;
-  font-size: 54px;
+  font-size: 2rem;
 }
 
 .customize-section {
@@ -165,8 +172,16 @@ body {
 }
 
 .text-h3 {
-  font-size: 36px;
+  font-size: 1.5rem;
   color: #B44A60;
+}
+
+.custom-right {
+  text-align: center;
+  font-weight: 200;
+  margin: 0px auto 50px;
+  padding: 50px auto;
+  height: 25%;
 }
 
 .custom-title {
@@ -176,7 +191,7 @@ body {
   letter-spacing: 2px;
   margin: 0px auto 10px;
   padding: 10px 0px;
-  font-size: 42px;
+  font-size: 2rem;
   width: 50%;
 }
 
@@ -200,7 +215,7 @@ body {
   display: inline-block;
   color: #702F43;
   font-weight: 400;
-  font-size: 36px;
+  font-size: 1.5rem;
   font-family: "Gambetta", serif;
 }
 
@@ -209,7 +224,7 @@ body {
   display: inline-block;
   color: #702F43;
   font-weight: 400;
-  font-size: 36px;
+  font-size: 1.5rem;
   font-family: "Noto Sans TC", sans-serif;
   margin: 10px 0;
 }
@@ -225,13 +240,13 @@ body {
 }
 
 .bnt {
-  height: 100px;
+  height: 80px;
   background-color: #F0C7CD;
   color: #702F43;
   border: #702F43 solid 3px;
   padding: 10px;
   border-radius: 8px;
-  font-size: 36px;
+  font-size: 1.5rem;
   font-family: "Noto Sans TC", sans-serif;
   font-weight: 400;
   text-align: center;
@@ -275,7 +290,7 @@ body {
   line-height: 1.3;
   margin-bottom: 11px;
   font-weight: 500;
-  font-size: 36px;
+  font-size: 2rem;
   color: #EADFD9;
   font-family: "Noto Sans TC", sans-serif;
   z-index: 1;
@@ -291,7 +306,7 @@ body {
   margin-bottom: 11px;
   font-weight: 600;
   padding: 10px;
-  font-size: 36px;
+  font-size: 2rem;
   font-family: "Gambetta", serif;
   border-top: #EADFD9 solid 2px;
   border-bottom: #EADFD9 solid 2px;
@@ -318,27 +333,38 @@ body {
 
 nav {
   background-color: #CC7F91;
+  height: 130px;
 }
 nav ul {
   justify-content: flex-end;
   margin-bottom: 0px;
 }
 nav ul li {
-  margin: 20px;
+  padding: 30px;
 }
 nav ul li a {
   font-family: "Noto Sans TC", sans-serif;
   font-weight: 500;
   color: #702F43;
-  font-size: 42px;
-  padding-left: 40px;
+  font-size: 1.5rem;
+}
+
+.nav-fixed {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 99;
+}
+
+.nav-none-lg {
+  display: none;
 }
 
 .nav-link {
   font-family: "Noto Sans TC", sans-serif;
   font-weight: 500;
   color: #702F43;
-  font-size: 42px;
+  font-size: 1.5rem;
 }
 
 .dropdown-item {
@@ -355,8 +381,46 @@ nav ul li a {
   display: none;
 }
 
+.cart {
+  position: relative;
+}
+.cart:before {
+  content: attr(data-totalitems);
+  font-size: 12px;
+  font-weight: 600;
+  position: absolute;
+  top: -1px;
+  right: -10px;
+  background: #702F43;
+  line-height: 24px;
+  padding: 0 5px;
+  height: 24px;
+  min-width: 24px;
+  color: white;
+  text-align: center;
+  border-radius: 24px;
+}
+.cart.shake {
+  animation: shakeCart 0.4s ease-in-out forwards;
+}
+
+@keyframes shakeCart {
+  25% {
+    transform: translateX(6px);
+  }
+  50% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
 .banner-section {
   background-color: #F0C7CD;
+  margin-top: 130px;
 }
 
 .banner-title {
@@ -364,8 +428,8 @@ nav ul li a {
   line-height: 1.3;
   margin-bottom: 11px;
   font-weight: 100;
-  padding: 50px 0;
-  font-size: 160px;
+  padding: 50px 0px 50px 60px;
+  font-size: 80px;
   font-family: "Gambetta", serif;
   color: #702F43;
 }
@@ -376,7 +440,7 @@ nav ul li a {
   margin-bottom: 11px;
   font-weight: 100;
   padding: 50px 0;
-  font-size: 160px;
+  font-size: 80px;
   font-family: "Gambetta", serif;
   color: #702F43;
 }
@@ -428,7 +492,7 @@ input[type=submit], input[type=text], input[type=email], input[type=tel], textar
   padding: 12px 20px;
   display: inline-block;
   border: 2px solid #702F43;
-  font-size: 1em;
+  font-size: 1.5rem;
   font-family: "Noto Sans TC", sans-serif;
   color: #702F43;
   box-sizing: border-box;
@@ -442,7 +506,7 @@ input[type=submit], input[type=text], input[type=email], input[type=tel], textar
 .container-contact b {
   display: inline-block;
   color: #702F43;
-  font-size: 1em;
+  font-size: 1.5rem;
   margin: 15px 0;
   font-family: "Noto Sans TC", sans-serif;
   letter-spacing: 5px;
@@ -484,7 +548,7 @@ img.avatar {
 }
 
 .container-contact {
-  padding: 16px;
+  padding: 50px;
   background-color: #F0C7CD;
 }
 
@@ -604,7 +668,7 @@ footer .container-uni-footer .row-nowrap dt a {
   font-family: "Noto Sans TC", sans-serif;
   font-weight: 200;
   color: #EADFD9;
-  font-size: 42px;
+  font-size: 1.5rem;
 }
 
 footer .container-uni-footer .row-nowrap dd a img {
@@ -623,8 +687,17 @@ footer .container-uni-footer .row-nowrap dd a img {
     display: none;
   }
 
+  .nav-fixed {
+    position: relative;
+    z-index: 1;
+  }
+
   .user-none-lg {
     display: flex;
+  }
+
+  .navbar-nav {
+    padding-top: 68px;
   }
 
   .row-nowrap {
@@ -640,13 +713,51 @@ footer .container-uni-footer .row-nowrap dd a img {
     margin-bottom: 20px;
   }
 
+  .nav-none {
+    display: none;
+  }
+
+  .nav-item {
+    background-color: #EADFD9;
+  }
+
+  .nav-item:hover {
+    background-color: #B44A60;
+  }
+  .nav-item:hover a {
+    color: #EADFD9;
+  }
+
+  .dropdown-menu {
+    background-color: #CC7F91;
+    padding: 0;
+  }
+
+  .dropdown:hover {
+    background-color: #B44A60;
+    color: #EADFD9;
+  }
+
+  .dropdown-item:hover {
+    background-color: #B44A60;
+    color: #EADFD9;
+  }
+
+  .nav-none-lg {
+    display: block;
+  }
+
+  .banner-section {
+    margin-top: 0px;
+  }
+
   .aboutus-section {
     padding: 20px 0px;
   }
 
   .new-title {
     padding: 50px 10px 20px 10px;
-    font-size: 42px;
+    font-size: 1.5rem;
   }
 
   .aboutus-section::before {
@@ -654,11 +765,11 @@ footer .container-uni-footer .row-nowrap dd a img {
   }
 
   .aboutus-text {
-    font-size: 36px;
+    font-size: 1rem;
   }
 
   .doctor-title {
-    font-size: 24px;
+    font-size: 0.8rem;
   }
 
   .product-section::after {
@@ -666,9 +777,9 @@ footer .container-uni-footer .row-nowrap dd a img {
   }
 
   .banner-title {
-    padding: 50px auto;
-    font-size: 60px;
-    transform: translateX(10%);
+    padding: 50px 30px 50px 50px;
+    letter-spacing: 20px;
+    font-size: 40px;
   }
 
   .banner-title-2 {

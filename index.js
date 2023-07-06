@@ -22,9 +22,12 @@ app.use(express.static('media'));
 app.get('/',function(req,res){
     res.render('index.ejs');
 })
+app.get('/member',function(req,res){
+    res.render('member.ejs');
+})
 // 給路由:news 網址列：localhost:5000/news
 app.get('/customize',function(req,res){
-    res.render('customize.ejs')
+    res.render('customize.ejs');
 })
 app.get('/product',function(req,res){
     conn.query('select * from product',
@@ -36,6 +39,34 @@ app.get('/product',function(req,res){
         })
     })
 })
+app.get('/login', function (req, res) {
+    res.render('login.ejs');
+})
+app.post('/login', express.urlencoded(), function (req, res) {
+    var sql = "SELECT * FROM user m where uname = ? and upwd = ? ";
+    var userInput = [req.body.uname, req.body.upwd];
+    conn.query(sql, userInput, function (err, data) {
+        console.log(data[0]);
+
+        if (err == null && data.length == 1) {
+
+            req.session.AABBCC = data[0];
+
+            res.redirect('/login');
+        } else {
+            res.send('登入失敗')
+        }
+    })
+})
+
+app.get('/member',function(req,res){
+    res.render('member.ejs');
+  
+})
+app.post('/member',express.urlencoded(),function(req,res){
+})
+
+
 app.get('/about',function(req,res){
     res.render('about.ejs');
 })

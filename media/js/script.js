@@ -1,7 +1,7 @@
 "use strict";
 
 var offsetTop;
-var pagetopposition = $('.page-top-position').offset().top;
+var pagetopposition = $('.page-top-position').offset();
 $(window).scroll(function () {
   offsetTop = $(window).scrollTop(); // 捲軸高度>=900，會出現page-top的按鈕
 
@@ -12,29 +12,6 @@ $(window).scroll(function () {
   }
 }); //scroll end
 // 點按page-top回到最上方
-
-// var offsetService;
-// var pagetopposition = $('.page-service-position').offset().top;
-// $(window).scroll(function () {
-//     offsetService = $(window).scrollTop(); // 捲軸高度>=900，會出現page-top的按鈕
-
-//   if (offsetService >= 900) {
-//     $('.page-service').addClass('active');
-//   } else {
-//     $('.page-service').removeClass('active');
-//   }
-// }); //scroll end
-// // 點按page-top回到最上方
-
-//客服
-// var modal = document.getElementById('id01');
-
-// When the user clicks anywhere outside of the modal, close it
-// window.onclick = function(event) {
-//     if (event.target == modal) {
-//         modal.style.display = "none";
-//     }
-// }
 
 $('.member_link>a').on('click', function(e){
   e.preventDefault()
@@ -70,7 +47,7 @@ $(document).ready(function () {
       setTimeout(function () {
         cart.removeClass("shake");
       }, 500);
-    }, 1000);
+    }, 300);
   });
 });
 

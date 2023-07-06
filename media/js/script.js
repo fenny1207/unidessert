@@ -5,7 +5,7 @@ var pagetopposition = $('.page-top-position').offset();
 $(window).scroll(function () {
   offsetTop = $(window).scrollTop(); // 捲軸高度>=900，會出現page-top的按鈕
 
-  if (offsetTop >= 900) {
+  if (offsetTop >= 200) {
     $('.page-top').addClass('active');
   } else {
     $('.page-top').removeClass('active');

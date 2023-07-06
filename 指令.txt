@@ -24,3 +24,5 @@ app.listen(3000,function(){
 git  add 測試.html
 git  commit  -m
 git push -u origin master
+取得最新檔案合併
+git pull --rebase --autostash

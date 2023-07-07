@@ -58,7 +58,7 @@ app.get('/product/productInfo',function(req,res){
     conn.query('SELECT pd_name, p_price, p_pic, p_pic2, p_pic3, p_pic4 FROM product where p_type="set" && (pid=1 || pid=2)', (err, results) => {
         if(err) return console.log(err.message)
         product_info = results;
-        console.log(product_info)
+        // console.log(product_info)
         res.render('productInfo.ejs', {product_info: product_info});
     })
 })

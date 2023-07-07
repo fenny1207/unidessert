@@ -9,8 +9,9 @@
     --font-gam: 'Gambetta', serif;
 } */
 
-body {
+#body {
     margin: 0;
+    padding-top: 7%;
     font-family: 'gambetta', 'noto sans tc';
     /* margin: 0; */
     background-color: #eadfd9;
@@ -18,15 +19,17 @@ body {
 
 /* ======麵包屑====== */
 
-ul.breadcrumb {
-    padding: 10px 16px;
+.breadcrumb {
+    padding: 1% 0 1% 2%;
+    margin-top: 2%;
+    margin-left: 2%;
     list-style: none;
     /* background-color: #eee; */
 }
 
-ul.breadcrumb li {
+.breadcrumb li {
     display: inline;
-    font-size: 20px;
+    font-size: 1.5rem;
     color: grey;
     font-size: bold;
 }
@@ -35,8 +38,8 @@ ul.breadcrumb li {
     text-decoration: none;
     /* color: #702f43; */
     color: #b44a60;
-    /* color: #cc7f91; */
-    /* color: #EADFD9; */
+    /* color: #cc7f91;
+    color: #EADFD9; */
 }
 
 ul.breadcrumb li+li:before {
@@ -57,10 +60,10 @@ ul.breadcrumb li a:hover {
 
 /* ======商品資訊====== */
 .mainContainer {
-    width: 100vw;
+    width: 100%;
     height: 70vh;
     display: grid;
-    grid-template-columns: 6fr 5fr;
+    grid-template-columns: 6fr 4fr;
     margin: 0;
     /* border: 1px red solid; */
 }
@@ -68,14 +71,14 @@ ul.breadcrumb li a:hover {
 .mainContainer img {
     object-fit: contain;
     align-items: start;
-    width: 90%;
+    width: 95%;
     display: block;
     cursor: pointer;
 }
 
 .imgOutsideContainer {
     width: 100%;
-    padding: 0 3% 0 10%;
+    padding: 0 1% 0 10%;
     display: grid;
     grid-template-columns: 1fr 4fr;
     justify-items: center;
@@ -85,7 +88,10 @@ ul.breadcrumb li a:hover {
     width: 100%;
     display: grid;
     grid-template-rows: repeat(4, 1fr);
-    margin-top: 25%;
+    margin-top: 10%;
+}
+.imgLContainer div {
+    margin-top: 5%;
 }
 
 .imgRContainer {
@@ -101,6 +107,7 @@ ul.breadcrumb li a:hover {
     flex-direction: column;
     /* border: 1px red solid; */
     justify-items: left;
+    padding-bottom: 15%;
 }
 
 .imgInfoTitle {
@@ -122,7 +129,7 @@ ul.breadcrumb li a:hover {
 }
 
 .productInfoPrice {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: bold;
     border-top: 0.5px solid rgba(128, 128, 128, 0.7);
     padding: 3% 0 4% 0;
@@ -135,7 +142,7 @@ ul.breadcrumb li a:hover {
 
 .selectPackage form {
     padding: 2% 2% 2% 2%;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
 }
 
 /* .selectPackage form div {
@@ -144,7 +151,7 @@ ul.breadcrumb li a:hover {
 
 .selectPackage>div:nth-child(1) {
     background-color: #cc7f91;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     color: grey;
     padding-left: 1%;
 }
@@ -156,11 +163,14 @@ ul.breadcrumb li a:hover {
     font-size: 2.5rem;
     font-weight: bold;
 }
+
 #productCount_minus,
 #productCount_plus {
-    padding: 0 8%;
+    font-size: 2.5rem;
+    text-align: center;
+    width: 100px;
+    color: #b44a60;   
     cursor: pointer;
-    /* font-size: 3rem; */
 }
 
 /* ======購物車按鈕====== */
@@ -178,7 +188,7 @@ ul.breadcrumb li a:hover {
 
 /* ======分割線====== */
 .hr_line {
-    margin: 20% 7% 3% 7%;
+    margin: 10% 6% 3% 6%;
 }
 
 /* ======產品描述====== */
@@ -194,6 +204,7 @@ ul.breadcrumb li a:hover {
 #tab1,
 #tab2 {
     cursor: pointer;
+    font-size: 2rem;
 }
 
 #tab1 {
@@ -207,18 +218,79 @@ ul.breadcrumb li a:hover {
 
 #tab1Content>h3,
 #tab2Content>h3 {
-    font-size: 1.5rem;
-    margin-left: 7%;
+    font-size: 2rem;
     font-weight: bold;
+    color: grey;
+    text-align: center;
 }
 
 #tab1Content>p,
 #tab2Content>p {
     font-size: 1.5rem;
-    margin-left: 7%;
-    padding: 2% 7% 2% 3%
+    padding: 1% 7% 2% 7%;
+    color: grey;
+    text-align: center;
 }
 
+/* 推薦商品分隔線 */
+.hr_second_line{
+    margin: 5% 5% 3% 5%;
+}
+.recommend_product_p {
+    text-align: center;
+    font-size: 2rem;
+}
+.carousel {
+    margin: 5% 0 5% 0;
+    width: 100%;
+    padding: 0 12%;
+    position: relative;
+    /* height: 300px; */
+    /* overflow: hidden; */
+}
+.slider_width {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.slider_card {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-size: 1.5rem;
+    /* color: #b44a60; */
+    font-weight: 600;
+}
+.slider_card div:nth-child(2) {
+    color: gray;
+    margin-top: 3%; 
+}
+.slider_card div:nth-last-child(1) {
+    color: #b44a60;
+    margin-top:3%;
+}
+
+.slider_card>img {
+    object-fit: contain;
+    width:75%
+}
+/* #carousel-button--prev {
+    position: absolute;
+    background-color: #eadfd9;
+    border: none;
+    top: 45%;
+    left: 8%;
+    font-size: 1.5rem;
+}
+#carousel-button--next {
+    position: absolute;
+    background-color: #eadfd9;
+    border: none;
+    top: 38%;
+    left: 92%;
+    font-size: 1.5rem;
+} */
 
 @media(max-width:767px) {
     .mainContainer {
@@ -264,24 +336,26 @@ ul.breadcrumb li a:hover {
         text-align: center;
         padding: 0 5%;
     }
-
-    .imgInfoText {
-        font-size: 0.9rem;
-    }
-
-    .hr_line {
-        margin-top: 200%;
-    }
-    .imgInfoTitle {
-        margin-top: 3%;
+    .selectPackage div,
+    .selectPackage label {
         font-size: 1rem;
-        font-weight: bold;
     }
     
+
+    .hr_line {
+        margin-top: 180%;
+    }
+
+    .imgInfoTitle {
+        margin-top: 3%;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
     .imgInfoText {
         margin-top: 0%;
         margin-bottom: 5%;
-        font-size: 0.8rem;
+        font-size: 1rem;
     }
 
     .discriptionContainer {
@@ -289,24 +363,31 @@ ul.breadcrumb li a:hover {
         grid-template-columns: 1fr 1.2fr;
         justify-items: center;
         margin-bottom: 5%;
-        font-size: 1.2rem;
+        /* font-size: 2rem; */
         padding: 0 3%;
+    }
+
+    #tab1,
+    #tab2 {
+        cursor: pointer;
+        font-size: 1.2rem;
     }
 
     #tab1Content>h3,
     #tab2Content>h3 {
         /* margin-left: 8%; */
         font-weight: bold;
-        font-size: 0.8rem;
+        font-size: 1.2rem;
         padding-left: 5%;
     }
 
     #tab1Content>p,
     #tab2Content>p {
-        font-size: 0.8rem;
+        font-size: 1rem;
         margin-left: 7%;
         padding: 2% 7% 2% 3%
     }
+
     .productCount {
         display: flex;
         flex-direction: row;

@@ -25,10 +25,17 @@ app.get('/',function(req,res){
 app.get('/member',function(req,res){
     res.render('member.ejs');
 })
-// 給路由:news 網址列：localhost:5000/news
+// 給customize 路由
 app.get('/customize',function(req,res){
-    res.render('customize.ejs');
-})
+    conn.query( `SELECT * FROM customize `,
+    function(err,bee){
+        console.log(bee);
+        //回傳網頁給使用者
+        res.render('customize.ejs',{
+            cat:bee
+        })
+    })
+});
 app.get('/product',function(req,res){
     var p_info
     conn.query('SELECT pd_name, p_price, p_pic FROM product where p_type="set"', (err, results) => {

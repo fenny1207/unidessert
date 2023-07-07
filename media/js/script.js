@@ -1,4 +1,4 @@
-"use strict";
+// "use strict";
 
 var offsetTop;
 var pagetopposition = $('.page-top-position').offset();
@@ -33,22 +33,27 @@ $('.member_linkleft>a').on('click', function(e){
 
 //購物車
 $(document).ready(function () {
-  $("#addtocart").on("click", function () {
-    alert('gg')
-    var button = $(this);
-    var cart = $("#cart");
-    var cartTotal = cart.attr("data-totalitems");
-    var newCartTotal = parseInt(cartTotal) + 1;
+  console.log('ok')
+  let addtocart = document.querySelectorAll('.addtocart');
 
-    button.addClass("sendtocart");
-    setTimeout(function () {
-      button.removeClass("sendtocart");
-      cart.addClass("shake").attr("data-totalitems", newCartTotal);
-      setTimeout(function () {
-        cart.removeClass("shake");
-      }, 500);
-    }, 300);
-  });
+  for (var i = 0; i < addtocart.length; i++) {
+      addtocart[i].addEventListener('click', function (e) {
+          console.log(e)
+          var button = $(this);
+          var cart = $("#cart");
+          var cartTotal = cart.attr("data-totalitems");
+          var newCartTotal = parseInt(cartTotal) + 1;
+
+          button.addClass("sendtocart");
+          setTimeout(function () {
+              button.removeClass("sendtocart");
+              cart.addClass("shake").attr("data-totalitems", newCartTotal);
+              setTimeout(function () {
+                  cart.removeClass("shake");
+              }, 500);
+          }, 300);
+      }, false);
+  }
 });
 
 

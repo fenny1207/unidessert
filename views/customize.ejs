@@ -13,9 +13,9 @@
     <link rel="stylesheet" href="/css/bootstrap.css">
     <script src="/js/bootstrap.bundle.js"></script>
     <script src="/js/jquery-3.7.0.min.js"></script>
-    <script src="/js/script.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="/js/script.js"></script>
     <style>
         .step_img {
             margin-bottom: 8%;
@@ -151,7 +151,7 @@
         .dragging {
             opacity: 0.4;
         }
-
+        
         .hover {
             background-color: #9e7140;
         }
@@ -169,367 +169,342 @@
 </head>
 
 <body>
-    <%for (let k=22; k < 24; k++) { %>
-        <div>
-            <%= cat[k].cname %>
-        </div>
-        <%}%>
-            <div>
-                <%= cat[4].cname %>
+    <%- include("./nav.ejs") %>
+
+        <div class="allcontent">
+            <!-- header -->
+            <div class="headerPage" class="page-top-position"></div>
+            <!-- 步驟的bar1 -->
+            <div class="step_img">
+                <img class="w-100" src="/pic/customize/stepbar6.png">
             </div>
-            <div class="allcontent">
-                <!-- header -->
-                <div class="headerPage" class="page-top-position"></div>
-                <!-- 步驟的bar1 -->
-                <div class="step_img">
-                    <img class="w-100" src="/pic/customize/stepbar6.png">
+            <div class="row">
+                <div class="col-lg-12 d-flex justify-content-center">
+                    <a href="#step1"><button class="btn1">Start</button></a>
                 </div>
-                <div class="row">
-                    <div class="col-lg-12 d-flex justify-content-center">
-                        <a href="#step1"><button class="btn1">Start</button></a>
+            </div>
+            <br>
+            <!-- 設定間距跟跳到的地方 -->
+            <div id="step1"></div>
+            <div class="homeblock2 "></div>
+            <div class="container-md homeblock ">
+                <br class="p-2">
+                <p class=" d-flex justify-content-center  stepblock">Step1 挑選大小＆內容物</p>
+                <hr class="p-2">
+            </div>
+            <div class="container stepdiv">
+                <div class="row d-flex justify-content-center align-items-center">
+                    <div id="box_40" class="col-lg-6 box4">
+                        <div id="box1" class="seldessert4 box"></div>
+                        <div class="seldessert4 box"></div>
+                        <div class="seldessert4 box"></div>
+                        <div class="seldessert4 box"></div>
                     </div>
-                </div>
-                <br>
-                <!-- 設定間距跟跳到的地方 -->
-                <div id="step1"></div>
-                <div class="homeblock2 "></div>
-                <div class="container-md homeblock ">
-                    <br class="p-2">
-                    <p class=" d-flex justify-content-center  stepblock">Step1 挑選大小＆內容物</p>
-                    <hr class="p-2">
-                </div>
-                <div class="container stepdiv">
-                    <div class="row d-flex justify-content-center align-items-center">
-                        <div id="box_40" class="col-lg-6 box4">
-                            <div class="seldessert4 box"></div>
-                            <div class="seldessert4 box"></div>
-                            <div class="seldessert4 box"></div>
-                            <div class="seldessert4 box"></div>
-                        </div>
 
-                        <div id="box_41" class="col-lg-6 box9">
-                            <div class="seldessert9 box"></div>
-                            <div class="seldessert9 box"></div>
-                            <div class="seldessert9 box"></div>
-                            <div class="seldessert9 box"></div>
-                            <div class="seldessert9 box"></div>
-                            <div class="seldessert9 box"></div>
-                            <div class="seldessert9 box"></div>
-                            <div class="seldessert9 box"></div>
-                            <div class="seldessert9 box"></div>
-                        </div>
-                        <div class="col-lg-6 ">
-                            <form action="" class="">
-                                <!-- 選大小 -->
-                                <span> Size：</span>
+                    <div id="box_41" class="col-lg-6 box9">
+                        <div class="seldessert9 box"></div>
+                        <div class="seldessert9 box"></div>
+                        <div class="seldessert9 box"></div>
+                        <div class="seldessert9 box"></div>
+                        <div class="seldessert9 box"></div>
+                        <div class="seldessert9 box"></div>
+                        <div class="seldessert9 box"></div>
+                        <div class="seldessert9 box"></div>
+                        <div class="seldessert9 box"></div>
+                    </div>
+                    <div class="col-lg-6 ">
+                        <form action="" class="">
+                            <!-- 選大小 -->
+                            <span> Size：</span>
 
-                                <input onclick="hide(this)" type="radio" id="<%= cat[39].cid %>" name="boxsize"
-                                 value="<%= cat[39].cname %> "class="<%= cat[39].cprice %>">
-                                <label for="<%= cat[39].cid %>"><span>$<%= cat[39].cprice %></span><img
-                                        src="<%= cat[39].cpic %>"></label>
+                            <input onclick="hide(this)" type="radio" id="<%= cat[39].cid %>" name="boxsize"
+                                value="<%= cat[39].cname %> " class="<%= cat[39].cprice %>">
+                            <label for="<%= cat[39].cid %>"><span>$<%= cat[39].cprice %></span><img
+                                    src="<%= cat[39].cpic %>"></label>
 
 
-                                <input onchange="hide(this)" type="radio" id="<%= cat[40].cid %>" name="boxsize"
+                            <input onchange="hide(this)" type="radio" id="<%= cat[40].cid %>" name="boxsize"
                                 value="<%= cat[40].cname %>" class="<%= cat[40].cprice %>">
-                                <label for="<%= cat[40].cid %>"><span>$<%= cat[40].cprice %></span><img
-                                        src="<%= cat[40].cpic %>"></label>
-                                <br>
-                                <br>
-                                <!-- 內容物 -->
-                                <span> Cookies：</span>
-                                <br>
-                                <%for (let k=15; k < 39; k++) { %>
-                                    <img class="cookies" src="<%= cat[k].cpic2 %>" draggable="true"
-                                        id="<%= cat[k].cid %>" onmousedown="fun1(this)">
-                                    <%}%>
-                            </form>
+                            <label for="<%= cat[40].cid %>"><span>$<%= cat[40].cprice %></span><img
+                                    src="<%= cat[40].cpic %>"></label>
+                            <br>
+                            <br>
+                            <!-- 內容物 -->
+                            <span> Cookies：</span>
+                            <br>
+                            <%for (let k=15; k < 39; k++) { %>
+                                <img class="cookies" src="<%= cat[k].cpic2 %>" draggable="true" id="<%= cat[k].cid %>"
+                                    onmousedown="fun1(this)">
+                                <%}%>
+                        </form>
 
-                        </div>
+                    </div>
 
+                </div>
+            </div>
+            <br>
+            <br>
+            <!-- 前往步驟2的按鈕 -->
+            <div class="row">
+                <div class="col-lg-12 d-flex justify-content-center">
+                    <a href="#step2"><button class="btn1">Next</button></a>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div id="step2"></div>
+            <div class="homeblock2 "></div>
+
+            <div class="container-md homeblock">
+                <hr class="p-2">
+                <p class=" stepblock d-flex justify-content-center stepblock">Step2 挑選包裝</p>
+                <hr class="p-2">
+            </div>
+            <div class="container stepdiv">
+                <div class="row d-flex justify-content-center align-items-center">
+                    <div class="col-lg-6">
+                        <img class="stepbar w-75" id="imgstep2" src="/pic/customize/box1.png">
+                    </div>
+                    <div class="col-lg-6 ">
+                        <form action="" class="">
+                            <br>
+                            <span> BoxColor：</span>
+                            <%for (let k=0; k <=9; k++) { %>
+                                <input type="radio" id=" <%= cat[k].cid %>" name="boxcolor" checked
+                                    onchange="get_num2(this)">
+                                <label for=" <%= cat[k].cid %>"><img src=" <%= cat[k].cpic2 %>"></label>
+                                <%}%>
+                        </form>
                     </div>
                 </div>
                 <br>
                 <br>
-                <!-- 前往步驟2的按鈕 -->
-                <div class="row">
-                    <div class="col-lg-12 d-flex justify-content-center">
-                        <a href="#step2"><button class="btn1">Next</button></a>
-                    </div>
-                </div>
-                <br>
-                <br>
-                <div id="step2"></div>
-                <div class="homeblock2 "></div>
-
-                <div class="container-md homeblock">
-                    <hr class="p-2">
-                    <p class=" stepblock d-flex justify-content-center stepblock">Step2 挑選包裝</p>
-                    <hr class="p-2">
-                </div>
+                <!-- 選紙袋顏色 -->
                 <div class="container stepdiv">
                     <div class="row d-flex justify-content-center align-items-center">
                         <div class="col-lg-6">
-                            <img class="stepbar w-75" id="imgstep2" src="/pic/customize/box1.png">
+                            <img class="stepbar w-75" id="imgstep1" src="/pic/customize/bag11.png">
                         </div>
                         <div class="col-lg-6 ">
                             <form action="" class="">
                                 <br>
-                                <span> BoxColor：</span>
-                                <%for (let k=0; k <=9; k++) { %>
-                                    <input type="radio" id=" <%= cat[k].cid %>" name="boxcolor" checked
-                                        onchange="get_num2(this)">
+                                <span> BagColor：</span>
+                                <%for (let k=10; k <=14; k++) { %>
+                                    <input type="radio" id=" <%= cat[k].cid %>" name="bagcolor" checked
+                                        onchange="get_num1(this)">
                                     <label for=" <%= cat[k].cid %>"><img src=" <%= cat[k].cpic2 %>"></label>
                                     <%}%>
-                            </form>
-                        </div>
-                    </div>
-                    <br>
-                    <br>
-                    <!-- 選紙袋顏色 -->
-                    <div class="container stepdiv">
-                        <div class="row d-flex justify-content-center align-items-center">
-                            <div class="col-lg-6">
-                                <img class="stepbar w-75" id="imgstep1" src="/pic/customize/bag11.png">
-                            </div>
-                            <div class="col-lg-6 ">
-                                <form action="" class="">
-                                    <br>
-                                    <span> BagColor：</span>
-                                    <%for (let k=10; k <=14; k++) { %>
-                                        <input type="radio" id=" <%= cat[k].cid %>" name="bagcolor" checked
-                                            onchange="get_num1(this)">
-                                        <label for=" <%= cat[k].cid %>"><img src=" <%= cat[k].cpic2 %>"></label>
-                                        <%}%>
-                                            <br>
-                                            <br>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 前往步驟3的按鈕 -->
-                    <div class="row">
-                        <div class="col-lg-12 d-flex justify-content-center">
-                            <a href="#step3" class="btn1">Next
-                                <!-- <button class="btn1">Next</button> -->
-                            </a>
-                        </div>
-                    </div>
-                    <br>
-                    <br>
-                    <!-- 步驟3的槓槓 -->
-                    <div id="step3"></div>
-                    <div class="homeblock2 "></div>
-
-                    <div class="container-md homeblock">
-                        <hr class="p-2">
-                        <p class=" d-flex justify-content-center stepblock">Step3 客製卡片</p>
-                        <hr class="p-2">
-                    </div>
-                </div>
-                <div class="container stepdiv">
-                    <div class="row d-flex justify-content-center align-items-center">
-                        <div class="col-lg-12">
-                            <blockquote contenteditable="true">
-                                <p>親愛的__＿＿＿＿:</p>
-                                <p>祝你情人節快樂！ 希望未來的日子裡都會有你的陪伴</p>
-                                <br><br><br>
-                                <p class="text-end"> 愛你的XX</p>
-                            </blockquote>
+                                        <br>
+                                        <br>
                         </div>
                     </div>
                 </div>
-                <br><br>
+                <!-- 前往步驟3的按鈕 -->
                 <div class="row">
                     <div class="col-lg-12 d-flex justify-content-center">
-                        <a href="#step4" class="btn1">Next</a>
+                        <a href="#step3" class="btn1">Next
+                            <!-- <button class="btn1">Next</button> -->
+                        </a>
                     </div>
                 </div>
+                <br>
+                <br>
+                <!-- 步驟3的槓槓 -->
+                <div id="step3"></div>
+                <div class="homeblock2 "></div>
+
                 <div class="container-md homeblock">
                     <hr class="p-2">
-                    <p class=" d-flex justify-content-center stepblock" id="step4">Step4 確認禮物</p>
+                    <p class=" d-flex justify-content-center stepblock">Step3 客製卡片</p>
                     <hr class="p-2">
                 </div>
-                <!-- 步驟4 -->
-                <div class="step4">
-                    <div class="container stepdiv">
-                        <div class="row d-flex justify-content-center align-items-center">
+            </div>
+            <div class="container stepdiv">
+                <div class="row d-flex justify-content-center align-items-center">
+                    <div class="col-lg-12">
+                        <blockquote contenteditable="true">
+                            <p>親愛的__＿＿＿＿:</p>
+                            <p>祝你情人節快樂！ 希望未來的日子裡都會有你的陪伴</p>
+                            <br><br><br>
+                            <p class="text-end"> 愛你的XX</p>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col-lg-12 d-flex justify-content-center">
+                    <a href="#step4" class="btn1">Next</a>
+                </div>
+            </div>
+            <div class="container-md homeblock">
+                <hr class="p-2">
+                <p class=" d-flex justify-content-center stepblock" id="step4">Step4 確認禮物</p>
+                <hr class="p-2">
+            </div>
+            <div id="step4"></div>
+            <div class="homeblock2 "></div>
+            <!-- 步驟4 -->
+            <div>
+                <div class="container stepdiv">
+                    <div class="row d-flex justify-content-center align-items-center">
 
-                            <div class="col-lg-6">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <img class="stepbar w-100" id="showbox" src="/pic/customize/box1.png">
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <img class="stepbar w-100" id="showbag" src="/pic/customize/bag11.png">
-                                    </div>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <img class="stepbar w-100" id="showbox" src="/pic/customize/box1.png">
+                                </div>
+                                <div class="col-lg-6">
+                                    <img class="stepbar w-100" id="showbag" src="/pic/customize/bag11.png">
                                 </div>
                             </div>
-                            <div class="col-lg-6 ">
-                                <form action="" class="">
+                        </div>
+                        <div class="col-lg-6 ">
+                            <form action="" class="">
 
-                                    <!-- 選數量 -->
-                                    <div class="count">
-                                        <form action="" method="">
-                                            <p>Size：<span id="showsize"></span>
-                                            </p>
-                                            <p>Cookies：</p>
-                                            <p>1:<span></span></p>
-                                            <p>價格：<span id="showmoney"></span></p>
-                                        </form>
+                                <!-- 選數量 -->
+                                <div class="count">
+                                    <form action="" method="">
+                                        <p>Size：<span id="showsize"></span>
+                                        </p>
+                                        <p>Cookies：</p>
+                                        <p>1:<span></span></p>
+                                        <p>價格：<span id="showmoney"></span></p>
+                                    </form>
 
-                                        <span>數量：</span>
-                                        <button id="decreaseBtn" class="btn2 ">-</button>
-                                        <span id="number">1</span>
-                                        <button id="increaseBtn" class="btn2 ">+</button>
+                                    <span>數量：</span>
+                                    <button id="decreaseBtn" class="btn2 ">-</button>
+                                    <span id="number">1</span>
+                                    <button id="increaseBtn" class="btn2 ">+</button>
 
-                                    </div>
-                                    <br>
+                                </div>
+                                <br>
 
-                                    <span>
-                                        <button id="addtocart" class="btn1">加入購物車</button>
-                                    </span>
-                            </div>
+                                <span>
+                                    <button id="addtocart" class="btn1">加入購物車</button>
+                                </span>
                         </div>
                     </div>
                 </div>
-                
-                <!-- 這邊是最後的結束標籤 -->
             </div>
-            <script>
-                // alert('<%= cat[4].cname %>')
-                $(document).ready(function () {
-                    $("#addtocart").on("click", function () {
+            <%- include("./footer.ejs") %>
+                <!-- 這邊是最後的結束標籤 -->
+        </div>
+        <script>
+            // alert('<%= cat[4].cname %>')
+            // $(document).ready(function () {
+            //     $("#addtocart").on("click", function () {
 
-                        var button = $(this);
-                        var cart = $("#cart");
-                        var cartTotal = cart.attr("data-totalitems");
-                        var newCartTotal = parseInt(cartTotal) + 1;
+            //         var button = $(this);
+            //         var cart = $("#cart");
+            //         var cartTotal = cart.attr("data-totalitems");
+            //         var newCartTotal = parseInt(cartTotal) + 1;
 
-                        button.addClass("sendtocart");
-                        setTimeout(function () {
-                            button.removeClass("sendtocart");
-                            cart.addClass("shake").attr("data-totalitems", newCartTotal);
-                            setTimeout(function () {
-                                cart.removeClass("shake");
-                            }, 500);
-                        }, 1000);
-                    });
+            //         button.addClass("sendtocart");
+            //         setTimeout(function () {
+            //             button.removeClass("sendtocart");
+            //             cart.addClass("shake").attr("data-totalitems", newCartTotal);
+            //             setTimeout(function () {
+            //                 cart.removeClass("shake");
+            //             }, 500);
+            //         }, 1000);
+            //     });
+            // });
+
+
+            // 更換紙袋顏色
+            function get_num1(item) {
+                var bagimg = document.getElementById(item.id);
+                console.log('這是bagimg'+bagimg.id);
+                document.getElementById('imgstep1').src = "/pic/customize/bag" + parseInt(bagimg.id) + ".png";
+                document.getElementById('showbag').src = "/pic/customize/bag" + parseInt(bagimg.id) + ".png";
+
+            }
+            // 更換盒子顏色
+            function get_num2(item) {
+                var boximg = document.getElementById(item.id);
+                console.log(boximg.id);
+                document.getElementById('imgstep2').src = "/pic/customize/box" + parseInt(boximg.id) + ".png";
+                document.getElementById('showbox').src = "/pic/customize/box" + parseInt(boximg.id) + ".png";
+            }
+
+            // 步驟4的數量加減
+            $(document).ready(function () {
+                // 綁定 "-" 按鈕的點擊事件處理
+                $("#decreaseBtn").click(function (event) {
+                    event.preventDefault(); // 阻止預設行為
+                    var number = parseInt($("#number").text());
+                    number--;
+                    $("#number").text(number);
                 });
-                $(".headerPage").load("./nav.html");
-                $(".footerPage").load("./footer.html");
 
-                // 更換紙袋顏色
-                function get_num1(item) {
-                    var bagimg = document.getElementById(item.id);
-                    document.getElementById('imgstep1').src = "/pic/customize/bag" + parseInt(bagimg.id) + ".png";
-                    document.getElementById('showbag').src = "/pic/customize/bag" + parseInt(bagimg.id) + ".png";
-
-                }
-                // 更換盒子顏色
-                function get_num2(item) {
-                    var boximg = document.getElementById(item.id);
-                    // console.log(boximg.id);
-                    document.getElementById('imgstep2').src = "/pic/customize/box" + parseInt(boximg.id) + ".png";
-                    document.getElementById('showbox').src = "/pic/customize/box" + parseInt(boximg.id) + ".png";
-                }
-
-                // 步驟4的數量加減
-                $(document).ready(function () {
-                    // 綁定 "-" 按鈕的點擊事件處理
-                    $("#decreaseBtn").click(function (event) {
-                        event.preventDefault(); // 阻止預設行為
-                        var number = parseInt($("#number").text());
-                        number--;
-                        $("#number").text(number);
-                    });
-
-                    // 綁定 "+" 按鈕的點擊事件處理
-                    $("#increaseBtn").click(function (event) {
-                        event.preventDefault(); // 阻止預設行為
-                        var number = parseInt($("#number").text());
-                        number++;
-                        $("#number").text(number);
-                    });
+                // 綁定 "+" 按鈕的點擊事件處理
+                $("#increaseBtn").click(function (event) {
+                    event.preventDefault(); // 阻止預設行為
+                    var number = parseInt($("#number").text());
+                    number++;
+                    $("#number").text(number);
                 });
-                // 隱藏盒子
-                function hide(item){
-                    // console.log(item);
-                    var hideitem = document.getElementById(item.id);
-                    // console.log(hideitem); 
-                    //Hide All Tabs
-                    document.getElementById("box_40").style.display = "none";
-                    document.getElementById("box_41").style.display = "none";
-                    //Show the Selected Tab
-                    document.getElementById("box_" + hideitem.id).style.display = "grid";
-                    document.getElementById("showsize").textContent = hideitem.value;
-                    document.getElementById("showmoney").textContent ="$"+hideitem.classList;
-
+            });
+            // 隱藏盒子
+            function hide(item) {
+                // console.log(item);
+                var hideitem = document.getElementById(item.id);
+                // console.log(hideitem); 
+                //Hide All Tabs
+                document.getElementById("box_40").style.display = "none";
+                document.getElementById("box_41").style.display = "none";
+                //Show the Selected Tab
+                document.getElementById("box_" + hideitem.id).style.display = "grid";
+                document.getElementById("showsize").textContent = hideitem.value;
+                document.getElementById("showmoney").textContent = "$" + hideitem.classList;
+            }
+            // 餅乾放置盒子的功能
+            // 滑鼠按下同時加上包裝以及變大v
+            function fun1(item) {
+                var drag_img = document.getElementById(item.id);
+                console.log('這是drag'+drag_img.id )
+                //這裡有抓到資料庫的id
+                if (item.src.length <= 47) {
+                    drag_img.src = `${item.src.slice(0, 41) + ".png"}`
+                } else {
+                    drag_img.src = `${item.src.slice(0, 42) + ".png"}`;
                 }
-                // 餅乾放置盒子的功能
-                // 滑鼠按下同時加上包裝以及變大v
-                function fun1(item) {
-                    var drag_img = document.getElementById(item.id);
-                    if (item.src.length <= 47) {
-                        drag_img.src = `${item.src.slice(0, 41) + ".png"}`
-                    } else {
-                        drag_img.src = `${item.src.slice(0, 42) + ".png"}`;
-                    }
-
-                    //符合格子大小v
-                    let box_display_style = document.getElementById("box_4").style.display;
-                    if (box_display_style === "none") {
-                        drag_img.classList.add("drag_img_for_box9");
-                    } else {
-                        drag_img.classList.add("drag_img_for_box4");
-                    }
-                    let source = null;
-
-                    console.log("這是drag_img");
-                    console.log(drag_img);
-                    drag_img.addEventListener("dragstart", (e) => {
-                        // 抓取位置座標 --> 移到中間
-                        console.log(e);
-                        e.dataTransfer.setDragImage(drag_img, 120, 130);
-                        e.target.classList.add("dragging");
-                        source = e.target;
-                    });
+                //符合格子大小v
+                let box_display_style = document.getElementById("box_40").style.display;
+                if (box_display_style === "none") {
+                    drag_img.classList.add("drag_img_for_box9");
+                } else {
+                    drag_img.classList.add("drag_img_for_box4");
                 }
-                // source 儲存餅乾的元素
-                // 拖動餅乾
-
-
-
+                let source = null;
+                
                 drag_img.addEventListener("dragstart", (e) => {
-
                     // 抓取位置座標 --> 移到中間
-
+                    console.log("這是e" + e);
                     e.dataTransfer.setDragImage(drag_img, 120, 130);
                     e.target.classList.add("dragging");
                     source = e.target;
                 });
-                drag_img.addEventListener("dragend", (e) => {
-                    e.target.classList.remove("dragging");
-                    source = null;
-                });
-                // 餅乾放置目標位置
-                // const containers = document.querySelectorAll(".box");
-                // containers.forEach((container) => {
-                //     container.addEventListener("dragover", (e) => {
-                //         e.preventDefault();
-                //     });
-                //     container.addEventListener("drop", (e) => {
-                //         e.target.appendChild(source);
-                //         e.target.classList.remove("dragging");
-                //     });
-                //     container.addEventListener("dragenter", (e) => {
-                //         e.target.classList.add("hover");
-                //     });
-                //     container.addEventListener("dragleave", (e) => {
-                //         e.target.classList.remove("hover");
-                //     });
-                // });
-
-
-            </script>
+                const containers = document.querySelector("#box1");
+                (containers) => {
+                    containers.addEventListener("dragover", (e) => {
+                        e.preventDefault();
+                    });
+                    containers.addEventListener("drop", (e) => {
+                        e.target.appendChild(source);
+                        console.log("123"+e.target);
+                        e.target.classList.remove("dragging");
+                    });
+                    containers.addEventListener("dragenter", (e) => {
+                        e.target.classList.add("hover");
+                    });
+                    containers.addEventListener("dragleave", (e) => {
+                        e.target.classList.remove("hover");
+                    });
+                };
+            }
+        </script>
 
 
 </body>

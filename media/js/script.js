@@ -38,7 +38,7 @@ $(document).ready(function () {
 
   for (var i = 0; i < addtocart.length; i++) {
       addtocart[i].addEventListener('click', function (e) {
-          console.log(e)
+          // console.log(e)
           var button = $(this);
           var cart = $("#cart");
           var cartTotal = cart.attr("data-totalitems");

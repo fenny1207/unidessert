@@ -233,7 +233,7 @@
                         <!-- 內容物 -->
                         <span> Cookie：</span>
 
-                        <img class="cookies" src="../media/pic/customize/c1.png" draggable="true" id="c1"
+                        <img class="cookies" src="../media/pic/customize/cake1.png" draggable="true" id="c1"
                             onmousedown="fun1()">
                         <img class="cookies" src="../media/pic/customize/c2.png" draggable="true">
                         <img class="cookies" src="../media/pic/customize/c3.png" draggable="true">
@@ -363,20 +363,7 @@
                         <br><br><br>
                         <p class="text-end"> 愛你的XX</p>
                     </blockquote>
-
                 </div>
-                <!-- <div class="col-lg-6 ">
-                    <form action="" class="">
-                        <br>
-                        <br> -->
-                <!-- 卡片 -->
-                <!-- <input type="checkbox"><span>卡片：</span>
-                        <input type="text" id="cardinput" value="親愛的XXX情人節快樂！送你我挑的餅乾都是你愛吃的 "> -->
-                <!-- <blockquote contenteditable="true">
-                            <p>Edit this content to add your own quote</p>
-                        </blockquote>   
-                        <cite contenteditable="true">-- Write your own name here</cite>
-                </div> -->
             </div>
         </div>
         <br><br>
@@ -502,7 +489,7 @@
             }
             // source 儲存餅乾的元素
             let source = null;
-            // 拖動餅乾
+            // 抓的時候變透明
             const drag_img = document.getElementById('c1');
             drag_img.addEventListener("dragstart", (e) => {
                 // 抓取位置座標 --> 移到中間
@@ -511,11 +498,13 @@
                 e.target.classList.add("dragging");
                 source = e.target;
             });
+            // 拖動完變不透明
             drag_img.addEventListener("dragend", (e) => {
                 e.target.classList.remove("dragging");
                 source = null;
             });
-            // 餅乾放置目標位置
+
+            // 餅乾放置目標位置（盒子）盒子的效果
             const containers = document.querySelectorAll(".box");
             containers.forEach((container) => {
                 container.addEventListener("dragover", (e) => {

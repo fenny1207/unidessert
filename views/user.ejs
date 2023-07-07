@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unidessert有你甜點|會員註冊登入</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=gambetta@400,1,300,600,701,2,501,401,301,601,500,700&display=swap"
+    rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&family=Satisfy&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+    integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+    crossorigin="anonymous"></script>
+  <script src="/js/jquery-3.7.0.min.js"></script>
+  <link rel="stylesheet" href="/css/signUp.css">
+</head>
+
+<body>
+  <% if (typeof error !=='undefined' && error) { %>
+    <script>
+      $(document).ready(function () {
+        $('#alertModalLabel').text('<%= title %>');
+        $('#alertModalBody').text('<%= message %>');
+        $('#alertModal').modal('show');
+      });
+    </script>
+    <% } %>
+
+    <% if (showAlert) { %>
+      <script>
+        $(document).ready(function () {
+          $('#alertModalLabel').text('<%= title %>');
+          $('#alertModalBody').text('<%= message %>');
+          $('#alertModal').modal('show');
+        });
+      </script>
+    <% } %>  
+
+      <!-- 在 HTML 文件中添加模态框的代码 -->
+      <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="alertModalLabel">
+                標題
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="alertModalBody">
+              內容
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary"  data-bs-dismiss="modal">確認</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="container right-panel-active">
+        <!-- 註冊 -->
+        <div class="container__form container--signup">
+          <form action="/register" class="form" id="form1" method="post">
+            <h2 class="form__title">註冊</h2>
+            <input type="text" placeholder="姓名" name="name" class="input" required />
+            <input type="email" placeholder="電子信箱" name="email" class="input"
+              pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required />
+            <input type="tel" placeholder="手機號碼" name="mobile" class="input" minlength="10" pattern="09\d{2}\d{6}"
+              oninput="setCustomValidity('');" oninvalid="setCustomValidity('請輸入正確的手機號瑪格式:09xx-xxxxxx');" required />
+            <input type="password" placeholder="密碼" name="password" class="input" id="inputPassword"
+              pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$" oninput="setCustomValidity('');"
+              oninvalid="setCustomValidity('請輸入正確的密碼格式:含英數至少八個字元');" minlength="8" required />
+            <input type="password" placeholder="確認密碼" class="input" id="ConfirmPassword"
+              pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$" minlength="8" oninput="setCustomValidity('');"
+              onchange="if(document.getElementById('inputPassword').value != document.getElementById('ConfirmPassword').value){setCustomValidity('密碼不吻合');}"
+              required />
+            <input type="submit" class="btn" value="註冊" />
+          </form>
+        </div>
+
+        <!-- 登入 -->
+        <div class="container__form container--signin">
+          <form action="/login" class="form" id="form2" method="post">
+            <h2 class="form__title">登入</h2>
+            <input type="email" placeholder="電子信箱" name="email" class="input"
+              pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required />
+            <input type="password" placeholder="密碼" name="password" class="input" minlength="8"
+              pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$" required />
+            <a href="#" class="link" style="color: red;">忘記密碼?</a>
+            <input type="submit" class="btn" value="登入" />
+            <p>其他登入方式</p>
+            <div style="display: inline-block;">
+              <a href=""><i class="fa-brands fa-facebook fa-2xl" style="color: #702f43;"></i></a>
+              <a href=""><i class="fa-brands fa-google fa-2xl" style="color: #702f43;"></i></a>
+              <a href=""><i class="fa-brands fa-line fa-2xl" style="color: #702f43;"></i></a>
+            </div>
+          </form>
+        </div>
+
+        <!-- Overlay -->
+        <div class="container__overlay">
+          <div class="overlay">
+            <div class="overlay__panel overlay--left">
+              <button class="btn" id="signIn">登入</button>
+            </div>
+            <div class="overlay__panel overlay--right">
+              <button class="btn" id="signUp">註冊</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        const signInBtn = document.getElementById("signIn");
+        const signUpBtn = document.getElementById("signUp");
+        const firstForm = document.getElementById("form1");
+        const secondForm = document.getElementById("form2");
+        const container = document.querySelector(".container");
+
+        signInBtn.addEventListener("click", () => {
+          container.classList.remove("right-panel-active");
+        });
+
+        signUpBtn.addEventListener("click", () => {
+          container.classList.add("right-panel-active");
+        });
+
+        // firstForm.addEventListener("submit", (e) => e.preventDefault());
+        // secondForm.addEventListener("submit", (e) => e.preventDefault());
+      </script>
+
+      <script>
+        // fetch('/register', {
+        //   method: 'POST',
+        //   body: formData
+        // })
+        //   .then(response => response.json())
+        //   .then(data => {
+        //     if (data.message === 'email已被註冊了') {
+        //       alert('email已被註冊了');
+        //     } else {
+        //       alert('註冊成功');
+        //       // 註冊成功的處理邏輯，例如導向登入頁面
+        //       window.location.href = '/login';
+        //     }
+        //   })
+        //   .catch(error => {
+        //     console.error('註冊失敗:', error);
+        //   });
+      </script>
+      
+</body>
+
+</html>

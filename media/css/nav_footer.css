@@ -296,6 +296,18 @@ input[type=submit], input[type=text], input[type=email], input[type=tel], textar
   background-color: #702F43;
 }
 
+.signout_btn {
+  color: #EADFD9;
+  font-family: "Noto Sans TC", sans-serif;
+  letter-spacing: 5px;
+  width: 100%;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 400;
+  background-color: #702F43;
+}
+
 /* Center the image and position the close button */
 .imgcontainer {
   text-align: center;

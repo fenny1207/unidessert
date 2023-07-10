@@ -17,12 +17,12 @@
         </aside>
         <div class="container-uni col-12-uni col-md-9-uni col-lg-10-uni tab_content active" id="Tab1">
           <div class="member_link mb-2-uni"><a class="active member_link_border_left" href="#tab1">基本資料</a><a class="member_link_border_right" href="#tab2">變更密碼</a></div>
-          <form class="tab_content active" id="tab1">
+          <form class="tab_content active" id="tab1" action="/member" method="post">
             <div class="container-uni">
               <div class="mb-3 row">
                 <label class="member_label col-4-uni " for="uemail">電子信箱</label>
                 <div class="col-8-uni">
-                  <p class="member_text">email@gmail.com</p>
+                  <p class="member_text"> <%= user[1].uemail %> </p>
                 </div>
               </div>
               <div class="mb-3 row">

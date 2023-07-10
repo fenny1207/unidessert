@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/nav_footer.css">
     <link rel="stylesheet" href="/css/productInfo.css">
+    <script src="/js/product_info.js"></script>
 </head>
 
 <body id="body">
@@ -61,10 +62,14 @@
                 <div class="productInfoPrice">NT$ 390</div>
                 <div class="productCount">
                     <div onclick="minus()" id="productCount_minus">-</div>
-                    <div id="productCount">1</div>
+                    <div id="productCount"></div>
                     <div onclick="plus()" id='productCount_plus'>+</div>
                 </div>
-                <button class="addtocart">加入購物車</button>
+                <form style="display: flex;" action="/product/productInfo" method="post" id="submit_form">
+                    <input type="text" style="display: none" name="product_quantity" id="productCount_input">
+                    <button style="margin: auto; " type="submit" class="addtocart" id="addtocart">加入購物車</button>
+                    
+                </form>
 
             </div>
         </figure>
@@ -160,7 +165,9 @@
         <%- include("./footer.ejs") %>
 
             <!-- Javascript Code of the tab -->
-            <script>
+            <!-- <script>
+                // var axios = require('axios')
+                // import axios from "axios";
                 function selectTab(tabIndex) {
                     //Hide All Tabs
                     document.getElementById("tab1Content").style.display = "none";
@@ -180,23 +187,56 @@
 
                 }
                 function plus() {
-                    var i = document.getElementById('productCount').innerHTML;
-                    var sum = parseInt(i) + 1;
+                    // var product_quantity = 1;
+                    var product_quantity = document.getElementById('productCount').innerHTML
+                    var sum = parseInt(product_quantity) + 1
                     document.getElementById('productCount').innerHTML = sum;
-
+                    document.getElementById('productCount_input').value = sum
                 }
                 function minus() {
-                    var i = document.getElementById('productCount').innerHTML;
-                    var sum;
+                    let i = document.getElementById('productCount').innerHTML;
+                    let total;
                     if (i == '1') {
-                        sum = 1;
+                        total = 1;
                     } else {
-                        sum = parseInt(i) - 1;
+                        total = parseInt(i) - 1;
                     }
-                    document.getElementById('productCount').innerHTML = sum;
-
+                    document.getElementById('productCount').innerHTML = total;
                 }
-            </script>
+                document.getElementById('submit_form').addEventListener('submit', (e)=>{
+                    e.preventDefault();
+                })
+                
+                // let data = {
+                //     "uid": "1",
+                //     "deliever_fee": "100",
+                //     "order_total": "390",
+                //     "order_date": "2023-07-09",
+                //     "recipient": "",
+                //     "recipient_address": "",
+                //     "recipient_phone": "",
+                //     "recipient_email": "",
+                //     "arrive_date": "2023-07-12",
+                //     "payment_type": "貨到付款",
+                //     "status": "購物車"
+                // }
+                // const addproduct = () => {
+                //     axios({
+                //         url: 'http://localhost:5678/product/productInfo',
+                //         method: 'post',
+                //         data: data,
+                //         headers: {
+                //             "Content-Type": "application/json"
+                //         }
+                //     }).then(result => {
+                //         console.log(result.data)
+                //     }).catch(err => {
+                //         console.log(err.message)
+                //     })
+
+                // }
+                // document.getElementById('cart_button').addEventListener('click', addproduct())
+            </script> -->
 
 </body>
 

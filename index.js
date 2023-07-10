@@ -1,7 +1,14 @@
 var express = require('express');
 var app = express();
 var ejs=require('ejs');
+var bodyParser = require('body-parser');
 var mysql= require('mysql');
+var bcrypt = require('bcrypt');
+var saltRounds = 10; // 設定 salt 的複雜度，數字越大越安全，但計算時間也越長
+// var member = require('./routes/member.js');
+// var users = require('./routes/user.js');
+
+
 var conn = mysql.createConnection({
     host:'localhost',
     port:'3306',
@@ -28,12 +35,19 @@ var s = expressSession({
         secure: false,
         maxAge: 50 * 1000
     }
-});
+})
 app.use(s);
+app.set('view engine', 'ejs');
 
 // 把media移到根目錄
 app.use(express.static('media'));
 //這是首頁(可以改)
+app.use(express.static('media', { 'extensions': ['html', 'css'] }));
+// 解析表單資料的中介軟體
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// app.use('/',member);
+// app.use('/user',users);
 app.get('/',function(req,res){
     res.render('index.ejs');
 })
@@ -77,35 +91,65 @@ app.get('/product/productInfo',function(req,res){
         res.render('productInfo.ejs', {product_info: product_info});
     })
 })
-app.get('/login', function (req, res) {
-    res.render('login.ejs');
-})
-app.post('/login', express.urlencoded(), function (req, res) {
-    //SELECT *FROM user m WHERE m.uemail = 'david.jones@hotmail.com' AND m.upwd = 'P@ssw0rd';
-    var sql = "SELECT * FROM user u where u.uemail = ? and u.upwd = ? ";
-    var userInput = [req.body.uemail, req.body.upwd];
-    conn.query(sql, userInput, function (err, data) {
-        console.log(data[0]);
 
-        if (err == null && data.length == 1) {
-            // req.session.AABBCC = data[0];
-            res.redirect('/member');
-        } else {
-            res.send('登入失敗')
-        }
-    })
-})
+app.get('/user', (req, res) => {
+    res.render('user.ejs');
+  })
+  
+app.post('/register', (req, res) => {
+    const { name, email, mobile, password } = req.body;
+  
+    // 檢查使用者電子信箱是否已存在於資料庫
+    const checkQuery = 'SELECT * FROM user WHERE uemail = ? ';
+    conn.query(checkQuery, [email], (err, results) => {
+      if (err) throw err;
+  
+      if (results.length > 0) {
+        // 使用者電子信箱已存在
+        res.render('user', { error: true, showAlert: false,title:"註冊失敗", message: 'Email 已經被註冊過了' });
+      } else {
+        // 使用者電子信箱可用，將資料插入資料庫
+        const insertQuery = 'INSERT INTO user (uemail, upwd, uname, umobile) VALUES (?, ?, ?, ?)';
+        conn.query(insertQuery, [email, password, name, mobile], (err) => {
+          if (err) throw err;
+  
+          // 註冊成功，重新導向到登入頁面
+          res.render('user', { error: false, showAlert: true,title:"註冊成功", message: '請重新登入' });
+        });
+      }
+    });
+  
+});
+  
+  
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+  
+    const selectUserQuery = 'SELECT * FROM user WHERE uemail = ? AND upwd = ?';
+  
+    conn.query(selectUserQuery, [email, password], (err, results) => {
+      if (err) {
+        res.render('user', { error: true, showAlert: false,title:"登入失敗", message: 'Email 尚未註冊過了' });
+        
+      } else if (results.length === 0) {
+        res.render('user', { error: true, showAlert: false,title:"登入失敗", message: '密碼輸入錯誤' });
+        
+      } else {
+        res.render('user', { error: false, showAlert: true,title:"登入成功", message: '歡迎回來' });
+      }
+    });
+});
+  
+  
 
 app.get('/member',function(req,res){
     res.render('member.ejs');
-  
 })
-app.post('/member',function(req,res){
-    if (req.session.AABBCC) {
-        // AM 10:34 取得資料庫資料=>ejs網頁
-        var sql = 'SELECT * FROM user ';
-        conn.query(sql, function (err, data) {
-                res.render('member.ejs', {
+app.post('/memberUser',(req,res) => {
+    const { name, email, mobile,birth} = req.body;
+        var sql = 'UPDATE  user SET uname = ?, uemail =?,ubirth =?,umobile=? WHERE uid = ?';
+        conn.query(sql, [ name, email, mobile,birth] ,(err) => {
+                res.render('member', {
                     user:data,
                     uname: req.session.AABBCC.uname,
                     uemail:req.session.AABBCC.uemail,
@@ -113,11 +157,6 @@ app.post('/member',function(req,res){
                     ubirth: req.session.AABBCC.ubirth
                 });
         })
-    } else {
-        // AM 10:51 如果沒登入就導向登入*路由*
-        res.redirect('/login');
-    }
-
 })
 
 // app.post('/member',express.urlencoded(),function(req,res){

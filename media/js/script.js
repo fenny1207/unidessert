@@ -33,7 +33,6 @@ $('.member_linkleft>a').on('click', function(e){
 
 //購物車
 $(document).ready(function () {
-  console.log('ok')
   let addtocart = document.querySelectorAll('.addtocart');
 
   for (var i = 0; i < addtocart.length; i++) {

@@ -16,6 +16,21 @@ conn.connect(function(err){
         console.log("資料庫正常啟動");
     } 
 });
+
+var expressSession = require('express-session');
+var s = expressSession({
+    secret: 'unidessert',
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        path: '/',
+        httpOnly: true,
+        secure: false,
+        maxAge: 50 * 1000
+    }
+});
+app.use(s);
+
 // 把media移到根目錄
 app.use(express.static('media'));
 //這是首頁(可以改)
@@ -66,13 +81,14 @@ app.get('/login', function (req, res) {
     res.render('login.ejs');
 })
 app.post('/login', express.urlencoded(), function (req, res) {
-    var sql = "SELECT * FROM user m where uname = ? and upwd = ? ";
-    var userInput = [req.body.uname, req.body.upwd];
+    //SELECT *FROM user m WHERE m.uemail = 'david.jones@hotmail.com' AND m.upwd = 'P@ssw0rd';
+    var sql = "SELECT * FROM user u where u.uemail = ? and u.upwd = ? ";
+    var userInput = [req.body.uemail, req.body.upwd];
     conn.query(sql, userInput, function (err, data) {
         console.log(data[0]);
 
         if (err == null && data.length == 1) {
-            req.session.AABBCC = data[0];
+            // req.session.AABBCC = data[0];
             res.redirect('/member');
         } else {
             res.send('登入失敗')
@@ -84,9 +100,29 @@ app.get('/member',function(req,res){
     res.render('member.ejs');
   
 })
-app.post('/member',express.urlencoded(),function(req,res){
+app.post('/member',function(req,res){
+    if (req.session.AABBCC) {
+        // AM 10:34 取得資料庫資料=>ejs網頁
+        var sql = 'SELECT * FROM user ';
+        conn.query(sql, function (err, data) {
+                res.render('member.ejs', {
+                    user:data,
+                    uname: req.session.AABBCC.uname,
+                    uemail:req.session.AABBCC.uemail,
+                    // AM 11:24 把全部資料交給ejs處理 (二選一)
+                    ubirth: req.session.AABBCC.ubirth
+                });
+        })
+    } else {
+        // AM 10:51 如果沒登入就導向登入*路由*
+        res.redirect('/login');
+    }
 
 })
+
+// app.post('/member',express.urlencoded(),function(req,res){
+
+// })
 
 
 app.get('/about',function(req,res){

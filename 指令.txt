@@ -21,6 +21,12 @@ app.listen(3000,function(){
     var d =new Date();
     console.log('成功啟動' + d.toLocaleTimeString());
 })
+git clone https://github.com/fenny1207/unidessert
+
+git remote -v 
+git config --global user.email
+git config --global user.name
+
 git  add 測試.html
 git  commit  -m
 git push -u origin master

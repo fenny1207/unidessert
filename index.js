@@ -1,7 +1,10 @@
 var express = require('express');
 var app = express();
-var ejs=require('ejs');
 var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+var path = require('path');
+var axios = require('axios')
+var ejs=require('ejs');
 var mysql= require('mysql');
 var bcrypt = require('bcrypt');
 var saltRounds = 10; // 設定 salt 的複雜度，數字越大越安全，但計算時間也越長
@@ -82,13 +85,20 @@ app.get('/product/single',function(req,res){
         res.render('product_single.ejs', {p_single_info: p_single_info});
     })
 })
-app.get('/product/productInfo',function(req,res){
-    var product_info
+app.get('/product/productInfo', function (req, res) {
+    // var product_info
     conn.query('SELECT pd_name, p_price, p_pic, p_pic2, p_pic3, p_pic4 FROM product where p_type="set" && (pid=1 || pid=2)', (err, results) => {
-        if(err) return console.log(err.message)
+        if (err) return console.log(err.message)
         product_info = results;
-        // console.log(product_info)
-        res.render('productInfo.ejs', {product_info: product_info});
+        res.render('productInfo.ejs', { product_info: product_info });
+    })
+}).post('/product/productInfo',function(req,res){
+    const productNumber = req.body.order_amout;
+    // console.log((productNumber)*390)
+    order_total = productNumber*390
+    conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, status) VALUES (NULL, 1, 100, ?, "", "", "", "", "", "", "", "購物車")`, [order_total], (err, results) => {
+        if(err) return console.log(err.message)
+        // console.log(results.insertId)
     })
 })
 

@@ -25,8 +25,14 @@
             </li>
             <li class="nav-item"><a class="nav-link text-center" href="/qaindex">常見問題</a></li>
             <li class="nav-item nav-none-lg"> <a class="nav-link text-center" href="/signUp">會員中心</a></li>
-            <li class="nav-item nav-none">
-              <div class="align-content-center"><a class="nav-link list-unstyled" href="/login"><img class="img-140" src="/pic/index/user.png" alt=""></a></div>
+            <li class="nav-item nav-none dropdown">
+              <div class="align-content-center"><a class="nav-link list-unstyled dropdown-toggle" href="/user" role="button" data-bs-toggle="dropdown" aria-expanded="false"><img class="img-120" src="/pic/index/user.png" alt=""></a>
+                  <ul class="dropdown-menu">
+                  <li class="dropdown"><a class="nav-link text-center dropdown-item" href="/product/single">會員中心</a></li>
+                  <li class="dropdown"><a class="nav-link text-center dropdown-item" href="/product">會員名稱</a></li>
+                  <li class="dropdown"><button class="signout_btn">登出</button></li>
+                </ul>
+              </div>
             </li>
             <li class="nav-item pe-5 nav-none-lg"><a class="nav-link text-center" href="/order1">購物車</a></li>
             <li class="nav-item nav-none">

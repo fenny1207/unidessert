@@ -13,23 +13,23 @@ $(window).scroll(function () {
 }); //scroll end
 // 點按page-top回到最上方
 
-$('.member_link>a').on('click', function(e){
-  e.preventDefault()
-  $(this).addClass('active')
-  $(this).siblings().removeClass('active')
-  console.log($(this).attr('href'))
-  $( $(this).attr('href') ).addClass('active')
-  $( $(this).attr('href') ).siblings().removeClass('active')
-});//.tab-link>a end
+// $('.member_link>a').on('click', function(e){
+//   e.preventDefault()
+//   $(this).addClass('active')
+//   $(this).siblings().removeClass('active')
+//   console.log($(this).attr('href'))
+//   $( $(this).attr('href') ).addClass('active')
+//   $( $(this).attr('href') ).siblings().removeClass('active')
+// });//.tab-link>a end
 
-$('.member_linkleft>a').on('click', function(e){
-  e.preventDefault()
-  $(this).addClass('active')
-  $(this).siblings().removeClass('active')
-  console.log($(this).attr('href'))
-  $( $(this).attr('href') ).addClass('active')
-  $( $(this).attr('href') ).siblings().removeClass('active')
-});//.tab-link>a end
+// $('.member_linkleft>a').on('click', function(e){
+//   e.preventDefault()
+//   $(this).addClass('active')
+//   $(this).siblings().removeClass('active')
+//   console.log($(this).attr('href'))
+//   $( $(this).attr('href') ).addClass('active')
+//   $( $(this).attr('href') ).siblings().removeClass('active')
+// });//.tab-link>a end
 
 //購物車
 $(document).ready(function () {

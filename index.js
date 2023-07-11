@@ -186,11 +186,31 @@ app.post('/login', (req, res) => {
     });
 });
   
-var or = require('./router/order');
-app.use('/order', or) ;
+
+app.get("/order", (req, res) => {
+    // const { oid, recipient, order_total } = req.body;
+    // var sql = "SELECT * FROM orderlist WHERE oid = ? and recipient = ? and order_total =? ";
+    var sql = "select * from orderlist ";
+    // [oid,recipient,order_total]
+    conn.query(sql, (err, data) => {
+    if (!err) {
+        // console.log(data)
+        res.render('member.ejs', {
+            dog:data,
+            // oid:req.body.oid,
+            // recipient:req.body.recipient,
+            // order_total:req.body.order_total
+        })
+        // res.send(JSON.stringify(data))
+    } else {
+        res.send('查不到訂單') 
+    }  
+  });
+});
+
 
 app.get('/member',function(req,res){
-    res.render('member.ejs');
+    res.render('member2.ejs');
 })
 app.post('/memberUser',(req,res) => {
     const { name, email, mobile,birth} = req.body;

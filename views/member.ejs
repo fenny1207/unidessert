@@ -86,7 +86,25 @@
           </form>
         </div>
         <div class="container-uni col-12-uni col-md-9-uni col-lg-10-uni tab_content" id="Tab2">
-          <h1>訂單</h1>
+          <form action="/order" id="oder" method="get">
+            <h1>訂單</h1>
+            <table>
+              <tbody>
+                  <%for(let i=0; i<orderlist.length; i++){%>
+                    <li><%= orderlist[i].oid %></li>
+                  <%}%>
+              </tbody>
+              <!-- <tfoot>
+                  <tr>
+                      <td colspan="4" style="text-align: center;">
+                          <% for(var i = 1; i <= last_page; i++) { %>
+                          <span ><a href="/<%= i%>"><%= i%></a></span>
+                          <% } %>
+                      </td colspan="2">
+                      <td><p>總數 <%= total_nums%> 筆，共 <%= curr_page%>/<%= last_page%> 頁</p></td>
+                  </tr>
+              </tfoot> -->
+            </table>    
         </div>
       </div>
     </section>

@@ -41,7 +41,7 @@ function minus() {
     document.getElementById('productCount_input').value = sum
 }
 $(document).ready(function () {
-    $("#submit_form").on('submit', function(e) {
+    $("#addtocart").on('click', function(e) {
         e.preventDefault();
         let amount = document.getElementById('productCount_input').value
         console.log(amount)

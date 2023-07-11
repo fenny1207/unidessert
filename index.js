@@ -17,7 +17,7 @@ var conn = mysql.createConnection({
     port:'3306',
     user:'root',
     password:'',
-    database:'unidessert'
+    database:'unidessert_vtest'
 });
 conn.connect(function(err){
     if(err){
@@ -84,7 +84,31 @@ app.get('/product/single',function(req,res){
         // console.log(p_single_info);
         res.render('product_single.ejs', {p_single_info: p_single_info});
     })
+}).post('/product/single',function(req,res){
+    // console.log(parseInt(req.body.uid) + 2)
+    const pid = parseInt(req.body.uid) + 2
+    const amount = req.body.amount
+    
+    conn.query(`select * from product where p_type="single" && pid=${pid}`, (err, results) => {
+        if(err) return console.log(err.message)
+        let pid = results[0].pid
+        let pd_name = results[0].pd_name
+        let p_price = results[0].p_price
+        let p_type = results[0].p_type
+        conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, status) 
+                    VALUES (null, 1, 100, ?, "", "", "", "", "", "", "", "購物車")`, [p_price], (err, results) => {
+            if(err) return console.log(err.message)
+            console.log(results.insertId)
+            const insert_oid = results.insertId
+        conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, quantity)
+                    VALUES (NULL, ?, ?, ?, ?)`, [insert_oid, p_type, pid, amount], (err, results) => {
+            if(err) return console.log(err.message)
+            console.log(results.insertId)
+        })
+        })
+    })
 })
+
 app.get('/product/productInfo', function (req, res) {
     // var product_info
     conn.query('SELECT pd_name, p_price, p_pic, p_pic2, p_pic3, p_pic4 FROM product where p_type="set" && (pid=1 || pid=2)', (err, results) => {

@@ -150,7 +150,8 @@ app.post('/login', (req, res) => {
     });
 });
   
-  
+var or = require('./router/order');
+app.use('/order', or) ;
 
 app.get('/member',function(req,res){
     res.render('member.ejs');

@@ -70,14 +70,14 @@ app.get('/customize',function(req,res){
 });
 app.post('/customize',function(req,res){
     // res.send('success');
-    var sql = "INSERT INTO c_detail2 ( size , boxcolor) VALUES (?, ?);";
-    var userInput = [req.body.csize, req.body.cbox];
-    pikachu.query(sql, userInput, function (err, data) {
+    var insertc = "INSERT INTO c_detail2 ( size , boxcolor) VALUES (?, ?);";
+    var userInput = [req.body.size, req.body.showboxcolor];
+    console.log(insertc);
+    console.log(userInput);
+    conn.query(insertc, userInput, function (err, data) {
         if (err) {
             res.send('無法新增')
-        } else {
-            res.redirect('/customize');
-        }
+        } 
     })
 })
 app.get('/product',function(req,res){

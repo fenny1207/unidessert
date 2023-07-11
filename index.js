@@ -203,7 +203,9 @@ app.get("/order", (req, res) => {
         member_info = data;
         console.log(member_info[0].oid);
         console.log(member_info[0]);
-        res.render('member.ejs', {member_info: member_info})
+        res.render('member.ejs', {
+            member_info: member_info
+        })
     // if (!err) {
     //     // console.log(data)
     //     res.render('member.ejs', {

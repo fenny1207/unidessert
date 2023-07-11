@@ -17,7 +17,7 @@ var conn = mysql.createConnection({
     port:'3306',
     user:'root',
     password:'',
-    database:'unidessert_vtest'
+    database:'unidessert'
 });
 conn.connect(function(err){
     if(err){
@@ -54,9 +54,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get('/',function(req,res){
     res.render('index.ejs');
 })
-app.get('/member',function(req,res){
-    res.render('member.ejs');
-})
+
 // 給customize 路由
 app.get('/customize',function(req,res){
     conn.query( `SELECT * FROM customize `,
@@ -193,25 +191,31 @@ app.post('/login', (req, res) => {
     });
 });
   
-
+// member.ejs
 app.get("/order", (req, res) => {
     // const { oid, recipient, order_total } = req.body;
     // var sql = "SELECT * FROM orderlist WHERE oid = ? and recipient = ? and order_total =? ";
     var sql = "select * from orderlist ";
     // [oid,recipient,order_total]
     conn.query(sql, (err, data) => {
-    if (!err) {
         // console.log(data)
-        res.render('member.ejs', {
-            dog:data,
-            // oid:req.body.oid,
-            // recipient:req.body.recipient,
-            // order_total:req.body.order_total
-        })
-        // res.send(JSON.stringify(data))
-    } else {
-        res.send('查不到訂單') 
-    }  
+        if (err) return console.log(err.message)
+        member_info = data;
+        console.log(member_info[0].oid);
+        console.log(member_info[0]);
+        res.render('member.ejs', {member_info: member_info})
+    // if (!err) {
+    //     // console.log(data)
+    //     res.render('member.ejs', {
+    //         dog:data,
+    //         // oid:req.body.oid,
+    //         // recipient:req.body.recipient,
+    //         // order_total:req.body.order_total
+    //     })
+    //     // res.send(JSON.stringify(data))
+    // } else {
+    //     res.send('查不到訂單') 
+    // }  
   });
 });
 

@@ -68,6 +68,18 @@ app.get('/customize',function(req,res){
         })
     })
 });
+app.post('/customize',function(req,res){
+    // res.send('success');
+    var sql = "INSERT INTO c_detail2 ( size , boxcolor) VALUES (?, ?);";
+    var userInput = [req.body.csize, req.body.cbox];
+    pikachu.query(sql, userInput, function (err, data) {
+        if (err) {
+            res.send('無法新增')
+        } else {
+            res.redirect('/customize');
+        }
+    })
+})
 app.get('/product',function(req,res){
     var p_info
     conn.query('SELECT pd_name, p_price, p_pic FROM product where p_type="set"', (err, results) => {

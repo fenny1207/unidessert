@@ -273,13 +273,13 @@
                         <img class="stepbar w-75" id="imgstep2" src="/pic/customize/box1.png">
                     </div>
                     <div class="col-lg-6 ">
-                            <br>
-                            <span> BoxColor：</span>
-                            <%for (let k=0; k <=9; k++) { %>
-                                <input type="radio" id=" <%= cat[k].cid %>" name="boxcolor" value="<%= cat[k].cname %>"
-                                    checked onchange="get_num2(this)">
-                                <label for=" <%= cat[k].cid %>"><img src=" <%= cat[k].cpic2 %>"></label>
-                                <%}%>
+                        <br>
+                        <span> BoxColor：</span>
+                        <%for (let k=0; k <=9; k++) { %>
+                            <input type="radio" id=" <%= cat[k].cid %>" name="boxcolor" value="<%= cat[k].cname %>"
+                                checked onchange="get_num2(this)">
+                            <label for=" <%= cat[k].cid %>"><img src=" <%= cat[k].cpic2 %>"></label>
+                            <%}%>
                     </div>
                 </div>
                 <br>
@@ -291,16 +291,16 @@
                             <img class="stepbar w-75" id="imgstep1" src="/pic/customize/bag11.png">
                         </div>
                         <div class="col-lg-6 ">
-                           
-                                <br>
-                                <span> BagColor：</span>
-                                <%for (let k=10; k <=14; k++) { %>
-                                    <input type="radio" id=" <%= cat[k].cid %>" name="bagcolor"
-                                        value="<%= cat[k].cname %>" checked onchange="get_num1(this)">
-                                    <label for=" <%= cat[k].cid %>"><img src=" <%= cat[k].cpic2 %>"></label>
-                                    <%}%>
-                                        <br>
-                                        <br>
+
+                            <br>
+                            <span> BagColor：</span>
+                            <%for (let k=10; k <=14; k++) { %>
+                                <input type="radio" id=" <%= cat[k].cid %>" name="bagcolor" value="<%= cat[k].cname %>"
+                                    checked onchange="get_num1(this)">
+                                <label for=" <%= cat[k].cid %>"><img src=" <%= cat[k].cpic2 %>"></label>
+                                <%}%>
+                                    <br>
+                                    <br>
                         </div>
                     </div>
                 </div>
@@ -328,7 +328,7 @@
                 <div class="row d-flex justify-content-center align-items-center">
                     <div class="col-lg-12">
                         <blockquote contenteditable="true">
-                            <p>親愛的__＿＿＿＿:</p>
+                            <p>親愛的＿＿＿＿:</p>
                             <p>祝你情人節快樂！ 希望未來的日子裡都會有你的陪伴</p>
                             <br><br><br>
                             <p class="text-end"> 愛你的XX</p>
@@ -365,38 +365,33 @@
                             </div>
                         </div>
                         <div class="col-lg-6 ">
-                            
 
-                                <!-- 確認規格 -->
-                                <div class="count">
-                                    <form  action="/customize" method="post">
-                                        <p>Size：<input id="showsize" value="" name="csize"></input>
-                                        </p>
-                                        <p>Cookies：</p>
-                                        <p>1：<input id="showcookie1" value="" name="cc1"></input></p>
-                                        <p>2：<input id="showcookie2" value="" name="cc2"></p>
-                                        <p>3：<input id="showcookie3" value="" name="cc3"></p>
-                                        <p>4：<input id="showcookie4" value="" name="cc4"></p>
-                                        <p>Box：<input id="showboxcolor" value="" name="cbox"></p>
-                                        <p>bag：<input id="showbagcolor" value="" name="cbag"></p>
-                                        <p>Price：<input id="showmoney" value="" name="cprice"></input></p>
-                                        <span>數量：</span>
-                                        <button id="decreaseBtn" class="btn2 ">-</button>
-                                        <span id="number">1</span>
-                                        <button id="increaseBtn" class="btn2 ">+</button>
-                                        <br>
-                                        <input class="btn1 " type="submit" value="加入購物車"></input>
-                                    </form>
-                                    <!-- <form action="/mycustomize" method="post">
+
+                            <!-- 確認規格 -->
+                            <div class="count">
+                                <form action="/customize" method="post" id="customize1">
+                                    <p>Size：<input id="showsize" value="" name="csize"></input>
+                                    </p>
+                                    <p>Cookies：</p>
+                                    <p>1：<input id="showcookie1" value="" name="cc1"></input></p>
+                                    <p>2：<input id="showcookie2" value="" name="cc2"></p>
+                                    <p>3：<input id="showcookie3" value="" name="cc3"></p>
+                                    <p>4：<input id="showcookie4" value="" name="cc4"></p>
+                                    <p>Box：<input id="showboxcolor" value="" name="cbox"></p>
+                                    <p>bag：<input id="showbagcolor" value="" name="cbag"></p>
+                                    <p>Price：<input id="showmoney" value="" name="cprice"></input></p>
+                                    <span>數量：</span>
+                                    <button id="decreaseBtn" class="btn2 ">-</button>
+                                    <span id="number">1</span>
+                                    <button id="increaseBtn" class="btn2 ">+</button>
+                                    <br>
+                                    <input class="btn1 addtocart " type="submit" value="加入購物車"></input>
+                                </form>
+                                <!-- <form action="/mycustomize" method="post">
                                         <button>test</button>
                                     </form> -->
-                                </div>
-                                <br>
-                                <!-- 上面再測試先註解 -->
-                                <!-- <span>
-                                    <button class="btn1 addtocart">加入購物車</button>
-                                </span> -->
-
+                            </div>
+                            <br>
                         </div>
                     </div>
                 </div>
@@ -501,26 +496,42 @@
                     });
                 };
             }
-            //加入購物車
-            // $(document).ready(function () {
-            //     $("#addtocart").on("click", function (e) {
-            //         // alert('gg')
-            //         e.preventDefault()
-            //         var button = $(this);
-            //         var cart = $("#cart");
-            //         var cartTotal = cart.attr("data-totalitems");
-            //         var newCartTotal = parseInt(cartTotal) + 1;
+            $(document).ready(function () {
+                $("#customize1").on('submit', function (e) {
+                    e.preventDefault();
+                    let size = document.getElementById('showsize').value
+                    // let cookie1 = document.getElementById('showcookie1').value
+                    // let cookie2 = document.getElementById('showcookie2').value
+                    // let cookie3 = document.getElementById('showcookie3').value
+                    // let cookie4 = document.getElementById('showcookie4').value
+                    let showboxcolor = document.getElementById('showboxcolor').value
+                    let showbagcolor = document.getElementById('showbagcolor').value
+                    let showmoney = document.getElementById('showmoney').value
+                    // console.log(size)
+                    // console.log(showboxcolor)
+                    // console.log(showbagcolor)
+                    // console.log(showmoney)
+                    let data = {
+                        "size": size,
+                        "showboxcolor": showboxcolor,
+                        "showbagcolor": showbagcolor,
+                        
+                        "deliever_fee": "100",
+                        "order_amout": showmoney,
+                        "status": "購物車"
+                    }
+                    $.ajax({
+                        url: "http://localhost:5678/customize",
+                        method: "post",
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        // success: function(res) {
+                        //     console.log("data")
+                        // }
+                    })
+                })
+            })
 
-            //         button.addClass("sendtocart");
-            //         setTimeout(function () {
-            //             button.removeClass("sendtocart");
-            //             cart.addClass("shake").attr("data-totalitems", newCartTotal);
-            //             setTimeout(function () {
-            //                 cart.removeClass("shake");
-            //             }, 500);
-            //         }, 1000);
-            //     });
-            // });
         </script>
 
 

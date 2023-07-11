@@ -13,19 +13,23 @@
     <section class="mt-130 container-uni page-top-position">
       <div class="row-uni member_section">
         <aside class="col-12-uni col-md-3-uni col-lg-2-uni"> 
-          <div class="member_linkleft row"><a class="active" href="/member">基本資料</a><a href="/order">訂單紀錄</a></div>
+          <div class="member_linkleft row"><a href="/member">基本資料</a><a class="active" href="/order">訂單紀錄</a></div>
         </aside>
         <div class="container-uni col-12-uni col-md-9-uni col-lg-10-uni tab_content" id="">
           <form action="/order" id="oder" method="get">
             <h1>訂單</h1>
             <table>
               <tbody>
-                  <li><%= dog[i].oid %></li>
-                  <li><%= dog[i].recipient %></li>
-                  <li><%= dog[i].order_total %></li>
-                  <h1><%= dog[0] %></h1>
+                <% for( let i=0; i < member_info.length; i++){ %>
+                  <li><%= member_info[i].oid %></li>
+                  <li><%= member_info[i].recipient %></li>
+                  <li><%= member_info[i].order_total %></li>
+                  <h1><%= member_info[i].status %></h1>
+                <% } %>
+              
               </tbody>
-            </table>    
+            </table>
+          </form> 
         </div>
       </div>
     </section>
@@ -36,6 +40,6 @@
     <a class="page-top" href="#">TOP</a>
     <script src="/js/bootstrap.bundle.js"></script>
     <script src="/js/jquery-3.7.0.min.js"></script>
-    <script src="/js/script.js"> </script>
+    <script src="/js/script.js"></script>
   </body>
 </html>

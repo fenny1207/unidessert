@@ -143,6 +143,13 @@
             padding: 15px;
         }
 
+        input {
+            border: 0px;
+            outline: none;
+            background-color: #EADFD9;
+            color: #B44A60;
+        }
+
         cite {
             margin: 16px 32px;
             font-weight: bold;
@@ -151,7 +158,7 @@
         .dragging {
             opacity: 0.4;
         }
-        
+
         .hover {
             background-color: #9e7140;
         }
@@ -266,15 +273,13 @@
                         <img class="stepbar w-75" id="imgstep2" src="/pic/customize/box1.png">
                     </div>
                     <div class="col-lg-6 ">
-                        <form action="" class="">
                             <br>
                             <span> BoxColor：</span>
                             <%for (let k=0; k <=9; k++) { %>
-                                <input type="radio" id=" <%= cat[k].cid %>" name="boxcolor" checked
-                                    onchange="get_num2(this)">
+                                <input type="radio" id=" <%= cat[k].cid %>" name="boxcolor" value="<%= cat[k].cname %>"
+                                    checked onchange="get_num2(this)">
                                 <label for=" <%= cat[k].cid %>"><img src=" <%= cat[k].cpic2 %>"></label>
                                 <%}%>
-                        </form>
                     </div>
                 </div>
                 <br>
@@ -286,12 +291,12 @@
                             <img class="stepbar w-75" id="imgstep1" src="/pic/customize/bag11.png">
                         </div>
                         <div class="col-lg-6 ">
-                            <form action="" class="">
+                           
                                 <br>
                                 <span> BagColor：</span>
                                 <%for (let k=10; k <=14; k++) { %>
-                                    <input type="radio" id=" <%= cat[k].cid %>" name="bagcolor" checked
-                                        onchange="get_num1(this)">
+                                    <input type="radio" id=" <%= cat[k].cid %>" name="bagcolor"
+                                        value="<%= cat[k].cname %>" checked onchange="get_num1(this)">
                                     <label for=" <%= cat[k].cid %>"><img src=" <%= cat[k].cpic2 %>"></label>
                                     <%}%>
                                         <br>
@@ -343,7 +348,7 @@
                 <hr class="p-2">
             </div>
             <div id="step4"></div>
-            <div class="homeblock2 "></div>
+            <div class="homeblock2"></div>
             <!-- 步驟4 -->
             <div>
                 <div class="container stepdiv">
@@ -360,29 +365,38 @@
                             </div>
                         </div>
                         <div class="col-lg-6 ">
-                            <form action="" class="">
+                            
 
-                                <!-- 選數量 -->
+                                <!-- 確認規格 -->
                                 <div class="count">
-                                    <form action="" method="">
-                                        <p>Size：<span id="showsize"></span>
+                                    <form  action="/customize" method="post">
+                                        <p>Size：<input id="showsize" value="" name="csize"></input>
                                         </p>
                                         <p>Cookies：</p>
-                                        <p>1:<span></span></p>
-                                        <p>價格：<span id="showmoney"></span></p>
+                                        <p>1：<input id="showcookie1" value="" name="cc1"></input></p>
+                                        <p>2：<input id="showcookie2" value="" name="cc2"></p>
+                                        <p>3：<input id="showcookie3" value="" name="cc3"></p>
+                                        <p>4：<input id="showcookie4" value="" name="cc4"></p>
+                                        <p>Box：<input id="showboxcolor" value="" name="cbox"></p>
+                                        <p>bag：<input id="showbagcolor" value="" name="cbag"></p>
+                                        <p>Price：<input id="showmoney" value="" name="cprice"></input></p>
+                                        <span>數量：</span>
+                                        <button id="decreaseBtn" class="btn2 ">-</button>
+                                        <span id="number">1</span>
+                                        <button id="increaseBtn" class="btn2 ">+</button>
+                                        <br>
+                                        <input class="btn1 " type="submit" value="加入購物車"></input>
                                     </form>
-
-                                    <span>數量：</span>
-                                    <button id="decreaseBtn" class="btn2 ">-</button>
-                                    <span id="number">1</span>
-                                    <button id="increaseBtn" class="btn2 ">+</button>
-
+                                    <!-- <form action="/mycustomize" method="post">
+                                        <button>test</button>
+                                    </form> -->
                                 </div>
                                 <br>
+                                <!-- 上面再測試先註解 -->
+                                <!-- <span>
+                                    <button class="btn1 addtocart">加入購物車</button>
+                                </span> -->
 
-                                <span>
-                                    <button id="addtocart" class="btn1">加入購物車</button>
-                                </span>
                         </div>
                     </div>
                 </div>
@@ -391,41 +405,22 @@
                 <!-- 這邊是最後的結束標籤 -->
         </div>
         <script>
-            // alert('<%= cat[4].cname %>')
-            // $(document).ready(function () {
-            //     $("#addtocart").on("click", function () {
-
-            //         var button = $(this);
-            //         var cart = $("#cart");
-            //         var cartTotal = cart.attr("data-totalitems");
-            //         var newCartTotal = parseInt(cartTotal) + 1;
-
-            //         button.addClass("sendtocart");
-            //         setTimeout(function () {
-            //             button.removeClass("sendtocart");
-            //             cart.addClass("shake").attr("data-totalitems", newCartTotal);
-            //             setTimeout(function () {
-            //                 cart.removeClass("shake");
-            //             }, 500);
-            //         }, 1000);
-            //     });
-            // });
-
 
             // 更換紙袋顏色
             function get_num1(item) {
                 var bagimg = document.getElementById(item.id);
-                console.log('這是bagimg'+bagimg.id);
+                console.log('這是bagimg' + bagimg.id);
                 document.getElementById('imgstep1').src = "/pic/customize/bag" + parseInt(bagimg.id) + ".png";
                 document.getElementById('showbag').src = "/pic/customize/bag" + parseInt(bagimg.id) + ".png";
-
+                document.getElementById("showbagcolor").value = bagimg.value;
             }
             // 更換盒子顏色
             function get_num2(item) {
                 var boximg = document.getElementById(item.id);
-                console.log(boximg.id);
+                console.log(boximg);
                 document.getElementById('imgstep2').src = "/pic/customize/box" + parseInt(boximg.id) + ".png";
                 document.getElementById('showbox').src = "/pic/customize/box" + parseInt(boximg.id) + ".png";
+                document.getElementById("showboxcolor").value = boximg.value;
             }
 
             // 步驟4的數量加減
@@ -456,14 +451,16 @@
                 document.getElementById("box_41").style.display = "none";
                 //Show the Selected Tab
                 document.getElementById("box_" + hideitem.id).style.display = "grid";
-                document.getElementById("showsize").textContent = hideitem.value;
-                document.getElementById("showmoney").textContent = "$" + hideitem.classList;
+                document.getElementById("showsize").value = hideitem.value;
+                document.getElementById("showmoney").value = "$" + hideitem.classList;
             }
+
+
             // 餅乾放置盒子的功能
             // 滑鼠按下同時加上包裝以及變大v
             function fun1(item) {
                 var drag_img = document.getElementById(item.id);
-                console.log('這是drag'+drag_img.id )
+                console.log('這是drag' + drag_img.id)
                 //這裡有抓到資料庫的id
                 if (item.src.length <= 47) {
                     drag_img.src = `${item.src.slice(0, 41) + ".png"}`
@@ -478,7 +475,7 @@
                     drag_img.classList.add("drag_img_for_box4");
                 }
                 let source = null;
-                
+
                 drag_img.addEventListener("dragstart", (e) => {
                     // 抓取位置座標 --> 移到中間
                     console.log("這是e" + e);
@@ -493,7 +490,7 @@
                     });
                     containers.addEventListener("drop", (e) => {
                         e.target.appendChild(source);
-                        console.log("123"+e.target);
+                        console.log("123" + e.target);
                         e.target.classList.remove("dragging");
                     });
                     containers.addEventListener("dragenter", (e) => {
@@ -504,6 +501,26 @@
                     });
                 };
             }
+            //加入購物車
+            // $(document).ready(function () {
+            //     $("#addtocart").on("click", function (e) {
+            //         // alert('gg')
+            //         e.preventDefault()
+            //         var button = $(this);
+            //         var cart = $("#cart");
+            //         var cartTotal = cart.attr("data-totalitems");
+            //         var newCartTotal = parseInt(cartTotal) + 1;
+
+            //         button.addClass("sendtocart");
+            //         setTimeout(function () {
+            //             button.removeClass("sendtocart");
+            //             cart.addClass("shake").attr("data-totalitems", newCartTotal);
+            //             setTimeout(function () {
+            //                 cart.removeClass("shake");
+            //             }, 500);
+            //         }, 1000);
+            //     });
+            // });
         </script>
 
 

@@ -43,6 +43,9 @@
         .homeblock2 {
             margin-top: 100px;
         }
+        .homeblock3 {
+            margin-top: 50px;
+        }
 
         /* 整個body都同樣背景色 同樣字體*/
         .allcontent {
@@ -348,7 +351,7 @@
                 <hr class="p-2">
             </div>
             <div id="step4"></div>
-            <div class="homeblock2"></div>
+            <div class="homeblock3"></div>
             <!-- 步驟4 -->
             <div>
                 <div class="container stepdiv">
@@ -384,7 +387,8 @@
                                     <button id="decreaseBtn" class="btn2 ">-</button>
                                     <span id="number">1</span>
                                     <button id="increaseBtn" class="btn2 ">+</button>
-                                    <br>
+                                    
+                                    <div class="homeblock3"></div>
                                     <input class="btn1 addtocart " type="submit" value="加入購物車"></input>
                                 </form>
                                 <!-- <form action="/mycustomize" method="post">
@@ -404,7 +408,7 @@
             // 更換紙袋顏色
             function get_num1(item) {
                 var bagimg = document.getElementById(item.id);
-                console.log('這是bagimg' + bagimg.id);
+                // console.log('這是bagimg' + bagimg.id);
                 document.getElementById('imgstep1').src = "/pic/customize/bag" + parseInt(bagimg.id) + ".png";
                 document.getElementById('showbag').src = "/pic/customize/bag" + parseInt(bagimg.id) + ".png";
                 document.getElementById("showbagcolor").value = bagimg.value;
@@ -412,7 +416,7 @@
             // 更換盒子顏色
             function get_num2(item) {
                 var boximg = document.getElementById(item.id);
-                console.log(boximg);
+                // console.log(boximg);
                 document.getElementById('imgstep2').src = "/pic/customize/box" + parseInt(boximg.id) + ".png";
                 document.getElementById('showbox').src = "/pic/customize/box" + parseInt(boximg.id) + ".png";
                 document.getElementById("showboxcolor").value = boximg.value;
@@ -515,9 +519,9 @@
                         "size": size,
                         "showboxcolor": showboxcolor,
                         "showbagcolor": showbagcolor,
-                        
                         "deliever_fee": "100",
                         "order_amout": showmoney,
+                        "quantity": 1,
                         "status": "購物車"
                     }
                     $.ajax({

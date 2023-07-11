@@ -1033,7 +1033,7 @@ footer .container-uni-footer .row-nowrap dd a img {
 }
 
 .tab_content {
-  display: none;
+  /* display: none; */
   background-color: #fff;
   border-radius: 8px;
   /* height: 400px; */

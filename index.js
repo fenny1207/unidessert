@@ -68,11 +68,11 @@ app.get('/customize',function(req,res){
 });
 app.post('/customize',function(req,res){
     // res.send('success');
-    var insert = "INSERT INTO c_detail2 ( size , boxcolor) VALUES (?, ?);";
-    var userInput = [req.body.size, req.body.showboxcolor];
-    // console.log(insert);
+    var insertc = "INSERT INTO c_detail2 ( size , boxcolor ,bagcolor,quantity,cprice) VALUES (?, ?,?,?,?);";
+    var userInput = [req.body.size, req.body.showboxcolor,req.body.showbagcolor,req.body.quantity,req.body.order_amout];
+    // console.log(insertc);
     // console.log(userInput);
-    conn.query(insert, userInput, function (err, data) {
+    conn.query(insertc, userInput, function (err, data) {
         if (err) {
             res.send('無法新增')
         } 

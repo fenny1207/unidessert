@@ -3,12 +3,12 @@ $(document).ready(function () {
         target_id = e.target.id.substr(18)
         // 抓取第幾個產品傳入後端，依第幾個產品去SELECT後取值[i]再INSERT INTO進資料庫
         // e.preventDefault();
-        let amount = 1
+        let quantity = 1
         // console.log(p_name)
         // console.log(p_price)
         let data = {
                 "uid": target_id,
-                "amount": amount
+                "quantity": quantity
             }
         $.post({
             url: "http://localhost:5678/product/single",

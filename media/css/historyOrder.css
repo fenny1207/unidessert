@@ -10,11 +10,18 @@
         margin-right: auto;
     }
 
+    .fz-3r{
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #702F43;
+        /* background-color: #F0C7CD; */
+    }
     .topic {
         font-size: 2rem;
         font-weight: bold;
+        color: #B44A60;
+        background-color: #F0C7CD;
     }
-
     .finish {
         text-align: center;
         margin-top: 20px;
@@ -42,6 +49,7 @@
         align-items: center;
         /* background-color: #f2f2f2; */
         font-weight: bold;
+        padding: 10px;
         font-size: 2rem;
         border-bottom: 1px solid #ddd;
     }
@@ -62,7 +70,12 @@
         text-align: left;
         font-size: 1.5rem;
     }
-
+    .p-10{
+        padding: 10px;
+    }
+    .m-10{
+        margin: 10px 0px;
+    }
     .item>button {
         border: none;
     }

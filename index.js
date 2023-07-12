@@ -69,8 +69,18 @@ app.get('/customize',function(req,res){
 });
 app.post('/customize',function(req,res){
     // res.send('success');
-    var insertc = "INSERT INTO c_detail2 ( size , boxcolor ,bagcolor,quantity,cprice) VALUES (?, ?,?,?,?);";
-    var userInput = [req.body.size, req.body.showboxcolor,req.body.showbagcolor,req.body.quantity,req.body.order_amout];
+    var insertc = "INSERT INTO c_detail2 ( size ,cookie1,cookie2,cookie3,cookie4, boxcolor ,bagcolor,cardcontent,quantity,cprice) VALUES (?,?,?,?,?,?,?,?,?,?);";
+    var userInput = [
+        req.body.size,
+         req.body.showcookie1, 
+         req.body.showcookie2,
+         req.body.showcookie3,
+         req.body.showcookie4,
+         req.body.showboxcolor,
+         req.body.showbagcolor,
+         req.body.showcard,
+         req.body.quantity,
+         req.body.order_amout];
     // console.log(insertc);
     // console.log(userInput);
     conn.query(insertc, userInput, function (err, data) {

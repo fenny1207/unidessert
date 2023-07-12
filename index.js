@@ -186,7 +186,7 @@ app.post('/login', (req, res) => {
         res.render('user', { error: true, showAlert: false,title:"登入失敗", message: '密碼輸入錯誤' });
         
       } else {
-        res.render('user', { error: false, showAlert: true,title:"登入成功", message: '歡迎回來' });
+        res.render('member', { error: false, showAlert: true,title:"登入成功", message: '歡迎回來' });
       }
     });
 });
@@ -203,7 +203,7 @@ app.get("/order", (req, res) => {
         member_info = data;
         console.log(member_info[0].oid);
         console.log(member_info[0]);
-        res.render('member.ejs', {
+        res.render('order.ejs', {
             member_info: member_info
         })
     // if (!err) {
@@ -223,7 +223,7 @@ app.get("/order", (req, res) => {
 
 
 app.get('/member',function(req,res){
-    res.render('member2.ejs');
+    res.render('member.ejs');
 })
 app.post('/memberUser',(req,res) => {
     const { name, email, mobile,birth} = req.body;

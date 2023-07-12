@@ -1,4 +1,4 @@
-@import '_nav_footer';
+@import 'nav_footer';
 
 .mt-130{
     padding-top: 200px;
@@ -10,14 +10,14 @@
     display: flex;
 }
 .member_link_border_left{
-    border-radius: 8px 0px 0px 8px;
+    border-radius: 8px 8px 0px 0px;
 }
 .member_link_border_right{
     border-radius: 0px 8px 8px 0px;
 }
 .member_link>a{
     text-decoration: none;
-    width: 50%;
+    width: 100%;
     // margin:1%;
     line-height: 40px;
     color:#fff;
@@ -84,10 +84,10 @@
     border-radius: 4px;
 }
 .tab_content{
-    display: none;
+    // display: none;
     background-color:#fff;
     border-radius: 8px;
-    height: 400px;
+    // height: 400px;
 }
 .tab_content.active{
     display: block;

@@ -330,9 +330,22 @@ nav{
     padding: 10px 18px;
     border: none;
     border-radius: 8px;
+    font-size: $font-h2;
     font-weight: 400;
     background-color: $primary-color;
   }
+  .signout_btn2 {
+    color: $write-color;
+    font-family: 'Noto Sans TC', sans-serif; 
+    border: none;
+    border-radius: 8px;
+    font-size: $font-h2;
+    font-weight: 400;
+    padding: 0;
+    background-color: $primary-color;
+  }
+  
+
 
   /* Center the image and position the close button */
   .imgcontainer {

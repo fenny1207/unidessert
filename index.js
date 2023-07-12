@@ -89,9 +89,7 @@ app.post('/customize',function(req,res){
         } 
     })
 })
-app.get('/historyOrder',(req,res) => {
-    res.render('historyOrder.ejs');
-})
+
 app.get('/product',function(req,res){
     var p_info
     conn.query('SELECT pd_name, p_price, p_pic FROM product where p_type="set"', (err, results) => {
@@ -221,9 +219,7 @@ app.get("/order", (req, res) => {
             member_info: data,
         })
   });
-});
-
-app.post("/order", (req, res) => {
+}).post("/order", (req, res) => {
     const { oid, order_date, order_total } = req.body;
     var sql = "SELECT * FROM orderlist WHERE oid = ? and DATE(order_date) = ? and order_total =? ";
     // var sql = "select * from orderlist ";
@@ -235,9 +231,26 @@ app.post("/order", (req, res) => {
         }
   });
 });
+// SELECT user.uid, orderlist.oid,orderlist.order_total,orderlist.order_date,orderlist.payment_type FROM user LEFT JOIN orderlist ON user.uid=orderlist.uid;
+app.get('/order/historyOrder',(req,res) => {
+    const sql ='SELECT user.uid, orderlist.oid,orderlist.order_total,orderlist.order_date,orderlist.payment_type FROM user LEFT JOIN orderlist ON user.uid=orderlist.uid;'
+    conn.query(sql,(err,data) => {
+        if (err) res.send("訂單資料失敗");
+        res.render('historyOrder.ejs', {
+            member_info: data,
+            });
+    })
+}).post('/order/historyOrder',(req,res) => {
+    // const {} = ;
+    const sql ='';
+    conn.query(sql,)
+})
 
 app.get('/member',function(req,res){
     res.render('member.ejs');
+})
+app.get('/cart',function(req,res){
+    res.render('order2.ejs');
 })
 app.post('/memberUser',(req,res) => {
     const { name, email, mobile,birth} = req.body;

@@ -16,19 +16,17 @@
           <div class="member_linkleft row"><a href="/member">基本資料</a><a class="active" href="/order">訂單紀錄</a></div>
         </aside>
         <div class="container-uni col-12-uni col-md-9-uni col-lg-10-uni tab_content" id="">
-          <form action="/order" id="oder" method="get">
-            <h1>訂單</h1>
-            <table>
-              <tbody>
-                <% for( let i=0; i < member_info.length; i++){ %>
-                  <li>訂單編號: <%= member_info[i].oid %></li>
-                  <li>訂購日期: <%= member_info[i].order_total %></li>
-                  <li>訂購金額: <%= member_info[i].order_total %></li>
-                  <h1><%= member_info[i].status %></h1>
-                <% } %>
-              </tbody>
-            </table>
-          </form> 
+          <div class="member_link mb-2-uni"><a class="active member_link_border_left" href="/member">歷史訂單</a></div>
+            <form action="/order" id="oder" method="get">
+              <table>
+                <tbody>
+                    <li>訂單編號: <%= member_info[1].oid %></li>
+                    <li>訂購日期: <%= member_info[1].order_date %></li>
+                    <li>訂購金額: <%= member_info[1].order_total %></li>
+                    <button><a href="/order/historyOrder">訂單詳細</a></button>
+                </tbody>
+              </table>
+            </form> 
         </div>
       </div>
     </section>

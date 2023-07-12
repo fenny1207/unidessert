@@ -59,7 +59,7 @@ app.get('/',function(req,res){
 app.get('/customize',function(req,res){
     conn.query( `SELECT * FROM customize `,
     function(err,bee){
-        console.log(bee);
+        // console.log(bee);
         //回傳網頁給使用者
         res.render('customize.ejs',{
             cat:bee

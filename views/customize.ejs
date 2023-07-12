@@ -43,6 +43,7 @@
         .homeblock2 {
             margin-top: 100px;
         }
+
         .homeblock3 {
             margin-top: 50px;
         }
@@ -203,12 +204,12 @@
                 <hr class="p-2">
             </div>
             <div class="container stepdiv">
-                <div class="row d-flex justify-content-center align-items-center">
+                <div class="row d-flex justify-content-center align-items-center" id="box_container">
                     <div id="box_40" class="col-lg-6 box4">
-                        <div id="box1" class="seldessert4 box"></div>
-                        <div class="seldessert4 box"></div>
-                        <div class="seldessert4 box"></div>
-                        <div class="seldessert4 box"></div>
+                        <div class="seldessert4" id="containers_leftTop"></div>
+                        <div class="seldessert4" id="containers_rightTop"></div>
+                        <div class="seldessert4" id="containers_leftBottom"></div>
+                        <div class="seldessert4" id="containers_rightBottom"></div>
                     </div>
 
                     <div id="box_41" class="col-lg-6 box9">
@@ -294,7 +295,7 @@
                             <img class="stepbar w-75" id="imgstep1" src="/pic/customize/bag11.png">
                         </div>
                         <div class="col-lg-6 ">
-
+                            `
                             <br>
                             <span> BagColor：</span>
                             <%for (let k=10; k <=14; k++) { %>
@@ -387,7 +388,7 @@
                                     <button id="decreaseBtn" class="btn2 ">-</button>
                                     <span id="number">1</span>
                                     <button id="increaseBtn" class="btn2 ">+</button>
-                                    
+
                                     <div class="homeblock3"></div>
                                     <input class="btn1 addtocart " type="submit" value="加入購物車"></input>
                                 </form>
@@ -459,7 +460,7 @@
             // 滑鼠按下同時加上包裝以及變大v
             function fun1(item) {
                 var drag_img = document.getElementById(item.id);
-                console.log('這是drag' + drag_img.id)
+                // console.log('這是drag' + drag_img.id)    
                 //這裡有抓到資料庫的id
                 if (item.src.length <= 47) {
                     drag_img.src = `${item.src.slice(0, 41) + ".png"}`
@@ -473,33 +474,94 @@
                 } else {
                     drag_img.classList.add("drag_img_for_box4");
                 }
+                
                 let source = null;
-
                 drag_img.addEventListener("dragstart", (e) => {
                     // 抓取位置座標 --> 移到中間
-                    console.log("這是e" + e);
                     e.dataTransfer.setDragImage(drag_img, 120, 130);
                     e.target.classList.add("dragging");
                     source = e.target;
+                    // console.log(e.target)
                 });
-                const containers = document.querySelector("#box1");
-                (containers) => {
-                    containers.addEventListener("dragover", (e) => {
-                        e.preventDefault();
-                    });
-                    containers.addEventListener("drop", (e) => {
+                drag_img.addEventListener("dragend", (e) => {
+                    e.target.classList.remove("dragging");
+                    source = null;
+                });
+                // ======================
+                // containers_leftTop
+                const containers_leftTop = document.querySelector("#containers_leftTop");
+                containers_leftTop.addEventListener("dragover", (e) => {
+                    e.preventDefault()
+                });
+                containers_leftTop.addEventListener("drop", (e) => {
+
+                        console.log("box detect");
                         e.target.appendChild(source);
-                        console.log("123" + e.target);
                         e.target.classList.remove("dragging");
-                    });
-                    containers.addEventListener("dragenter", (e) => {
-                        e.target.classList.add("hover");
-                    });
-                    containers.addEventListener("dragleave", (e) => {
-                        e.target.classList.remove("hover");
-                    });
-                };
+
+                });
+                containers_leftTop.addEventListener("dragenter", (e) => {
+                    e.target.classList.add("hover");
+                });
+                containers_leftTop.addEventListener("dragleave", (e) => {
+                    e.target.classList.remove("hover");
+                });
+                // =================
+                // containers_rightTop
+                const containers_rightTop = document.querySelector("#containers_rightTop");
+                containers_rightTop.addEventListener("dragover", (e) => {
+                    e.preventDefault()
+                });
+                containers_rightTop.addEventListener("drop", (e) => {
+
+                    console.log("box detect2");
+                    e.target.appendChild(source);
+                    e.target.classList.remove("dragging");
+                });
+                containers_rightTop.addEventListener("dragenter", (e) => {
+                    e.target.classList.add("hover");
+                });
+                containers_rightTop.addEventListener("dragleave", (e) => {
+                    e.target.classList.remove("hover");
+                });
+                // =================
+                // containers_leftBottom
+                const containers_leftBottom = document.querySelector("#containers_leftBottom");
+                containers_leftBottom.addEventListener("dragover", (e) => {
+                    e.preventDefault()
+                });
+                containers_leftBottom.addEventListener("drop", (e) => {
+                   
+                    console.log("box detect3");
+                    e.target.appendChild(source);
+                    e.target.classList.remove("dragging");
+                });
+                containers_leftBottom.addEventListener("dragenter", (e) => {
+                    e.target.classList.add("hover");
+                });
+                containers_leftBottom.addEventListener("dragleave", (e) => {
+                    e.target.classList.remove("hover");
+                });
+                // =================
+                // containers_leftBottom
+                const containers_rightBottom = document.querySelector("#containers_rightBottom");
+                containers_rightBottom.addEventListener("dragover", (e) => {
+                    e.preventDefault()
+                });
+                containers_rightBottom.addEventListener("drop", (e) => {
+                    
+                    console.log("box detect4");
+                    e.target.appendChild(source);
+                    e.target.classList.remove("dragging");
+                });
+                containers_rightBottom.addEventListener("dragenter", (e) => {
+                    e.target.classList.add("hover");
+                });
+                containers_rightBottom.addEventListener("dragleave", (e) => {
+                    e.target.classList.remove("hover");
+                });
             }
+
             $(document).ready(function () {
                 $("#customize1").on('submit', function (e) {
                     e.preventDefault();

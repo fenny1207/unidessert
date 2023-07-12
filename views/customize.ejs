@@ -252,14 +252,9 @@
                             <br>
                             <div id="c_cookieimg_container">
                                 <%for (let k=15; k < 39; k++) { %>
-<<<<<<< HEAD
-                                    <img class="cookies" src="<%= cat[k].cpic2 %>" draggable="true"
-                                        id="<%= cat[k].cid %>" onmousedown="">
-=======
                                     <img class="cookies <%= cat[k].cname %>" src="<%= cat[k].cpic2 %>" draggable="true"
                                         type="<%= cat[k].cname %>" id="<%= cat[k].cid %>" onmousedown=""
                                         value="<%= cat[k].cname %>">
->>>>>>> 用好了吧
                                     <%}%>
 
                             </div>
@@ -502,12 +497,8 @@
                     e.dataTransfer.setDragImage(drag_img, 120, 130);
                     e.target.classList.add("dragging");
                     // source = e.target;
-<<<<<<< HEAD
-                    // console.log(e.target)
-=======
                     // console.log("11",e.target)
                     // document.getElementById("showcookie1").value = e.target.value;
->>>>>>> 用好了吧
                 });
                 drag_img.addEventListener("dragend", (e) => {
                     e.target.classList.remove("dragging");
@@ -520,13 +511,9 @@
                 containers_leftTop.addEventListener("drop", (e) => {
                     if (!containers_leftTop.innerHTML) {
                         e.target.appendChild(drag_img);
-<<<<<<< HEAD
-                        e.target.classList.remove("dragging");
-=======
                         // console.log(e.target.querySelector('img').classList[1])
                         document.getElementById("showcookie1").value = (e.target.querySelector('img').classList[1]);
                         e.target.classList.remove("dragging")
->>>>>>> 用好了吧
                     } else {
                         return
                     }
@@ -548,10 +535,7 @@
                 containers_rightTop.addEventListener("drop", (e) => {
                     if (!containers_rightTop.innerHTML) {
                         e.target.appendChild(drag_img);
-<<<<<<< HEAD
-=======
                         document.getElementById("showcookie2").value = (e.target.querySelector('img').classList[1]);
->>>>>>> 用好了吧
                         e.target.classList.remove("dragging");
                     } else {
                         return
@@ -572,10 +556,7 @@
                 containers_leftBottom.addEventListener("drop", (e) => {
                     if (!containers_leftBottom.innerHTML) {
                         e.target.appendChild(drag_img);
-<<<<<<< HEAD
-=======
                         document.getElementById("showcookie3").value = (e.target.querySelector('img').classList[1]);
->>>>>>> 用好了吧
                         e.target.classList.remove("dragging");
                     } else {
                         return
@@ -595,10 +576,7 @@
                 containers_rightBottom.addEventListener("drop", (e) => {
                     if (!containers_rightBottom.innerHTML) {
                         e.target.appendChild(drag_img);
-<<<<<<< HEAD
-=======
                         document.getElementById("showcookie4").value = (e.target.querySelector('img').classList[1]);
->>>>>>> 用好了吧
                         e.target.classList.remove("dragging");
                     } else {
                         return
@@ -612,8 +590,6 @@
                 });
 
             })
-<<<<<<< HEAD
-=======
             $(document).ready(function () {
                 
                 $("#cardsection").on('submit', function (e) {
@@ -631,7 +607,6 @@
             //     });
             // });
             
->>>>>>> 用好了吧
 
             $(document).ready(function () {
                 $("#customize1").on('submit', function (e) {

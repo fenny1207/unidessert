@@ -18,14 +18,12 @@
         <div class="container-uni col-12-uni col-md-9-uni col-lg-10-uni tab_content" id="">
           <div class="member_link mb-2-uni"><a class="active member_link_border_left" href="/member">歷史訂單</a></div>
             <form action="/order" id="oder" method="get">
-              <table>
-                <tbody>
-                    <li>訂單編號: <%= member_info[1].oid %></li>
-                    <li>訂購日期: <%= member_info[1].order_date %></li>
-                    <li>訂購金額: <%= member_info[1].order_total %></li>
-                    <button><a href="/order/historyOrder">訂單詳細</a></button>
-                </tbody>
-              </table>
+              <ul class="">
+                  <li>訂單編號: <%= member_info[1].oid %></li>
+                  <li>訂購日期: <%= member_info[1].order_date %></li>
+                  <li>訂購金額: <%= member_info[1].order_total %></li>
+                  <button><a href="/order/historyOrder">訂單詳細</a></button>
+              </ul>
             </form> 
         </div>
       </div>

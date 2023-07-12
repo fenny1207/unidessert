@@ -154,6 +154,13 @@
             color: #B44A60;
         }
 
+        textarea {
+            height: 500px;
+            color: #B44A60;
+            border: 0px;
+
+        }
+
         cite {
             margin: 16px 32px;
             font-weight: bold;
@@ -228,7 +235,7 @@
                             <!-- 選大小 -->
                             <span> Size：</span>
 
-                            <input onclick="hide(this)" type="radio" id="<%= cat[39].cid %>" name="boxsize"
+                            <input  onclick="hide(this)" type="radio" id="<%= cat[39].cid %>" name="boxsize"
                                 value="<%= cat[39].cname %> " class="<%= cat[39].cprice %>">
                             <label for="<%= cat[39].cid %>"><span>$<%= cat[39].cprice %></span><img
                                     src="<%= cat[39].cpic %>"></label>
@@ -245,8 +252,14 @@
                             <br>
                             <div id="c_cookieimg_container">
                                 <%for (let k=15; k < 39; k++) { %>
+<<<<<<< HEAD
                                     <img class="cookies" src="<%= cat[k].cpic2 %>" draggable="true"
                                         id="<%= cat[k].cid %>" onmousedown="">
+=======
+                                    <img class="cookies <%= cat[k].cname %>" src="<%= cat[k].cpic2 %>" draggable="true"
+                                        type="<%= cat[k].cname %>" id="<%= cat[k].cid %>" onmousedown=""
+                                        value="<%= cat[k].cname %>">
+>>>>>>> 用好了吧
                                     <%}%>
 
                             </div>
@@ -336,12 +349,18 @@
             <div class="container stepdiv">
                 <div class="row d-flex justify-content-center align-items-center">
                     <div class="col-lg-12">
-                        <blockquote contenteditable="true">
+                        <!-- <blockquote contenteditable="true">
                             <p>親愛的＿＿＿＿:</p>
                             <p>祝你情人節快樂！ 希望未來的日子裡都會有你的陪伴</p>
                             <br><br><br>
                             <p class="text-end"> 愛你的XX</p>
-                        </blockquote>
+                        </blockquote> -->
+                        <form action="" id="cardsection">
+                            <!-- <input type="text"id="cardsection"> -->
+                            <textarea rows="10" cols="80" id="cardtext" placeholder="請輸入卡片內容" value=""></textarea>
+                            <input type="submit" value="完成" id="cardbtn">
+                        </form>
+
                     </div>
                 </div>
             </div>
@@ -388,6 +407,7 @@
                                     <p>4：<input id="showcookie4" value="" name="cc4"></p>
                                     <p>Box：<input id="showboxcolor" value="" name="cbox"></p>
                                     <p>bag：<input id="showbagcolor" value="" name="cbag"></p>
+                                    <p>Card：<input id="showcard" value="" name="card"></p>
                                     <p>Price：<input id="showmoney" value="" name="cprice"></input></p>
                                     <span>數量：</span>
                                     <button id="decreaseBtn" class="btn2 ">-</button>
@@ -482,7 +502,12 @@
                     e.dataTransfer.setDragImage(drag_img, 120, 130);
                     e.target.classList.add("dragging");
                     // source = e.target;
+<<<<<<< HEAD
                     // console.log(e.target)
+=======
+                    // console.log("11",e.target)
+                    // document.getElementById("showcookie1").value = e.target.value;
+>>>>>>> 用好了吧
                 });
                 drag_img.addEventListener("dragend", (e) => {
                     e.target.classList.remove("dragging");
@@ -495,7 +520,13 @@
                 containers_leftTop.addEventListener("drop", (e) => {
                     if (!containers_leftTop.innerHTML) {
                         e.target.appendChild(drag_img);
+<<<<<<< HEAD
                         e.target.classList.remove("dragging");
+=======
+                        // console.log(e.target.querySelector('img').classList[1])
+                        document.getElementById("showcookie1").value = (e.target.querySelector('img').classList[1]);
+                        e.target.classList.remove("dragging")
+>>>>>>> 用好了吧
                     } else {
                         return
                     }
@@ -507,6 +538,7 @@
                 });
                 containers_leftTop.addEventListener("dragleave", (e) => {
                     e.target.classList.remove("hover");
+
                 });
                 // =================
                 const containers_rightTop = document.querySelector("#containers_rightTop");
@@ -516,6 +548,10 @@
                 containers_rightTop.addEventListener("drop", (e) => {
                     if (!containers_rightTop.innerHTML) {
                         e.target.appendChild(drag_img);
+<<<<<<< HEAD
+=======
+                        document.getElementById("showcookie2").value = (e.target.querySelector('img').classList[1]);
+>>>>>>> 用好了吧
                         e.target.classList.remove("dragging");
                     } else {
                         return
@@ -526,6 +562,7 @@
                 });
                 containers_rightTop.addEventListener("dragleave", (e) => {
                     e.target.classList.remove("hover");
+
                 });
                 // =================
                 const containers_leftBottom = document.querySelector("#containers_leftBottom");
@@ -535,6 +572,10 @@
                 containers_leftBottom.addEventListener("drop", (e) => {
                     if (!containers_leftBottom.innerHTML) {
                         e.target.appendChild(drag_img);
+<<<<<<< HEAD
+=======
+                        document.getElementById("showcookie3").value = (e.target.querySelector('img').classList[1]);
+>>>>>>> 用好了吧
                         e.target.classList.remove("dragging");
                     } else {
                         return
@@ -554,6 +595,10 @@
                 containers_rightBottom.addEventListener("drop", (e) => {
                     if (!containers_rightBottom.innerHTML) {
                         e.target.appendChild(drag_img);
+<<<<<<< HEAD
+=======
+                        document.getElementById("showcookie4").value = (e.target.querySelector('img').classList[1]);
+>>>>>>> 用好了吧
                         e.target.classList.remove("dragging");
                     } else {
                         return
@@ -567,27 +612,53 @@
                 });
 
             })
+<<<<<<< HEAD
+=======
+            $(document).ready(function () {
+                
+                $("#cardsection").on('submit', function (e) {
+                    var text = document.getElementById('cardtext').value
+                    // console.log(e)
+                    // console.log("這是text");
+                    console.log(text);
+                    document.getElementById("showcard").value = text;
+                })
+            })
+            // $(function () {
+            //     $('#cardbtn').click(function () {
+            //         // console.log("lll")
+            //         $('#showcard').value($('#cardtext').val());
+            //     });
+            // });
+            
+>>>>>>> 用好了吧
 
             $(document).ready(function () {
                 $("#customize1").on('submit', function (e) {
                     e.preventDefault();
                     let size = document.getElementById('showsize').value
-                    // let cookie1 = document.getElementById('showcookie1').value
-                    // let cookie2 = document.getElementById('showcookie2').value
-                    // let cookie3 = document.getElementById('showcookie3').value
-                    // let cookie4 = document.getElementById('showcookie4').value
+                    let cookie1 = document.getElementById('showcookie1').value
+                    let cookie2 = document.getElementById('showcookie2').value
+                    let cookie3 = document.getElementById('showcookie3').value
+                    let cookie4 = document.getElementById('showcookie4').value
                     let showboxcolor = document.getElementById('showboxcolor').value
                     let showbagcolor = document.getElementById('showbagcolor').value
+                    let showcard = document.getElementById('showcard').value
                     let showmoney = document.getElementById('showmoney').value
                     // console.log(size)
-                    // console.log(showboxcolor)
+                    // console.log(cookie1)
                     // console.log(showbagcolor)
                     // console.log(showmoney)
                     let data = {
                         "size": size,
+                        "showcookie1": cookie1,
+                        "showcookie2": cookie2,
+                        "showcookie3": cookie3,
+                        "showcookie4": cookie4,
                         "showboxcolor": showboxcolor,
                         "showbagcolor": showbagcolor,
                         "deliever_fee": "100",
+                        "showcard": showcard,
                         "order_amout": showmoney,
                         "quantity": 1,
                         "status": "購物車"

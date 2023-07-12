@@ -243,10 +243,15 @@
                             <!-- 內容物 -->
                             <span> Cookies：</span>
                             <br>
-                            <%for (let k=15; k < 39; k++) { %>
-                                <img class="cookies" src="<%= cat[k].cpic2 %>" draggable="true" id="<%= cat[k].cid %>"
-                                    onmousedown="fun1(this)">
-                                <%}%>
+                            <div id="c_cookieimg_container">
+                                <%for (let k=15; k < 39; k++) { %>
+                                    <img class="cookies" src="<%= cat[k].cpic2 %>" draggable="true"
+                                        id="<%= cat[k].cid %>" onmousedown="">
+                                    <%}%>
+
+                            </div>
+                            <!-- <img class="cookies" src="pic/customize/cake1-2.jpg" draggable="true" id="15"
+                                onmousedown="fun1(this)"> -->
                         </form>
 
                     </div>
@@ -454,51 +459,48 @@
                 document.getElementById("showsize").value = hideitem.value;
                 document.getElementById("showmoney").value = "$" + hideitem.classList;
             }
-
-
+            // ==============================================================================
             // 餅乾放置盒子的功能
             // 滑鼠按下同時加上包裝以及變大v
-            function fun1(item) {
-                var drag_img = document.getElementById(item.id);
-                // console.log('這是drag' + drag_img.id)    
-                //這裡有抓到資料庫的id
-                if (item.src.length <= 47) {
-                    drag_img.src = `${item.src.slice(0, 41) + ".png"}`
+            document.getElementById('c_cookieimg_container').addEventListener('mousedown', function (e) {
+                drag_img = e.target
+                // console.log(drag_img.src.length)
+                if (drag_img.src.length > 47) {
+                    drag_img.src = `${drag_img.src.substr(0, 42) + '.png'}`
                 } else {
-                    drag_img.src = `${item.src.slice(0, 42) + ".png"}`;
+                    drag_img.src = `${drag_img.src.substr(0, 41) + '.png'}`
                 }
-                //符合格子大小v
                 let box_display_style = document.getElementById("box_40").style.display;
                 if (box_display_style === "none") {
                     drag_img.classList.add("drag_img_for_box9");
                 } else {
                     drag_img.classList.add("drag_img_for_box4");
                 }
-                
-                let source = null;
+                // let source = null;
                 drag_img.addEventListener("dragstart", (e) => {
                     // 抓取位置座標 --> 移到中間
                     e.dataTransfer.setDragImage(drag_img, 120, 130);
                     e.target.classList.add("dragging");
-                    source = e.target;
+                    // source = e.target;
                     // console.log(e.target)
                 });
                 drag_img.addEventListener("dragend", (e) => {
                     e.target.classList.remove("dragging");
-                    source = null;
+                    // source = null;
                 });
-                // ======================
-                // containers_leftTop
                 const containers_leftTop = document.querySelector("#containers_leftTop");
                 containers_leftTop.addEventListener("dragover", (e) => {
                     e.preventDefault()
                 });
                 containers_leftTop.addEventListener("drop", (e) => {
-
-                        console.log("box detect");
-                        e.target.appendChild(source);
+                    if (!containers_leftTop.innerHTML) {
+                        e.target.appendChild(drag_img);
                         e.target.classList.remove("dragging");
-
+                    } else {
+                        return
+                    }
+                    // console.log("box detect");
+                    // console.log(!containers_leftTop.innerHTML)
                 });
                 containers_leftTop.addEventListener("dragenter", (e) => {
                     e.target.classList.add("hover");
@@ -507,16 +509,17 @@
                     e.target.classList.remove("hover");
                 });
                 // =================
-                // containers_rightTop
                 const containers_rightTop = document.querySelector("#containers_rightTop");
                 containers_rightTop.addEventListener("dragover", (e) => {
                     e.preventDefault()
                 });
                 containers_rightTop.addEventListener("drop", (e) => {
-
-                    console.log("box detect2");
-                    e.target.appendChild(source);
-                    e.target.classList.remove("dragging");
+                    if (!containers_rightTop.innerHTML) {
+                        e.target.appendChild(drag_img);
+                        e.target.classList.remove("dragging");
+                    } else {
+                        return
+                    }
                 });
                 containers_rightTop.addEventListener("dragenter", (e) => {
                     e.target.classList.add("hover");
@@ -525,16 +528,17 @@
                     e.target.classList.remove("hover");
                 });
                 // =================
-                // containers_leftBottom
                 const containers_leftBottom = document.querySelector("#containers_leftBottom");
                 containers_leftBottom.addEventListener("dragover", (e) => {
                     e.preventDefault()
                 });
                 containers_leftBottom.addEventListener("drop", (e) => {
-                   
-                    console.log("box detect3");
-                    e.target.appendChild(source);
-                    e.target.classList.remove("dragging");
+                    if (!containers_leftBottom.innerHTML) {
+                        e.target.appendChild(drag_img);
+                        e.target.classList.remove("dragging");
+                    } else {
+                        return
+                    }
                 });
                 containers_leftBottom.addEventListener("dragenter", (e) => {
                     e.target.classList.add("hover");
@@ -543,16 +547,17 @@
                     e.target.classList.remove("hover");
                 });
                 // =================
-                // containers_leftBottom
                 const containers_rightBottom = document.querySelector("#containers_rightBottom");
                 containers_rightBottom.addEventListener("dragover", (e) => {
                     e.preventDefault()
                 });
                 containers_rightBottom.addEventListener("drop", (e) => {
-                    
-                    console.log("box detect4");
-                    e.target.appendChild(source);
-                    e.target.classList.remove("dragging");
+                    if (!containers_rightBottom.innerHTML) {
+                        e.target.appendChild(drag_img);
+                        e.target.classList.remove("dragging");
+                    } else {
+                        return
+                    }
                 });
                 containers_rightBottom.addEventListener("dragenter", (e) => {
                     e.target.classList.add("hover");
@@ -560,7 +565,8 @@
                 containers_rightBottom.addEventListener("dragleave", (e) => {
                     e.target.classList.remove("hover");
                 });
-            }
+
+            })
 
             $(document).ready(function () {
                 $("#customize1").on('submit', function (e) {

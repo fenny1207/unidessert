@@ -17,7 +17,8 @@ var conn = mysql.createConnection({
     port:'3306',
     user:'root',
     password:'',
-    database:'unidessert'
+    database:'unidessert',
+    timezone:'08:00'
 });
 conn.connect(function(err){
     if(err){
@@ -77,6 +78,9 @@ app.post('/customize',function(req,res){
             res.send('無法新增')
         } 
     })
+})
+app.get('/historyOrder',(req,res) => {
+    res.render('historyOrder.ejs');
 })
 app.get('/product',function(req,res){
     var p_info
@@ -186,7 +190,7 @@ app.post('/login', (req, res) => {
         res.render('user', { error: true, showAlert: false,title:"登入失敗", message: '密碼輸入錯誤' });
         
       } else {
-        res.render('member', { error: false, showAlert: true,title:"登入成功", message: '歡迎回來' });
+        res.render('user', { error: false, showAlert: true,title:"登入成功", message: '歡迎回來' });
       }
     });
 });
@@ -200,27 +204,27 @@ app.get("/order", (req, res) => {
     conn.query(sql, (err, data) => {
         // console.log(data)
         if (err) return console.log(err.message)
-        member_info = data;
-        console.log(member_info[0].oid);
-        console.log(member_info[0]);
+        // member_info = data;
+        // console.log(member_info[0].oid);
+        // console.log(member_info[0]);
         res.render('order.ejs', {
-            member_info: member_info
+            member_info: data,
         })
-    // if (!err) {
-    //     // console.log(data)
-    //     res.render('member.ejs', {
-    //         dog:data,
-    //         // oid:req.body.oid,
-    //         // recipient:req.body.recipient,
-    //         // order_total:req.body.order_total
-    //     })
-    //     // res.send(JSON.stringify(data))
-    // } else {
-    //     res.send('查不到訂單') 
-    // }  
   });
 });
 
+app.post("/order", (req, res) => {
+    const { oid, order_date, order_total } = req.body;
+    var sql = "SELECT * FROM orderlist WHERE oid = ? and DATE(order_date) = ? and order_total =? ";
+    // var sql = "select * from orderlist ";
+    // [oid,recipient,order_total]
+    conn.query(sql,[oid,order_date,order_total], (err, data) => {
+        console.log(data)
+        if (err) {
+            res.send("無法新增");
+        }
+  });
+});
 
 app.get('/member',function(req,res){
     res.render('member.ejs');

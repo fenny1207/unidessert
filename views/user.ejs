@@ -34,11 +34,47 @@
               $('#alertModalLabel').text('<%= title %>');
               $('#alertModalBody').text('<%= message %>');
               $('#alertModal').modal('show');
+              if ('<%= title %>' === '登入成功'){
+                $('#memo').html("即將在五秒內自動跳轉首頁");
+                setTimeout(function(){
+                  window.location.href='/member'
+                },5000)
+              }
             });
           </script>
           <% } %>
 
-            <!-- 在 HTML 文件中添加模态框的代码 -->
+            <!-- <% if (typeof error !=='undefined' && error) { %>
+    <script>
+      $(document).ready(function () {
+        $('#alertModalLabel').text('<%= title %>');
+        $('#alertModalBody').text('<%= message %>');
+        $('#alertModal').modal('show');
+      });
+    </script>
+    <% } %>
+      <% var showAlert; %>
+        <% if (showAlert) { %>
+          <script>
+            $(document).ready(function () {
+              $('#alertModalLabel').text('<%= title %>');
+              $('#alertModalBody').text('<%= message %>');
+              $('#alertModal').modal('show');
+              if ('<%= title %>' === '登入成功') {
+                $('#redirectIndex').css('display', 'inline-block');
+                $('#confirmbtn').css('display', 'none');
+                $('#redirectIndex').click(function () {
+                  window.location.href = '/index.ejs';
+                });
+              } else {
+                $('#redirectIndex').css('display', 'none');
+              }
+            });
+          </script>
+          <% } %> -->
+
+
+            <!-- modal -->
             <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel"
               aria-hidden="true">
               <div class="modal-dialog" role="document">
@@ -50,10 +86,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body" id="alertModalBody">
-                    內容
+                    <p id="memo"></p>
+                    
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">確認</button>
+                    <button type="button" class="btn btn-primary" id="confirmbtn" data-bs-dismiss="modal">確認</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="redirectIndex()"
+                      id="redirectIndex" style="display: none; ">確認</button>
                   </div>
                 </div>
               </div>

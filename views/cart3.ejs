@@ -10,9 +10,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&family=Satisfy&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../media/css/bootstrap.css">
-    <script src="../media/js/jquery-3.7.0.min.js"></script>
-    <link rel="stylesheet" href="../media/css/order3.css">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="/js/jquery-3.7.0.min.js"></script>
+    <link rel="stylesheet" href="/css/order3.css">
     <script src="https://kit.fontawesome.com/6f2756765f.js" crossorigin="anonymous"></script>
 
 
@@ -20,15 +20,16 @@
 
 
 <body>
+    <%- include("./nav.ejs") %>
     <div class="headerPage"></div>
     <picture>
-        <source media="(max-width: 768px)" srcset="../media/pic/cart/order3.png">
-        <img class="statement" src="../media/pic/cart/order3(2x).png">
+        <source media="(max-width: 768px)" srcset="/pic/cart/order3.png">
+        <img class="statement" src="/pic/cart/order3(2x).png">
     </picture>
     <div class="mycontainer container">
         <div class="topic finish">
             已經收到您的訂單
-            <img class="finish check" style="width: 50px;" src="../media/pic/cart/check.png" alt="">
+            <img class="finish check" style="width: 50px;" src="/pic/cart/check.png" alt="">
         </div>
         <div class="topic">訂單編號:O0000001</div>
         <div class="table">
@@ -43,7 +44,7 @@
             <div class="table-row table-row1 order row">
                 <div class="table-cell col-2 px-2">
                     <div class="product-info">
-                        <img src="../media/pic/product/product_info1.webp" width="150px" alt="Product 1">
+                        <img src="/pic/product/product_info1.webp" width="150px" alt="Product 1">
                         <p class="product-name">客製化禮盒</p>
                     </div>
                 </div>
@@ -80,7 +81,7 @@
             <div class="table-row table-row1 order row">
                 <div class="table-cell col-2">
                     <div class="product-info">
-                        <img src="../media/pic/product/product_info6.webp" width="150px" alt="Product 2">
+                        <img src="/pic/product/product_info6.webp" width="150px" alt="Product 2">
                         <p class="product-name">柚香碧螺春達克瓦茲</p>
                     </div>
                 </div>
@@ -144,8 +145,8 @@
             </div>
             </div>
         </div>  
-    </div>    
-        <div class="footerPage"></div>
+    </div>
+    <%- include("./footer.ejs") %>
 
         <script>
             $(".headerPage").load("./nav.html");

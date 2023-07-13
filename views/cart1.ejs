@@ -112,7 +112,7 @@
                         </div>
                         <div class="table-cell item col-1">
                             <span class="delete-btn" onclick="deleteOrder(this)"><img
-                                    src="/pic/backEndPic/delete-24.png" alt=""></span>
+                                    src="\pic\cart\delete-24.png" alt=""></span>
                         </div>
                     </div>
                     <div class="table-footer ">
@@ -187,8 +187,6 @@
         </div>
         <%- include("./footer.ejs") %>
             <script>
-                $(".headerPage").load("./nav.html");
-                $(".footerPage").load("./footer.html");
 
                 // 刪除訂單項目並更新購物車
                 function deleteOrder(element) {
@@ -283,9 +281,6 @@
                 window.addEventListener('load', function () {
                     updateCart();
                 });
-
-
-
 
                 // //商品數量更新js
                 // const subtractBtns = document.querySelectorAll('.subtractBtn');

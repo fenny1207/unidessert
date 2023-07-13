@@ -53,6 +53,16 @@ app.get('/backOrder',function(req,res){
         })
     })
 });
+app.get('/backOrderEdit',function(req,res){
+    conn.query( `SELECT * FROM orderlist `,
+    function(err,bee){
+        // console.log(bee);
+        //回傳網頁給使用者
+        res.render('backOrderEdit.ejs',{
+            cat:bee
+        })
+    })
+});
 //navbar之後用ejs插入就好
 app.get('/backnavbar',function(req,res){
     res.render('backnavbar.ejs');

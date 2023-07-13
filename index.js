@@ -231,7 +231,8 @@ app.post('/login', (req, res) => {
 app.get("/order", (req, res) => {
     // const { oid, recipient, order_total } = req.body;
     // var sql = "SELECT * FROM orderlist WHERE oid = ? and recipient = ? and order_total =? ";
-    var sql = "select * from orderlist ";
+    var sql = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b ";
+    // var sql2 ="select * from orderlist where order_status = ?"
     // [oid,recipient,order_total]
     conn.query(sql, (err, data) => {
         // console.log(data)
@@ -241,14 +242,15 @@ app.get("/order", (req, res) => {
         // console.log(member_info[0]);
         res.render('order.ejs', {
             member_info: data,
-        })
+        });
   });
 }).post("/order", (req, res) => {
-    const { oid, order_date, order_total } = req.body;
-    var sql = "SELECT * FROM orderlist WHERE oid = ? and DATE(order_date) = ? and order_total =? ";
+    const { oid, order_date, order_total,order_status,	
+        quantity } = req.body;
+    var sql = "SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?; ";
     // var sql = "select * from orderlist ";
     // [oid,recipient,order_total]
-    conn.query(sql,[oid,order_date,order_total], (err, data) => {
+    conn.query(sql,[oid,order_date,order_total,order_status ,quantity], (err, data) => {
         console.log(data)
         if (err) {
             res.send("無法新增");
@@ -265,7 +267,6 @@ app.get('/order/historyOrder',(req,res) => {
             });
     })
 }).post('/order/historyOrder',(req,res) => {
-    // const {} = ;
     const sql ='';
     conn.query(sql,)
 })
@@ -273,75 +274,28 @@ app.get('/order/historyOrder',(req,res) => {
 app.get('/member',function(req,res){
     res.render('member.ejs');
 })
-//order1 路由
-app.get('/order1', function(req, res) {
-    var customize1 = () => {
-        conn.query('SELECT * FROM porder', function(err, results) {
-            if (err) {
-                console.error('從資料庫檢索訂單時發生錯誤：', err);
-                return;
-            }
-
-            // 將訂單結果轉換為物件陣列
-            const p_customize = results;
-            // console.log(p_customize);
-            var single = () => {
-                conn.query('SELECT * FROM product', function(err, results) {
-                    if (err) {
-                        console.error('從資料庫檢索產品時發生錯誤：', err);
-                        return;
-                    }
-
-                    // 將產品結果轉換為物件陣列
-                    const p_single = results;
-                    // console.log(p_single);
-                    res.render('order1.ejs', { p_customize: p_customize, p_single: p_single });
-                });
-            };
-            single();
-        });
-    };
-    customize1();
-});
-app.post('/order1', function(req, res) {
-    // 查詢產品ID和數量
-    const { oid, o_price,o_quantity } = req.body;
-    // 匯入資料
-    const sql = 'INSERT INTO product (oid,o_price, o_quantity) VALUES (?, ?, ?)';
-
-    // 提供查詢值
-    conn.query(sql, [oid, o_price, o_quantity], function(err, result) {
-        if (err) {
-            console.error('將產品插入資料庫時發生錯誤：', err);
-            return;
-        }
-else{ console.log('產品插入資料庫成功');}
-       
-        res.redirect('/order1');
-    });
-});
-
 app.get('/cart',function(req,res){
     res.render('order2.ejs');
 })
-app.post('/memberUser',(req,res) => {
-    const { name, email, mobile,birth} = req.body;
-        var sql = 'UPDATE  user SET uname = ?, uemail =?,ubirth =?,umobile=? WHERE uid = ?';
-        conn.query(sql, [ name, email, mobile,birth] ,(err) => {
-                res.render('member', {
-                    user:data,
-                    uname: req.session.AABBCC.uname,
-                    uemail:req.session.AABBCC.uemail,
-                    // AM 11:24 把全部資料交給ejs處理 (二選一)
-                    ubirth: req.session.AABBCC.ubirth
-                });
+app.get('/member',function(req,res){
+    var sql = "select * from user ";
+    conn.query(sql,(err,data) =>{
+        if (err) return console.log(err.message)
+        res.render('member.ejs', {
+            member_user: data,
         })
+    })
+}).post('/member',(req,res) => {
+    const { name, email, mobile,birth} = req.body;
+    var sql = 'SELECT * FROM orderlist WHERE uemail =?'
+        // var sql = 'UPDATE  user SET uname = ?, uemail =?,ubirth =?,umobile=? WHERE uid = 1';
+        conn.query(sql, [ name, email, mobile,birth] ,(err,data) => {
+            console.log(data)
+            if (err) {
+                res.send("無法新增");
+            }
+            })
 })
-
-// app.post('/member',express.urlencoded(),function(req,res){
-
-// })
-
 
 app.get('/about',function(req,res){
     res.render('about.ejs');

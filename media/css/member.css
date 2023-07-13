@@ -996,7 +996,7 @@ footer .container-uni-footer .row-nowrap dd a img {
   background-color: #B44A60;
 }
 
-.member_link > a.active {
+.member_link > a:hover {
   color: #702F43;
   background-color: #F0C7CD;
 }
@@ -1016,6 +1016,44 @@ footer .container-uni-footer .row-nowrap dd a img {
 .member_linkleft > a.active {
   color: #fff;
   background-color: #B44A60;
+}
+.member_order{
+  border: none;
+  background-color: none;
+}
+.member_order > a {
+  border-radius: 6px;
+  text-decoration: none;
+  /* width: 50%; */
+  line-height: 30px;
+  color: #fff;
+  font-size: 1.3rem;
+  margin-top: 10px;
+  padding: 5px;
+  margin-top: 60px;
+  text-align: center;
+  font-family: "Noto Sans TC", sans-serif;
+  background-color: #9c5168;
+}
+.member_text{
+  /* line-height: 30px; */
+  color: #702F43;
+  margin: 0;
+  font-size: 0.8rem;
+  /* padding: 5px; */
+  /* text-align: center; */
+  font-family: "Noto Sans TC", sans-serif;
+}
+.member_container{
+  background-color:#ffe4e8 ;
+  margin: 30px;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.member_order > a:hover {
+  color: #702F43;
+  background-color: #fff;
 }
 
 .member_label {

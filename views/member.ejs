@@ -21,13 +21,13 @@
               <div class="mb-3 row">
                 <label class="member_label col-4-uni " for="uemail">電子信箱</label>
                 <div class="col-8-uni">
-                  <p class="member_text"></p>
+                  <p class="member_text"><%= member_user[2].uemail%></p>
                 </div>
               </div>
               <div class="mb-3 row">
                 <label class="member_label col-4-uni " for="uname">會員姓名</label>
                 <div class="col-8-uni">
-                  <input class="member_input" type="text" placeholder="請輸入姓名" id="uname" required="">
+                  <input class="member_input" type="text" placeholder="請輸入姓名" id="uname" required="" value="">
                 </div>
               </div>
               <div class="mb-3 row">
@@ -87,28 +87,6 @@
         </div>
       </div>
     </section>
-    <%-include('footer') %>
-  <% if (typeof error !=='undefined' && error) { %>
-    <script>
-      $(document).ready(function () {
-        $('#alertModalLabel').text('<%= title %>');
-        $('#alertModalBody').text('<%= message %>');
-        $('#alertModal').modal('show');
-      });
-    </script>
-    <% } %>
-      <% var showAlert; %>
-        <% if (showAlert) { %>
-          <script>
-            $(document).ready(function () {
-              $('#alertModalLabel').text('<%= title %>');
-              $('#alertModalBody').text('<%= message %>');
-              $('#alertModal').modal('show');
-            });
-          </script>
-          <% } %>
-
-    </script>
     <a class="page-top" href="#">TOP</a>
     <script src="/js/bootstrap.bundle.js"></script>
     <script src="/js/jquery-3.7.0.min.js"></script>

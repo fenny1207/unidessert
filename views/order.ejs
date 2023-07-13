@@ -17,14 +17,36 @@
         </aside>
         <div class="container-uni col-12-uni col-md-9-uni col-lg-10-uni tab_content" id="">
           <div class="member_link mb-2-uni"><a class="active member_link_border_left" href="/member">歷史訂單</a></div>
-            <form action="/order" id="oder" method="get">
-              <ul class="">
-                  <li>訂單編號: <%= member_info[1].oid %></li>
-                  <li>訂購日期: <%= member_info[1].order_date %></li>
-                  <li>訂購金額: <%= member_info[1].order_total %></li>
-                  <button><a href="/order/historyOrder">訂單詳細</a></button>
-              </ul>
-            </form> 
+          <% for (let i = 0; i < member_info.length; i++) { %>
+            <div class="member_container">
+              <form action="/order" id="oder" method="get">
+                <div class="row">
+                  <div class="col-6 row">
+                    <p class="member_text">訂單編號: <%= member_info[i].oid %></p>
+                    <p class="member_text">訂購日期: <%= member_info[i].order_date %></p>
+                    <p class="member_text">應付金額: $<%= member_info[i].order_total %></p>
+                    <!-- <p class="member_text">訂購日期: <%= member_info[i].order_date %></p> -->
+                  </div>
+                  <div class="col-6 row">
+                    <!-- <div class="row-nowrap "> -->
+                      <div class="row mb-5">
+                        <p class="member_text col-8">訂購數量: <%= member_info[i].order_total %></p>
+                        <div class="member_order col-4 align-items-end ">
+                          <a  href="/order/historyOrder">取消訂單</a>
+                        </div>
+                      </div>
+                      <div class="row ">
+                        <p class="member_text col-8">處理進度: <%= member_info[i].order_status %></p>
+                        <div class="member_order col-4 align-items-end ">
+                          <a  href="/order/historyOrder">訂單詳細</a>
+                        </div>
+                      </div>
+                    <!-- </div> -->
+                  </div>
+                </div>
+              </form>
+            </div>
+          <%}%>
         </div>
       </div>
     </section>

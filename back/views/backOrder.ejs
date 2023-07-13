@@ -371,8 +371,8 @@
                             <th scope="col">訂單編號</th>
                             <th scope="col">訂單日期</th>
                             <th scope="col">訂單狀態</th>
-                            <th scope="col">訂購人</th>
                             <th scope="col">訂購人帳號</th>
+                            <th scope="col">訂購人姓名</th>
                             <th scope="col">總金額</th>
                             <th scope="col">編輯/刪除</th>
                           </tr>
@@ -386,7 +386,9 @@
                                 <td><%= cat[k].uid %></td>
                                 <td><%= cat[k].recipient %></td>
                                 <td><%= cat[k].order_total %></td>
-                                <th ><button>編輯</button><button>刪除</button></th>
+                                <th ><button><a href="/backOrderEdit">編輯</a></button>
+                                    <button><a href="/backOrderEdit">刪除</a></button>
+                                </th>
                               </tr>
                             <%}%>
                         </tbody>

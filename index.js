@@ -55,7 +55,31 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get('/',function(req,res){
     res.render('index.ejs');
 })
-
+//about路由
+app.get('/aboutus',function(req,res){
+    res.render('aboutUs.ejs');
+})
+//news路由
+app.get('/news',function(req,res){
+    res.render('news.ejs');
+})
+//important路由
+app.get('/important',function(req,res){
+    res.render('important.ejs');
+})
+//QA路由
+app.get('/qaindex',function(req,res){
+    res.render('qaindex.ejs');
+})
+app.get('/orderqa',function(req,res){
+    res.render('orderqa.ejs');
+})
+app.get('/payqa',function(req,res){
+    res.render('payqa.ejs');
+})
+app.get('/shippingqa',function(req,res){
+    res.render('shippingqa.ejs');
+})
 // 給customize 路由
 app.get('/customize',function(req,res){
     conn.query( `SELECT * FROM customize `,
@@ -249,6 +273,54 @@ app.get('/order/historyOrder',(req,res) => {
 app.get('/member',function(req,res){
     res.render('member.ejs');
 })
+//order1 路由
+app.get('/order1', function(req, res) {
+    var customize1 = () => {
+        conn.query('SELECT * FROM porder', function(err, results) {
+            if (err) {
+                console.error('從資料庫檢索訂單時發生錯誤：', err);
+                return;
+            }
+
+            // 將訂單結果轉換為物件陣列
+            const p_customize = results;
+            // console.log(p_customize);
+            var single = () => {
+                conn.query('SELECT * FROM product', function(err, results) {
+                    if (err) {
+                        console.error('從資料庫檢索產品時發生錯誤：', err);
+                        return;
+                    }
+
+                    // 將產品結果轉換為物件陣列
+                    const p_single = results;
+                    // console.log(p_single);
+                    res.render('order1.ejs', { p_customize: p_customize, p_single: p_single });
+                });
+            };
+            single();
+        });
+    };
+    customize1();
+});
+app.post('/order1', function(req, res) {
+    // 查詢產品ID和數量
+    const { oid, o_price,o_quantity } = req.body;
+    // 匯入資料
+    const sql = 'INSERT INTO product (oid,o_price, o_quantity) VALUES (?, ?, ?)';
+
+    // 提供查詢值
+    conn.query(sql, [oid, o_price, o_quantity], function(err, result) {
+        if (err) {
+            console.error('將產品插入資料庫時發生錯誤：', err);
+            return;
+        }
+else{ console.log('產品插入資料庫成功');}
+       
+        res.redirect('/order1');
+    });
+});
+
 app.get('/cart',function(req,res){
     res.render('order2.ejs');
 })

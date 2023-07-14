@@ -63,7 +63,7 @@
                                         <label for="email" class="form-label col-2">電子信箱*:</label>
                                         <div class="col-10">
                                             <input name="email" type="email" id="email" class="form-control"
-                                                maxlength="40" required placeholder= "uni@gmail.com">
+                                                maxlength="40" required placeholder="uni@gmail.com">
                                         </div>
                                     </div>
                                     <div class="row mb-3">
@@ -80,40 +80,40 @@
                         <!-- 旁邊的訂單確認 -->
                     </div>
                     <div class="col-12 col-md-4">
-                            <div class="card">
-                                <div class="card-header topic">訂單確認</div>
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between">
-                                            <div class="item">總計商品數</div>
-                                            <div class="item">
-                                                <%= JSON.parse(JSON.stringify(order_info)).length %>件
-                                            </div>
+                        <div class="card order_info_card" id="order_info_card">
+                            <div class="card-header topic">訂單資訊</div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="item">總計商品數</div>
+                                        <div class="item">
+                                            <%= JSON.parse(JSON.stringify(order_info)).length %>件
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between">
-                                            <div class="item">商品金額：</div>
-                                            <div class="item">$ <%= sum %>
-                                            </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="item">商品金額：</div>
+                                        <div class="item">$ <%= sum %>
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between">
-                                            <div class="item">運費：</div>
-                                            <div class="item">$ <%= deliever_fee %>
-                                            </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="item">運費：</div>
+                                        <div class="item">$ <%= deliever_fee %>
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between">
-                                            <div class="item">訂單總額：</div>
-                                            <div class="item">$ <%= order_total %>
-                                            </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="item">訂單總額：</div>
+                                        <div class="item">$ <%= order_total %>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                     </div>
                 </div>
                 <!-- 步驟二 -->
@@ -189,8 +189,7 @@
                             </div> -->
                                         <div class="form-check">
                                             <input name="bill-option" type="radio" id="cloudInvoice"
-                                                class="form-check-input"
-                                                onchange="toggleBillInfo('cloudInvoice')">
+                                                class="form-check-input" onchange="toggleBillInfo('cloudInvoice')">
                                             <label for="cloudInvoice" class="form-check-label">雲端發票</label><br>
                                             <input name="bill-option" type="radio" id="donateBill"
                                                 class="form-check-input" required
@@ -247,6 +246,8 @@
                             </div>
                             </divd=>
                         </div>
+                    </div>
+                    <div class="col-12 col-md-4" style="width: 10%">
                     </div>
                 </div>
             </div>

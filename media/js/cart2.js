@@ -111,8 +111,25 @@ function validateForm() {
 // }
 
 $(document).ready(function () {
+    var offsetBottom;
+    console.log(pagetopposition)
+    // 1258.99
+    // $(window).scroll(function () {
+    //     var pagetopposition = $('#order_info_card').offset();
+    //     offsetBottom = $(window).scrollTop();
+    //     console.log("window", offsetBottom)
+    //     console.log('card', pagetopposition)
+    //     if (offsetBottom >= 958) {
+    //         var order_info_card = document.getElementById('order_info_card')
+    //         order_info_card.id = 'add_order_info_card';
+    //     } else {
+    //         var order_info_card = document.getElementById('add_order_info_card')
+    //         order_info_card.setAttribute('id', 'order_info_card');
+    //     }
+    // });
     const today = new Date();
-    const formattedToday = today.toISOString().split('T')[0];
+    let formattedToday = today.setDate(today.getDate() + 7)  // 最快到貨時間為七天後
+    formattedToday = today.toISOString().split('T')[0];  //格式化成 YYYY-MM-DD
     document.getElementById('arrive_date').min = formattedToday;
 
     $("#cartform_button").on('click', function (e) {
@@ -125,23 +142,17 @@ $(document).ready(function () {
         var bill_option_checked = document.getElementById('invoiceTypeSelect').value
 
         // console.log(document.getElementById('cloud-invoice-info').style.display)
-        if(document.getElementById('cloud-invoice-info').style.display === 'block'){
-            if( bill_option_checked === 'naturalInvoice' ) {
+        if (document.getElementById('cloud-invoice-info').style.display === 'block') {
+            if (bill_option_checked === 'naturalInvoice') {
                 var bill_option_input = document.getElementById('naturalInfo_input').value
                 var bill_option = '自然人條碼'
-                console.log(bill_option)
-                console.log(bill_option_input)
             } else {
                 bill_option_input = document.getElementById('cloudInvoice_input').value
                 bill_option = '手機條碼'
-                console.log(bill_option)
-                console.log(bill_option_input)
             }
         } else {
             bill_option = '捐贈發票'
             bill_option_input = document.getElementById('donate_bill_option').value
-            console.log(bill_option)
-            console.log(bill_option_input)
         }
         let data = {
             recipient: recipient,
@@ -161,11 +172,15 @@ $(document).ready(function () {
             // success: function (res) {
             //     console.log('表單填寫完成')
             // },
-            error: function(err){
+            error: function (err) {
                 alert("發生錯誤 請重新操作");
             }
         })
-        window.location.assign('/')
+        if (cartform.checkValidity()) {
+            window.location.assign('/')
+        } else {
+            alert('資料未填寫完成')
+        }
     })
 })
 

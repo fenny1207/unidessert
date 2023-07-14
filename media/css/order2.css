@@ -2,6 +2,9 @@ body {
     background-color: #EADFD9 !important;
     font-family: "gambetta", "noto sans tc";
 }
+#cartform {
+    margin-bottom: 10%;
+}
 
 .statement {
     display: flex;
@@ -31,6 +34,16 @@ input[type=submit], input[type=text], input[type=email], input[type=tel], input[
 .card {
     margin: 0;
 }
+
+#order_info_card {
+    position: fixed;
+    z-index: -1;
+}
+/* #add_order_info_card {
+    position: absolute;
+    top: 1258.99;
+    left: 868.89;
+} */
 
 .card-body {
     font-size: 1.5rem;
@@ -87,10 +100,10 @@ input[type=submit], input[type=text], input[type=email], input[type=tel], input[
 
 
 
-.container input {
-    /* padding: 10px 10px;
-    margin: 10px; */
-}
+/* .container input {
+    padding: 10px 10px;
+    margin: 10px;
+} */
 
 ::placeholder {
     font-size: 1.5rem;

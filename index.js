@@ -56,28 +56,28 @@ app.get('/', function (req, res) {
     res.render('index.ejs');
 })
 //about路由
-app.get('/aboutus',function(req,res){
+app.get('/aboutus', function (req, res) {
     res.render('aboutUs.ejs');
 })
 //news路由
-app.get('/news',function(req,res){
+app.get('/news', function (req, res) {
     res.render('news.ejs');
 })
 //important路由
-app.get('/important',function(req,res){
+app.get('/important', function (req, res) {
     res.render('important.ejs');
 })
 //QA路由
-app.get('/qaindex',function(req,res){
+app.get('/qaindex', function (req, res) {
     res.render('qaindex.ejs');
 })
-app.get('/orderqa',function(req,res){
+app.get('/orderqa', function (req, res) {
     res.render('orderqa.ejs');
 })
-app.get('/payqa',function(req,res){
+app.get('/payqa', function (req, res) {
     res.render('payqa.ejs');
 })
-app.get('/shippingqa',function(req,res){
+app.get('/shippingqa', function (req, res) {
     res.render('shippingqa.ejs');
 })
 // 給customize 路由
@@ -96,15 +96,15 @@ app.post('/customize', function (req, res) {
     var insertc = "INSERT INTO c_detail2 ( size ,cookie1,cookie2,cookie3,cookie4, boxcolor ,bagcolor,cardcontent,quantity,cprice) VALUES (?,?,?,?,?,?,?,?,?,?);";
     var userInput = [
         req.body.size,
-         req.body.showcookie1, 
-         req.body.showcookie2,
-         req.body.showcookie3,
-         req.body.showcookie4,
-         req.body.showboxcolor,
-         req.body.showbagcolor,
-         req.body.showcard,
-         req.body.quantity,
-         req.body.order_amout];
+        req.body.showcookie1,
+        req.body.showcookie2,
+        req.body.showcookie3,
+        req.body.showcookie4,
+        req.body.showboxcolor,
+        req.body.showbagcolor,
+        req.body.showcard,
+        req.body.quantity,
+        req.body.order_amout];
     // console.log(insertc);
     // console.log(userInput);
     conn.query(insertc, userInput, function (err, data) {
@@ -114,7 +114,7 @@ app.post('/customize', function (req, res) {
     })
 })
 
-app.get('/product',function(req,res){
+app.get('/product', function (req, res) {
     var p_info
     conn.query('SELECT pd_name, p_price, p_pic FROM product where p_type="set"', (err, results) => {
         if (err) return console.log(err.message)
@@ -243,15 +243,15 @@ app.get("/order", (req, res) => {
         res.render('order.ejs', {
             member_info: data,
         });
-    var sql2 = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b ";
+        var sql2 = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b ";
 
-  });
+    });
 }).post("/order", (req, res) => {
-    const { oid, order_date, order_total,order_status,quantity } = req.body;
+    const { oid, order_date, order_total, order_status, quantity } = req.body;
     var sql = "SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?; ";
     // var sql = "select * from orderlist ";
     // [oid,recipient,order_total]
-    conn.query(sql,[oid,order_date,order_total,order_status ,quantity], (err, data) => {
+    conn.query(sql, [oid, order_date, order_total, order_status, quantity], (err, data) => {
         console.log(data)
         if (err) {
             res.send("無法新增");
@@ -259,31 +259,31 @@ app.get("/order", (req, res) => {
     });
 });
 // SELECT user.uid, orderlist.oid,orderlist.order_total,orderlist.order_date,orderlist.payment_type FROM user LEFT JOIN orderlist ON user.uid=orderlist.uid;
-app.get('/order/historyOrder',(req,res) => {
+app.get('/order/historyOrder', (req, res) => {
     const sql = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b ";
-    conn.query(sql,(err,data) => {
+    conn.query(sql, (err, data) => {
         if (err) res.send("訂單資料失敗");
         res.render('historyOrder.ejs', {
             history_Order: data,
-            });
+        });
         const sql2 = "SELECT a.*, b.* FROM `c_detail2` as a NATURAL JOIN `product` as b ";
-        conn.query(sql2,(err,data) => {
+        conn.query(sql2, (err, data) => {
             if (err) res.send("訂單資料失敗");
             res.render('historyOrder.ejs', {
                 history_detail: data,
-                });
+            });
         })
     })
-}).post('/order/historyOrder',(req,res) => {
-    const { oid, order_date, order_total,order_status,quantity } = req.body;
-    const sql ='SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?;';
-    conn.query(sql,[oid,order_date,order_total,order_status ,quantity], (err, data) => {
+}).post('/order/historyOrder', (req, res) => {
+    const { oid, order_date, order_total, order_status, quantity } = req.body;
+    const sql = 'SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?;';
+    conn.query(sql, [oid, order_date, order_total, order_status, quantity], (err, data) => {
         console.log(data)
         if (err) {
             res.send("無法新增");
         };
-        const { size, cookie1, cookie2,cookie3,cookie4,boxcolor,bagcolor, cardcontent,quantity,cprice} = req.body;
-        const sql ='SELECT a.*, b.* FROM `c_detail2` as a NATURAL JOIN `product` as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?;';
+        const { size, cookie1, cookie2, cookie3, cookie4, boxcolor, bagcolor, cardcontent, quantity, cprice } = req.body;
+        const sql = 'SELECT a.*, b.* FROM `c_detail2` as a NATURAL JOIN `product` as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?;';
 
     });
 })
@@ -317,61 +317,45 @@ app.get('/cart/fillout', function (req, res) {
         })
     })
 }).post('/cart/fillout', function (req, res) {
-    console.log(req.body.recipient)
-    console.log(req.body.address_code)
-    console.log(req.body.address)
-    console.log(req.body.tel)
-    console.log(req.body.email)
-
-    // conn.query(`select * from product where p_type="single" && pid=${pid}`, (err, results) => {
-    //     if (err) return console.log(err.message)
-    //     let pid = results[0].pid
-    //     let pd_name = results[0].pd_name
-    //     let p_price = results[0].p_price
-    //     let total_price = p_price * quantity
-    //     console.log(total_price)
-    //     let p_type = results[0].p_type
-    //     conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, status) 
-    //                 VALUES (null, 1, 100, "", "", "", "", "", "", "", "", "購物車")`, (err, results) => {
-    //         if (err) return console.log(err.message)
-    //         console.log(results.insertId)
-    //         const insert_oid = results.insertId
-    //         conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price)
-    //                 VALUES (NULL, ?, ?, ?, ?, ?, ?)`, [insert_oid, p_type, pid, pd_name, quantity, total_price], (err, results) => {
-    //             if (err) return console.log(err.message)
-    //             console.log(results.insertId)
-
-    //         })
-    //         // 等session 寫好再改成 判斷是不是同一個使用者，輸入成一筆訂單多個產品
-    //         // 點擊按鈕 -> 藉由點擊的按鈕位置，去資料庫抓到某個產品名字價格 -> 再依資料庫抓到的名字輸入進資料庫(orderlist 跟 orderdetails)
-    //         // --> 先輸入進 orderlist 後取得 oid ，再依 oid 輸入進 orderdetails -> 但是是點擊一次跑一次搜尋及輸入orderlist、orderdetails指令
-    //         // --> 所以會點擊一次就產生一筆訂單，無法輸入成一筆訂單多個產品
-    //     })
-    // })
+    var recipient = req.body.recipient
+    var recipient_address_code = req.body.address_code
+    var address = req.body.address
+    var tel = req.body.tel
+    var email = req.body.email
+    var bill_option = req.body.bill_option
+    var bill_option_input = req.body.bill_option_input
+    var sql = `UPDATE orderlist SET recipient = ?, recipient_address_code = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = '2023-07-16', payment_type = '到貨付款', bill_option_type = ?, cloud_invoice = ? WHERE orderlist.oid = 12`
+    conn.query(sql, [recipient, recipient_address_code, address,  tel, email, bill_option, bill_option_input], (err, results) => {
+        if (err) return console.log(err.message)
+        console.log(results)
+        if(results.serverStatus===2) {
+            console.log('資料庫資料更新成功')
+        }
+    })
 })
-app.get('/member',function(req,res){
+app.get('/member', function (req, res) {
     var sql = "select * from user ";
-    conn.query(sql,(err,data) =>{
+    conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)
         res.render('member.ejs', {
             member_user: data,
         })
     })
-}).post('/member',(req,res) => {
-    const { name, email, mobile,birth} = req.body;
+}).post('/member', (req, res) => {
+    const { name, email, mobile, birth } = req.body;
     var sql = 'SELECT * FROM user WHERE uemail =?'
-        // var sql = 'UPDATE  user SET uname = ?, uemail =?,ubirth =?,umobile=? WHERE uid = 1';
-        conn.query(sql, [ name, email, mobile,birth] ,(err,data) => {
-            console.log(data)
-            if (err) {
-                res.send("無法新增");
-            }
-            })
+    // var sql = 'UPDATE  user SET uname = ?, uemail =?,ubirth =?,umobile=? WHERE uid = 1';
+    conn.query(sql, [name, email, mobile, birth], (err, data) => {
+        console.log(data)
+        if (err) {
+            res.send("無法新增");
+        }
+    })
 })
 
 
 app.get('/cart/complete', function (req, res) {
-    res.render('cart3.ejs');
+    res.render('order3.ejs');
 })
 
 app.get('/about', function (req, res) {

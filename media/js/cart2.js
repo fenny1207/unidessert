@@ -1,16 +1,3 @@
-// $(document).ready(function () {
-//     const today = new Date();
-//     const formattedToday = today.toISOString().split('T')[0];
-//     document.getElementById('arrive_date').min = formattedToday;
-
-//     console.log("ok")
-//     $("#cartform").on('submit', function (e) {
-//         e.preventDefault();
-//         var recipient = document.getElementById('recipient').value
-//         console.log(recipient)
-
-//     })
-// })
 function togglePaymentInfo(option) {
     var creditCardInfo = document.getElementById('credit-card-info');
     // var cashInfo = document.getElementById('cash-info');
@@ -75,13 +62,13 @@ function toggleCloudInfo() {
     }
 }
 
-function parentFunction() {
-    validateForm()
-    // console.log(validateForm())
-    // console.log(validatePaymentForm())
-    // console.log(submitForms())
-    submitForms()
-}
+// function parentFunction() {
+//     validateForm()
+//     // console.log(validateForm())
+//     // console.log(validatePaymentForm())
+//     // console.log(submitForms())
+//     submitForms()
+// }
 function validateForm() {
     var recipient = document.getElementById('recipient').value;
     var address_code = document.getElementById('address_code').value;
@@ -122,15 +109,6 @@ function validateForm() {
 //     // 其他自定義驗證邏輯...
 //     return true; // 允許表單提交
 // }
-// $(document).ready(function () {
-//     console.log("ok")
-//     $("#cartform").on('submit', function (e) {
-//         e.preventDefault();
-//         var recipient = document.getElementById('recipient').value
-//         console.log(recipient)
-
-//     })
-// })
 
 $(document).ready(function () {
     const today = new Date();
@@ -138,31 +116,56 @@ $(document).ready(function () {
     document.getElementById('arrive_date').min = formattedToday;
 
     $("#cartform_button").on('click', function (e) {
-        console.log("ok")
-        e.preventDefault();
+        // e.preventDefault();
         var recipient = document.getElementById('recipient').value
         var address_code = document.getElementById('address_code').value
         var address = document.getElementById('address').value
         var tel = document.getElementById('tel').value
         var email = document.getElementById('email').value
+        var bill_option_checked = document.getElementById('invoiceTypeSelect').value
+
+        // console.log(document.getElementById('cloud-invoice-info').style.display)
+        if(document.getElementById('cloud-invoice-info').style.display === 'block'){
+            if( bill_option_checked === 'naturalInvoice' ) {
+                var bill_option_input = document.getElementById('naturalInfo_input').value
+                var bill_option = '自然人條碼'
+                console.log(bill_option)
+                console.log(bill_option_input)
+            } else {
+                bill_option_input = document.getElementById('cloudInvoice_input').value
+                bill_option = '手機條碼'
+                console.log(bill_option)
+                console.log(bill_option_input)
+            }
+        } else {
+            bill_option = '捐贈發票'
+            bill_option_input = document.getElementById('donate_bill_option').value
+            console.log(bill_option)
+            console.log(bill_option_input)
+        }
         let data = {
             recipient: recipient,
+            recipient_address_code: address_code,
             address_code: address_code,
             address: address,
             tel: tel,
-            email: email
+            email: email,
+            bill_option: bill_option,
+            bill_option_input: bill_option_input
         }
         $.ajax({
             url: "http://localhost:5678/cart/fillout",
             method: "post",
             contentType: "application/json",
             data: JSON.stringify(data),
-            success: function (res) {
-                console.log("data")
-            },
-            error: function(xhr){alert("發生錯誤: " + xhr.status + " " + xhr.statusText);}
+            // success: function (res) {
+            //     console.log('表單填寫完成')
+            // },
+            error: function(err){
+                alert("發生錯誤 請重新操作");
+            }
         })
-
+        window.location.assign('/')
     })
 })
 
@@ -214,34 +217,5 @@ $(document).ready(function () {
 // }
 
 
-// $(document).ready(function () {
-//     $("#shippingForm").on('submit', function (e) {
-//         e.preventDefault();
-//         let recipient = document.getElementById('recipient').value
-//         let address = document.getElementById('address').value
-//         let tel = document.getElementById('tel').value
-//         let email = document.getElementById('email').value
-//         // let arrive_date = document.getElementById('arrive_date').value
-//         console.log(recipient)
-//         console.log(address)
-//         console.log(tel)
-//         console.log(email)
-//         console.log(arrive_date)
-//         // let data = {
-//         //     "uid": "1",
-//         //     "deliever_fee": "100",
-//         //     "order_amout": amount,
-//         //     "status": "購物車"
-//         // }
-//         // $.ajax({
-//         //     url: "http://localhost:5678/product/productInfo",
-//         //     method: "post",
-//         //     contentType: "application/json",
-//         //     data: JSON.stringify(data),
-//         //     // success: function(res) {
-//         //     //     console.log("data")
-//         //     // }
-//         // })
-//     })
-// })
+
 

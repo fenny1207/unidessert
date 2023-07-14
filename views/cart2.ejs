@@ -26,7 +26,7 @@
             <img class="statement" src="/pic/cart/order2(2x).png">
         </picture>
         <!-- 步驟一 -->
-        <form action="post" id="cartform">
+        <form action="/cart/fillout" id="cartform">
             <div class="container mycontainer">
                 <div class="row">
                     <div class="col-12 col-md-8 mb-4">
@@ -63,7 +63,7 @@
                                         <label for="email" class="form-label col-2">電子信箱*:</label>
                                         <div class="col-10">
                                             <input name="email" type="email" id="email" class="form-control"
-                                                maxlength="30" required placeholder="abc@gmail.com">
+                                                maxlength="40" required placeholder= "uni@gmail.com">
                                         </div>
                                     </div>
                                     <div class="row mb-3">
@@ -191,14 +191,14 @@
                                             <input name="bill-option" type="radio" id="cloudInvoice"
                                                 class="form-check-input"
                                                 onchange="toggleBillInfo('cloudInvoice')">
-                                            <label for="cloudInvoice" class="form-check-label">雲端發票</label>
-                                        </div>
-                                        <div class="form-check">
+                                            <label for="cloudInvoice" class="form-check-label">雲端發票</label><br>
                                             <input name="bill-option" type="radio" id="donateBill"
                                                 class="form-check-input" required
                                                 onchange="toggleBillInfo('donateBill')">
                                             <label for="donateBill" class="form-check-label">捐贈</label>
                                         </div>
+                                        <!-- <div class="form-check">
+                                        </div> -->
                                     </div>
                                     <div class="mb-3 ">
                                         <!-- <div id="company-bill-info" style="display: none;" class="mx-3 mb-3 row">
@@ -226,7 +226,7 @@
                                         </div>
 
                                         <div id="donate-bill-info" style="display: none;">
-                                            <select name="donate_bill_info" class="mx-3">
+                                            <select name="donate_bill_info" class="mx-3" id="donate_bill_option">
                                                 <option>財團法人看見台灣基金會</option>
                                                 <option>財團法人台灣世界展望會</option>
                                                 <option>關懷台灣文教基金會</option>
@@ -239,7 +239,7 @@
                                         <div class="button-row">
                                             <a href="./order1.html"><input type="button" value="返回購物車"
                                                     class="my-button "></a>
-                                            <input type="button" value="確認訂單" class="my-button" id="cartform_button"></a>
+                                            <input type="button" value="確認訂單" class="my-button" id="cartform_button">
                                         </div>
                                     </div>
 
@@ -251,174 +251,6 @@
                 </div>
             </div>
         </form>
-        <!-- <script>
-        $(".headerPage").load("./nav.html");
-        $(".footerPage").load("./footer.html");
-
-        const today = new Date();
-        const formattedToday = today.toISOString().split('T')[0];
-        document.getElementById('arrive_date').min = formattedToday;
-
-
-        function togglePaymentInfo(option) {
-            var creditCardInfo = document.getElementById('credit-card-info');
-            var cashInfo = document.getElementById('cash-info');
-
-            if (option === 'credit-card') {
-                creditCardInfo.style.display = 'block';
-                cashInfo.style.display = 'none';
-            } else if (option === 'cash') {
-                creditCardInfo.style.display = 'none';
-                cashInfo.style.display = 'block';
-            }
-        }
-
-        function toggleBillInfo(option) {
-            var companyBillInfo = document.getElementById('company-bill-info');
-            var cloudInvoiceInfo = document.getElementById('cloud-invoice-info');
-            var donateBillInfo = document.getElementById('donate-bill-info');
-            var phoneInfo = document.getElementById("phoneInfo");
-            var naturalInfo = document.getElementById("naturalInfo");
-
-            if (option === 'companyBill') {
-                companyBillInfo.style.display = 'block';
-                cloudInvoiceInfo.style.display = 'none';
-                donateBillInfo.style.display = 'none';
-                phoneInfo.style.display = 'none';
-                naturalInfo.style.display = 'none';
-
-            } else if (option === 'cloudInvoice') {
-                companyBillInfo.style.display = 'none';
-                cloudInvoiceInfo.style.display = 'block';
-                donateBillInfo.style.display = 'none';
-                phoneInfo.style.display = 'none';
-                naturalInfo.style.display = 'none';
-
-            } else if (option === 'donateBill') {
-                companyBillInfo.style.display = 'none';
-                cloudInvoiceInfo.style.display = 'none';
-                donateBillInfo.style.display = 'block';
-                phoneInfo.style.display = 'none';
-                naturalInfo.style.display = 'none';
-
-            }
-        }
-        function toggleCloudInfo() {
-            var selectElement = document.getElementById('invoiceTypeSelect');
-            var selectedOption = selectElement.options[selectElement.selectedIndex].value;
-
-            var phoneInfo = document.getElementById('phoneInfo');
-            var naturalInfo = document.getElementById('naturalInfo');
-
-            if (selectedOption === 'phoneInvoice') {
-                phoneInfo.style.display = 'block';
-                naturalInfo.style.display = 'none';
-            } else if (selectedOption === 'naturalInvoice') {
-                phoneInfo.style.display = 'none';
-                naturalInfo.style.display = 'block';
-            }
-        }
-
-        function parentFunction() {
-            submitForms();
-            validateForm();
-            validatePaymentForm()
-        }
-
-        function submitForms() {
-            var shippingForm = document.getElementById('shippingForm');
-            var paymentForm = document.getElementById('paymentForm');
-            var invoiceForm = document.getElementById('invoiceForm');
-
-            // 檢查每個表單的有效性
-            if (shippingForm.checkValidity() && paymentForm.checkValidity() && invoiceForm.checkValidity()) {
-                // 創建一個新的FormData對象來存儲所有表單數據
-                var formData = new FormData();
-                var shippingFormData = new FormData(shippingForm);
-                var paymentFormData = new FormData(paymentForm);
-                var invoiceFormData = new FormData(invoiceForm);
-
-                // 將每個表單的數據添加到總的FormData對象中
-                for (var pair of shippingFormData.entries()) {
-                    formData.append(pair[0], pair[1]);
-                }
-
-                for (var pair of paymentFormData.entries()) {
-                    formData.append(pair[0], pair[1]);
-                }
-
-                for (var pair of invoiceFormData.entries()) {
-                    formData.append(pair[0], pair[1]);
-                }
-
-                // 使用XMLHttpRequest對象發送表單數據
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'your-server-url');
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (xhr.status === 200) {
-                            // 請求成功處理
-                            console.log('表單提交成功！');
-                        } else {
-                            // 請求失敗處理
-                            console.log('表單提交失敗。');
-                        }
-                    }
-                };
-
-                xhr.send(formData);
-            } else {
-                // 表單數據無效，進行相應的錯誤處理
-                console.log('表單數據無效，進行相應的錯誤處理。');
-            }
-        }
-
-        function validateForm() {
-            var recipient = document.getElementById('recipient').value;
-            var address_code = document.getElementById('address_code').value;
-            var address = document.getElementById('address').value;
-            var tel = document.getElementById('tel').value;
-            var email = document.getElementById('email').value;
-            var arrive_date = document.getElementById('arrive_date').value;
-
-            // 檢查必填字段是否為空
-            if (recipient === '' || address_code === '' || address === '' || tel === '' || email === '' || arrive_date === '') {
-                alert('請填寫所有必填資料。');
-                return false; // 阻止表單提交
-            }
-
-            // 其他自定義驗證邏輯
-
-            return true; // 允許表單提交
-        }
-
-
-        function validatePaymentForm() {
-            // 檢查選擇的付款方式
-            var paymentOption = document.querySelector('input[name="payment-option"]:checked');
-            if (!paymentOption) {
-                alert('請選擇付款方式。');
-                return false; // 阻止表單提交
-            }
-
-            // 檢查信用卡付款方式的字段
-            if (paymentOption.id === 'credit-card') {
-                var creditNumber = document.getElementById('credit-card-number').value;
-                var expiration_date = document.getElementById('expiration_date').value;
-                var tel_cvn = document.getElementById('tel_cvn').value;
-
-                if (creditNumber === '' || expiration_date === '' || tel_cvn === '') {
-                    alert('請填寫信用卡號碼、有效日期和 CVN。');
-                    return false; // 阻止表單提交
-                }
-            }
-
-            // 其他自定義驗證邏輯...
-
-            return true; // 允許表單提交
-        }
-    </script> -->
-
         <%- include("./footer.ejs") %>
 </body>
 

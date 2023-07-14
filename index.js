@@ -17,7 +17,7 @@ var conn = mysql.createConnection({
     port: '3306',
     user: 'root',
     password: '',
-    database: 'unidessert_vtest',
+    database: 'unidessert',
     timezone: '08:00'
 });
 conn.connect(function (err) {
@@ -50,8 +50,6 @@ app.use(express.static('media', { 'extensions': ['html', 'css'] }));
 // 解析表單資料的中介軟體
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// app.use('/',member);
-// app.use('/user',users);
 app.get('/', function (req, res) {
     res.render('index.ejs');
 })
@@ -227,23 +225,17 @@ app.post('/login', (req, res) => {
     });
 });
 
-// member.ejs
 app.get("/order", (req, res) => {
-    // const { oid, recipient, order_total } = req.body;
     // var sql = "SELECT * FROM orderlist WHERE oid = ? and recipient = ? and order_total =? ";
-    var sql = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b ";
-    // var sql2 ="select * from orderlist where order_status = ?"
-    // [oid,recipient,order_total]
+    var sql = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b WHERE uid = 1";
     conn.query(sql, (err, data) => {
-        // console.log(data)
         if (err) return console.log(err.message)
-        // member_info = data;
-        // console.log(member_info[0].oid);
-        // console.log(member_info[0]);
+        let uid = data[0].uid;
         res.render('order.ejs', {
             member_info: data,
+            uid:uid
         });
-        var sql2 = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b ";
+    var sql2 = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b ";
 
     });
 }).post("/order", (req, res) => {
@@ -282,8 +274,8 @@ app.get('/order/historyOrder', (req, res) => {
         if (err) {
             res.send("無法新增");
         };
-        const { size, cookie1, cookie2, cookie3, cookie4, boxcolor, bagcolor, cardcontent, quantity, cprice } = req.body;
-        const sql = 'SELECT a.*, b.* FROM `c_detail2` as a NATURAL JOIN `product` as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?;';
+        const { size, cookie1, cookie2,cookie3,cookie4,boxcolor,bagcolor, cardcontent,quantity,cprice} = req.body;
+        const sql ='SELECT a.*, b.* FROM `c_detail2` as a NATURAL JOIN `product` as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?;';
 
     });
 })
@@ -333,24 +325,34 @@ app.get('/cart/fillout', function (req, res) {
         }
     })
 })
-app.get('/member', function (req, res) {
+app.get('/member',function(req,res){
     var sql = "select * from user ";
-    conn.query(sql, (err, data) => {
+    conn.query(sql,(err,data) =>{
         if (err) return console.log(err.message)
+        // console.log(data[0].uemail);
+        let uemail = data[0].uemail;
+        let umobile = data[0].umobile;
+        let ubirth = data[0].ubirth;
+        let uname = data[0].uname;
         res.render('member.ejs', {
             member_user: data,
+            uid:req.body.uid,
+            uemail: uemail,
+            umobile: umobile,
+            ubirth: ubirth,
+            uname:uname
         })
     })
-}).post('/member', (req, res) => {
-    const { name, email, mobile, birth } = req.body;
+}).post('/member',(req,res) => {
+    const { name, email, mobile,birth} = req.body;
     var sql = 'SELECT * FROM user WHERE uemail =?'
-    // var sql = 'UPDATE  user SET uname = ?, uemail =?,ubirth =?,umobile=? WHERE uid = 1';
-    conn.query(sql, [name, email, mobile, birth], (err, data) => {
-        console.log(data)
-        if (err) {
-            res.send("無法新增");
-        }
-    })
+        // var sql = 'UPDATE  user SET uname = ?, uemail =?,ubirth =?,umobile=? WHERE uid = 1';
+        conn.query(sql, [ name, email, mobile,birth] ,(err,data) => {
+            console.log(data)
+            if (err) {
+                res.send("無法新增");
+            }
+            })
 })
 
 

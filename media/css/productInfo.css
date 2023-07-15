@@ -175,15 +175,18 @@ ul.breadcrumb li a:hover {
 
 /* ======購物車按鈕====== */
 .imgInfoContainer button {
-    padding: 2% 0 2% 0;
+    padding: 2% 5% 2% 5%;
     /* background-color: #cc7f91; */
     background-color: #b44a60;
     color: white;
     border: none;
-    border-radius: 2px;
+    border-radius: 7px;
     cursor: pointer;
-    margin-top: 5%;
     font-size: 1.2rem;
+    width: 100%
+}
+#submit_form {
+    margin-top: 8%;
 }
 
 /* ======分割線====== */

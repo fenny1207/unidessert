@@ -227,27 +227,30 @@ app.post('/login', (req, res) => {
 
 app.get("/order", (req, res) => {
     // var sql = "SELECT * FROM orderlist WHERE oid = ? and recipient = ? and order_total =? ";
-    var sql = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b WHERE uid = 1";
-    conn.query(sql, (err, data) => {
+    var sql = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b WHERE uid = ?";
+    conn.query(sql,[1], (err, data) => {
         if (err) return console.log(err.message)
         let uid = data[0].uid;
         res.render('order.ejs', {
             member_info: data,
             uid:uid
         });
-    var sql2 = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b ";
+    // var sql2 = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b ";
 
     });
 }).post("/order", (req, res) => {
-    const { oid, order_date, order_total, order_status, quantity } = req.body;
-    var sql = "SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?; ";
+    const { uid,oid, order_date, order_total, order_status, quantity } = req.body;
+    var sql = "SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b WHERE uid= ? and oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?; ";
     // var sql = "select * from orderlist ";
     // [oid,recipient,order_total]
-    conn.query(sql, [oid, order_date, order_total, order_status, quantity], (err, data) => {
+    conn.query(sql, [uid,oid, order_date, order_total, order_status, quantity], (err, data) => {
         console.log(data)
-        if (err) {
-            res.send("無法新增");
-        }
+        if (err) {res.send("無法新增");}
+        // let uid = data[0].uid;
+        // res.render('order.ejs', {
+        //     member_info: data,
+        //     uid:uid
+        // });
     });
 });
 // SELECT user.uid, orderlist.oid,orderlist.order_total,orderlist.order_date,orderlist.payment_type FROM user LEFT JOIN orderlist ON user.uid=orderlist.uid;
@@ -344,14 +347,16 @@ app.get('/member',function(req,res){
         })
     })
 }).post('/member',(req,res) => {
-    const { name, email, mobile,birth} = req.body;
-    var sql = 'SELECT * FROM user WHERE uemail =?'
-        // var sql = 'UPDATE  user SET uname = ?, uemail =?,ubirth =?,umobile=? WHERE uid = 1';
-        conn.query(sql, [ name, email, mobile,birth] ,(err,data) => {
+    const { uname, umobile,ubirth} = req.body;
+    // var sql = 'SELECT * FROM user WHERE uemail =?'
+    var sql = 'UPDATE  user SET uname =?,umobile=?,ubirth =?WHERE uid = 1';
+        conn.query(sql, [ uname, umobile,ubirth] ,(err,data) => {
             console.log(data)
             if (err) {
-                res.send("無法新增");
-            }
+                res.send("無法更新");
+              } else {
+                res.send({success: true });
+              }
             })
 })
 

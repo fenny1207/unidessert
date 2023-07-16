@@ -34,45 +34,15 @@
               $('#alertModalLabel').text('<%= title %>');
               $('#alertModalBody').text('<%= message %>');
               $('#alertModal').modal('show');
-              if ('<%= title %>' === '登入成功'){
-                $('#memo').html("即將在五秒內自動跳轉首頁");
-                setTimeout(function(){
-                  window.location.href='/member'
-                },5000)
+              if ('<%= title %>' === '登入成功') {
+                $('#alertModalBody').text('<%= message %>  即將在五秒內自動跳轉首頁');
+                setTimeout(function () {
+                  window.location.href = '/'
+                }, 5000)
               }
             });
           </script>
           <% } %>
-
-            <!-- <% if (typeof error !=='undefined' && error) { %>
-    <script>
-      $(document).ready(function () {
-        $('#alertModalLabel').text('<%= title %>');
-        $('#alertModalBody').text('<%= message %>');
-        $('#alertModal').modal('show');
-      });
-    </script>
-    <% } %>
-      <% var showAlert; %>
-        <% if (showAlert) { %>
-          <script>
-            $(document).ready(function () {
-              $('#alertModalLabel').text('<%= title %>');
-              $('#alertModalBody').text('<%= message %>');
-              $('#alertModal').modal('show');
-              if ('<%= title %>' === '登入成功') {
-                $('#redirectIndex').css('display', 'inline-block');
-                $('#confirmbtn').css('display', 'none');
-                $('#redirectIndex').click(function () {
-                  window.location.href = '/index.ejs';
-                });
-              } else {
-                $('#redirectIndex').css('display', 'none');
-              }
-            });
-          </script>
-          <% } %> -->
-
 
             <!-- modal -->
             <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel"
@@ -86,8 +56,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body" id="alertModalBody">
-                    <p id="memo"></p>
-                    
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="confirmbtn" data-bs-dismiss="modal">確認</button>
@@ -105,12 +73,20 @@
                 <form action="/register" class="form" id="form1" method="post">
                   <h2 class="form__title">註冊</h2>
                   <input type="text" placeholder="姓名" name="name" class="input" required />
-                  <input type="email" placeholder="電子信箱" name="email" class="input"
+                  <input type="email" placeholder="電子信箱" id="regEmail" name="email" class="input"
                     pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required />
-                  <input type="tel" placeholder="手機號碼" name="mobile" class="input" minlength="10" pattern="09\d{2}\d{6}"
-                    oninput="setCustomValidity('');" oninvalid="setCustomValidity('請輸入正確的手機號瑪格式:09xx-xxxxxx');"
-                    required />
-                  <input type="password" placeholder="密碼" name="password" class="input" id="inputPassword"
+                  <div class="row-no">
+                    <div class="col-5">
+                      <input type="text" placeholder="驗證碼" name="verificationCode" class="input verificationCode "
+                        minlength="6" oninput="setCustomValidity('');" oninvalid="setCustomValidity('請輸入驗證碼');"
+                        required />
+                    </div>
+                    <div class="col-7 btn1">
+                      <input type="button" class=" btn " value="發送驗證碼" id="verificationbtn"
+                        onclick="sendVCode();"></input>
+                    </div>
+                  </div>
+                  <input type="password" placeholder="密碼(含英數至少八個字元)" name="password" class="input" id="inputPassword"
                     pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$" oninput="setCustomValidity('');"
                     oninvalid="setCustomValidity('請輸入正確的密碼格式:含英數至少八個字元');" minlength="8" required />
                   <input type="password" placeholder="確認密碼" class="input" id="ConfirmPassword"
@@ -168,43 +144,64 @@
                 container.classList.add("right-panel-active");
               });
 
-
             </script>
 
             <script>
-              // var email = $('#emailInput').val();
-              // var password = $('#passwordInput').val();
-              // $.ajax({
-              //   url: '/login',
-              //   method: 'POST',
-              //   data: { email: 'user@example.com', password: 'password' },
-              //   success: function (response) {
-              //     if (response.success) {
-              //       // 登录成功，显示弹窗消息
-              //       $('#alertModalLabel').text('登入成功');
-              //       $('#alertModalBody').text('歡迎回來');
-              //       $('#alertModal').modal('show');
+              function sendVCode() {
+                const emailInput = document.getElementById("regEmail");
+                const email = emailInput.value.trim();
 
-              //       // 延迟一段时间后执行页面跳转
-              //       setTimeout(function () {
-              //         window.location.href = response.redirect;
-              //       }, 2000); // 2秒延迟
-              //     } else {
-              //       // 登录失败，显示错误消息
-              //       $('#alertModalLabel').text('登入失敗');
-              //       $('#alertModalBody').text(response.message);
-              //       $('#alertModal').modal('show');
-              //     }
-              //   },
-              //   error: function () {
-              //     // 处理请求错误
-              //     console.log('请求错误');
-              //   }
-              // });
+                if (email === "") {
+                  // 未輸入電子信箱，顯示錯誤提示
+                  emailInput.setCustomValidity("請輸入電子信箱");
+                  emailInput.reportValidity();
+                  return;
+                }
+
+                countdown(); // 倒數計時
+                sendEmail(); // 發送驗證郵件
+              }
 
 
+              function countdown() {
+                var time = 60;  //定義60秒的倒數
+                var mytime = setInterval(function () {
+                  sub();
+                }, 1000)
+
+                function sub() {
+                  time--;
+                  $('#verificationbtn').attr("value", "請" + time + "秒後再试");
+                  if (time === 0) {
+                    clearInterval(mytime);
+                    $('#verificationbtn').attr("value", "驗證碼");
+                    $('#verificationbtn').attr("disabled", false); //按鈕可以用
+                  } else {
+                    $('#verificationbtn').attr("disabled", true); //按鈕不可以用
+                  }
+                }
+              }
+
+              // 發送驗證email
+              function sendEmail() {
+                const email = document.getElementById("regEmail").value;
+
+                fetch("/verify", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({ email: email })
+                })
+                  .then(response => response.json())
+                  .then(data => {
+                    console.log(data.message);
+                  })
+                  .catch(error => {
+                    console.error(error);
+                  });
+              }
             </script>
-
 </body>
 
 </html>

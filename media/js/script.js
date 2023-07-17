@@ -32,27 +32,67 @@ $(window).scroll(function () {
 // });//.tab-link>a end
 
 //購物車
+// $(document).ready(function () {
+//   let addtocart = document.querySelectorAll('.addtocart');
+
+//   for (var i = 0; i < addtocart.length; i++) {
+//       addtocart[i].addEventListener('click', function (e) {
+//           // console.log(e)
+//           var button = $(this);
+//           var cart = $("#cart");
+//           var cartTotal = cart.attr("data-totalitems");
+//           var newCartTotal = parseInt(cartTotal) + 1;
+
+//           button.addClass("sendtocart");
+//           setTimeout(function () {
+//               button.removeClass("sendtocart");
+//               cart.addClass("shake").attr("data-totalitems", newCartTotal);
+//               setTimeout(function () {
+//                   cart.removeClass("shake");
+//               }, 500);
+//           }, 300);
+//       }, false);
+//   }
+// });
+
+// 改寫上面的購物車
+// 確認使用者登入後才可以加商品到購物車，購物車上的數字才可以加 1
+// 如果沒有登入，購物車上的數字會保持為 0
 $(document).ready(function () {
   let addtocart = document.querySelectorAll('.addtocart');
-
-  for (var i = 0; i < addtocart.length; i++) {
-      addtocart[i].addEventListener('click', function (e) {
+  $.post({
+    url: "http://localhost:5678/product/single",
+    method: "post",
+    contentType: "application/json",
+    // data: JSON.stringify(data),
+    success: function (res) {
+      // console.log(res)
+      if (res) {
+        return
+      }
+      for (var i = 0; i < addtocart.length; i++) {
+        addtocart[i].addEventListener('click', function (e) {
           // console.log(e)
           var button = $(this);
           var cart = $("#cart");
           var cartTotal = cart.attr("data-totalitems");
           var newCartTotal = parseInt(cartTotal) + 1;
-
+    
           button.addClass("sendtocart");
           setTimeout(function () {
-              button.removeClass("sendtocart");
-              cart.addClass("shake").attr("data-totalitems", newCartTotal);
-              setTimeout(function () {
-                  cart.removeClass("shake");
-              }, 500);
+            button.removeClass("sendtocart");
+            cart.addClass("shake").attr("data-totalitems", newCartTotal);
+            setTimeout(function () {
+              cart.removeClass("shake");
+            }, 500);
           }, 300);
-      }, false);
-  }
+        }, false);
+      }
+    },
+    error: function (err) {
+      alert("發生錯誤");
+    }
+  })
 });
 
 

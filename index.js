@@ -125,24 +125,34 @@ app.get('/product/single', function (req, res) {
     conn.query('SELECT pd_name, p_price, p_pic FROM product where p_type="single"', (err, results) => {
         if (err) return console.log(err.message)
         p_single_info = results;
-        // console.log(p_single_info);
         res.render('product_single.ejs', { p_single_info: p_single_info });
     })
 }).post('/product/single', function (req, res) {
-    // console.log(parseInt(req.body.uid) + 2)
-    const pid = parseInt(req.body.uid) + 2
+    const pid = parseInt(req.body.pid) + 2
     const quantity = req.body.quantity
-
+    req.session.islogin = true;
+    const login_alert = !req.session.islogin;
+    // let cart_pause = req.body.cart_pause;
+    // 確認是否已經登入(先寫死的)
+    if(!req.session.islogin) {
+        res.send(login_alert);
+        return
+    }
+    // if(!cart_pause) {
+    //     res.send(login_alert);
+    //     return
+    // }
+    res.send(login_alert)
+    // console.log('後端傳送資料')
     conn.query(`select * from product where p_type="single" && pid=${pid}`, (err, results) => {
         if (err) return console.log(err.message)
         let pid = results[0].pid
         let pd_name = results[0].pd_name
         let p_price = results[0].p_price
         let total_price = p_price * quantity
-        console.log(total_price)
         let p_type = results[0].p_type
         conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, status) 
-                    VALUES (null, 1, 100, "", "", "", "", "", "", "", "", "購物車")`, (err, results) => {
+                    VALUES (null, 1, 150, "", "", "", "", "", "", "", "", "購物車")`, (err, results) => {
             if (err) return console.log(err.message)
             console.log(results.insertId)
             const insert_oid = results.insertId
@@ -158,6 +168,7 @@ app.get('/product/single', function (req, res) {
             // --> 所以會點擊一次就產生一筆訂單，無法輸入成一筆訂單多個產品
         })
     })
+    // console.log('後端傳送資料完成')
 })
 
 app.get('/product/productInfo', function (req, res) {

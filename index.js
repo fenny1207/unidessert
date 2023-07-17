@@ -240,6 +240,7 @@ app.get("/order", (req, res) => {
     // var sql = "SELECT * FROM orderlist WHERE oid = ? and recipient = ? and order_total =? ";
     var sql = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b WHERE uid = ?";
     conn.query(sql,[1], (err, data) => {
+        console.log(sql);
         if (err) return console.log(err.message)
         let uid = data[0].uid;
         res.render('order.ejs', {
@@ -266,30 +267,42 @@ app.get("/order", (req, res) => {
 });
 // SELECT user.uid, orderlist.oid,orderlist.order_total,orderlist.order_date,orderlist.payment_type FROM user LEFT JOIN orderlist ON user.uid=orderlist.uid;
 app.get('/order/historyOrder', (req, res) => {
-    const sql = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b ";
-    conn.query(sql, (err, data) => {
+        // const history_sql = [
+        //     'SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b  WHERE oid = ? ',
+        //     'SELECT c.*, d.* FROM `c_detail2` as c NATURAL JOIN `product` as d  ',        
+        // ];
+        const sql = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b ";
+        // conn.query(history_sql.join(';'),[1], (err, data) => {
+        conn.query(sql, (err, data) => {
+        // console.log(history_sql);
         if (err) res.send("訂單資料失敗");
-        res.render('historyOrder.ejs', {
-            history_Order: data,
-        });
+        let oid = data[1].oid;
+        let order_date = data[1].order_date;
         const sql2 = "SELECT a.*, b.* FROM `c_detail2` as a NATURAL JOIN `product` as b ";
         conn.query(sql2, (err, data) => {
+            // var 
             if (err) res.send("訂單資料失敗");
             res.render('historyOrder.ejs', {
-                history_detail: data,
+                history_Order: data,
+                oid:oid,
+                order_date:order_date
             });
-        })
-    })
+            });
+    });
 }).post('/order/historyOrder', (req, res) => {
     const { oid, order_date, order_total, order_status, quantity } = req.body;
-    const sql = 'SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?;';
-    conn.query(sql, [oid, order_date, order_total, order_status, quantity], (err, data) => {
+    const sql = [
+        'SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?',
+        'SELECT c.*, d.* FROM `c_detail2` as c NATURAL JOIN `product` as d WHERE pid = ? and pd_name = ? and pd_content = ? and pd_describe_contents = ? and pd_describe_specification= ? and p_pic =? and cdetailid =? and size =? and cookie1=? and cookie2=? and cookie3=? and cookie4=? and boxcolor=? and bagcolor=? and cardcontent=? and quantity=? and cprice=? '
+    ];
+    
+    conn.query(sql.join(';'), [oid, order_date, order_total, order_status, quantity], (err, data) => {
         console.log(data)
         if (err) {
             res.send("無法新增");
         };
-        const { size, cookie1, cookie2,cookie3,cookie4,boxcolor,bagcolor, cardcontent,quantity,cprice} = req.body;
-        const sql ='SELECT a.*, b.* FROM `c_detail2` as a NATURAL JOIN `product` as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?;';
+        // const { size, cookie1, cookie2,cookie3,cookie4,boxcolor,bagcolor, cardcontent,quantity,cprice} = req.body;
+        // const sql ='SELECT a.*, b.* FROM `c_detail2` as a NATURAL JOIN `product` as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?;';
 
     });
 })

@@ -130,19 +130,19 @@ app.get('/product/single', function (req, res) {
 }).post('/product/single', function (req, res) {
     const pid = parseInt(req.body.pid) + 2
     const quantity = req.body.quantity
-    req.session.islogin = true;
-    const login_alert = !req.session.islogin;
+    // req.session.islogin = true;
+    // const login_alert = !req.session.islogin;
     // let cart_pause = req.body.cart_pause;
     // 確認是否已經登入(先寫死的)
-    if(!req.session.islogin) {
-        res.send(login_alert);
-        return
-    }
+    // if(!req.session.islogin) {
+    //     res.send(login_alert);
+    //     return
+    // }
     // if(!cart_pause) {
     //     res.send(login_alert);
     //     return
     // }
-    res.send(login_alert)
+    // res.send(login_alert)
     // console.log('後端傳送資料')
     conn.query(`select * from product where p_type="single" && pid=${pid}`, (err, results) => {
         if (err) return console.log(err.message)

@@ -271,41 +271,91 @@ app.get('/order/historyOrder', (req, res) => {
         //     'SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b  WHERE oid = ? ',
         //     'SELECT c.*, d.* FROM `c_detail2` as c NATURAL JOIN `product` as d  ',        
         // ];
-        const sql = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b ";
+        let uid = 1;
+        const sql = `SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b  where uid = ${uid}`;
         // conn.query(history_sql.join(';'),[1], (err, data) => {
         conn.query(sql, (err, data) => {
         // console.log(history_sql);
         if (err) res.send("訂單資料失敗");
-        let oid = data[1].oid;
-        let order_date = data[1].order_date;
+        let oid = data[0].oid;
+        let order_date = data[0].order_date;
+        let order_total = data[0].order_total;
+        let deliever_fee = data[0].deliever_fee;
         const sql2 = "SELECT a.*, b.* FROM `c_detail2` as a NATURAL JOIN `product` as b ";
         conn.query(sql2, (err, data) => {
+            let cdetailid = data[0].cdetailid;
+            let size = data[0].size;
+            let cookie1 = data[0].cookie1;
+            let cookie2 = data[0].cookie2;
+            let cookie3 = data[0].cookie3;
+            let cookie4 = data[0].cookie4;
+            let boxcolor = data[0].boxcolor;
+            let bagcolor = data[0].bagcolor;
+            let cardcontent = data[0].cardcontent;
+            let quantity = data[0].quantity;
+            let cprice = data[0].cprice;
+            let cprice_total =cprice*quantity;
+            let p_price = data[0].p_price;//價格
+            let quantit1 =1;
+            let price_total =quantit1*p_price;
+            let pid = data[0].pid;
+            let pd_name = data[0].pd_name;
+            let pd_describe_specification = data[0].pd_describe_specification;
+            let p_pic = data[0].p_pic;
+            let pd_content = data[0].pd_content;
+            let cp_total=price_total+cprice_total;
+            let order_total = deliever_fee+cp_total;
             // var 
             if (err) res.send("訂單資料失敗");
-            res.render('historyOrder.ejs', {
-                history_Order: data,
-                oid:oid,
-                order_date:order_date
+                res.render('historyOrder.ejs', {
+                    history_Order: data,
+                    oid:oid,
+                    order_date:order_date,
+                    order_total:order_total,
+                    deliever_fee :deliever_fee ,
+                    cdetailid:cdetailid,
+                    size:size,
+                    cookie1:cookie1,
+                    cookie2:cookie2,
+                    cookie3:cookie3,
+                    cookie4:cookie4,
+                    boxcolor:boxcolor,
+                    bagcolor:bagcolor,
+                    cardcontent:cardcontent,
+                    quantity:quantity,
+                    cprice:cprice,
+                    cprice_total:cprice_total,
+                    pid:pid,
+                    pd_name:pd_name,
+                    p_price:p_price,
+                    quantit1:quantit1,
+                    pd_describe_specification:pd_describe_specification,
+                    p_pic:p_pic,
+                    pd_content:pd_content,
+                    price_total:price_total,
+                    cp_total:cp_total,
+                    order_total:order_total
+                });
             });
-            });
-    });
-}).post('/order/historyOrder', (req, res) => {
-    const { oid, order_date, order_total, order_status, quantity } = req.body;
-    const sql = [
-        'SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?',
-        'SELECT c.*, d.* FROM `c_detail2` as c NATURAL JOIN `product` as d WHERE pid = ? and pd_name = ? and pd_content = ? and pd_describe_contents = ? and pd_describe_specification= ? and p_pic =? and cdetailid =? and size =? and cookie1=? and cookie2=? and cookie3=? and cookie4=? and boxcolor=? and bagcolor=? and cardcontent=? and quantity=? and cprice=? '
-    ];
-    
-    conn.query(sql.join(';'), [oid, order_date, order_total, order_status, quantity], (err, data) => {
-        console.log(data)
-        if (err) {
-            res.send("無法新增");
-        };
-        // const { size, cookie1, cookie2,cookie3,cookie4,boxcolor,bagcolor, cardcontent,quantity,cprice} = req.body;
-        // const sql ='SELECT a.*, b.* FROM `c_detail2` as a NATURAL JOIN `product` as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?;';
-
     });
 })
+// app.post('/order/historyOrder', (req, res) => {
+//     const { oid, order_date, order_total, order_status, quantity } = req.body;
+//     const sql = [
+//         'SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?',
+//         'SELECT c.*, d.* FROM `c_detail2` as c NATURAL JOIN `product` as d WHERE pid = ? and pd_name = ? and pd_content = ? and pd_describe_contents = ? and pd_describe_specification= ? and p_pic =? and cdetailid =? and size =? and cookie1=? and cookie2=? and cookie3=? and cookie4=? and boxcolor=? and bagcolor=? and cardcontent=? and quantity=? and cprice=? '
+//     ];
+    
+//     conn.query(sql.join(';'), [oid, order_date, order_total, order_status, quantity], (err, data) => {
+//         console.log(data)
+//         if (err) {
+//             res.send("無法新增");
+//         };
+//         // const { size, cookie1, cookie2,cookie3,cookie4,boxcolor,bagcolor, cardcontent,quantity,cprice} = req.body;
+//         // const sql ='SELECT a.*, b.* FROM `c_detail2` as a NATURAL JOIN `product` as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?;';
+
+//     });
+// })
 
 app.get('/cart', function (req, res) {
     res.render('cart1.ejs');
@@ -392,6 +442,7 @@ app.get('/cart/complete', function (req, res) {
 app.get('/about', function (req, res) {
     res.render('about.ejs');
 })
+
 app.get('/card', function (req, res) {
     res.render('card.ejs');
 })

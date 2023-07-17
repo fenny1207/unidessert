@@ -997,8 +997,8 @@ footer .container-uni-footer .row-nowrap dd a img {
 }
 
 .member_link > a:hover {
-  color: #702F43;
-  background-color: #F0C7CD;
+  color: #fff;
+  /* background-color: #F0C7CD; */
 }
 
 .member_linkleft > a {

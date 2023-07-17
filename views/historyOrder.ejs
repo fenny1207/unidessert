@@ -44,9 +44,9 @@
                 <div class="table-header row">
                     <div class="table-cell col-2 px-2">商品明细</div>
                     <div class="table-cell col-3">客製化規格</div>
-                    <div class="table-cell col-3">客製化卡片</div>
-                    <div class="table-cell col-3"></div>
                     <div class="table-cell col-1"></div>
+                    <div class="table-cell col-4">客製化卡片</div>
+                    <div class="table-cell col-2"></div>
                 </div>
                 <div class="table-row table-row1 order row">
                     <div class="table-cell col-2 px-2">
@@ -55,103 +55,119 @@
                             <p class="m-10 product-name p-10">客製化禮盒</p>
                         </div>
                     </div>
-                    <div class="table-cell item col-4 ">
-                        <li> 規格:四格</li>
-                        <li>內容物:伯爵紅茶磅蛋糕,瑪德蓮,洋蔥番茄鹹餅乾(鹹),蔓越莓方餅</li>
-                        <li>禮物盒:紅色紙盒</li>
-                        <li>紙袋:紅色紙袋</li>
+                    <div class="table-cell item col-4 p-3">
+                        <li>規格:四格</li>
+                        <li>內容物:<%= cookie1%>,
+                            <%= cookie4%><br>
+                            <%= cookie3%>,<%= cookie2%></li>
+                        <li>禮物盒:<%= boxcolor%></li>
+                        <li>紙袋:<%= bagcolor%></li>
                     </div>
                     <div class="table-cell item col-3  p-0">
-                        <div>你是我生命中最美麗的浪漫。愛你直到永遠！</div>
+                        <div><%= cardcontent%></div>
                     </div>
                     <!-- <div class="table-cell item col-1 row"> -->
                     <!-- </div> -->
                     <div class="table-cell item col-3 row">
-                        <div class="table-cell item col-2 "></div>
-                        <div class="table-cell item col-5 p-0">數量</div>
-                        <div class="table-cell item col-5 amount m-0 p-0">
-                            <span class="quantity">1</span>
+                        <div class="row">
+                            <div class="table-cell item col-2 "></div>
+                            <div class="table-cell item col-5 p-0">&nbsp;&nbsp;數量:</div>
+                            <div class="table-cell item col-5 amount m-0 p-0">
+                                <span class="quantity">&nbsp;&nbsp;<%= quantity%>件</span>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="table-cell item col-2 "></div>
-                            <div class="table-cell item col-5 p-0">價格</div>
-                            <div class="table-cell item col-5 price m-0 p-0"> $410</div>
+                            <div class="table-cell item col-5 p-0">&nbsp;&nbsp;價格:</div>
+                            <div class="table-cell item col-5 price m-0 p-0"> &nbsp;&nbsp;$<%= cprice%></div>
                         </div>
                         <div class="row">
                             <div class="table-cell item col-2 "></div>
-                            <div class="table-cell item col-5 p-0">小計</div>
-                            <div class="table-cell item col-5 price-total m-0 p-0"> $410</div>
+                            <div class="table-cell item col-5 p-0">&nbsp;&nbsp;小計:</div>
+                            <div class="table-cell item col-5 price-total m-0 p-0">&nbsp;&nbsp;$<%= cprice_total%></div>
                         </div>
                     </div>
                     <!-- <div class="table-cell item col-1"> -->
                     </div>
-                </div>
-                <div class="table-row table-row1 order row">
-                    <div class="table-cell col-2">
-                        <div class="product-info">
-                            <img src="/pic/product/pd1_pic1.png" width="150px" alt="Product 2">
-                            <p class="product-name">彤粉情人節禮盒</p>
+                    <div class="table-row table-row1 order row">
+                        <div class="table-cell col-2 px-2">
+                            <div class="product-info p-10">
+                                <img class="m-10" src="<%= p_pic%>" width="150px" alt="Product 1">
+                                <p class="m-10 product-name p-10"><%= pd_name%></p>
+                            </div>
+                        </div>
+                        <div class="table-cell item col-4 ">
+                            <li class="p-3"><%= pd_content%></li>
+                        </div>
+                        <div class="table-cell item col-3  p-0">
+                            <!-- <div>你是我生命中最美麗的浪漫。愛你直到永遠！</div> -->
+                        </div>
+                        <!-- <div class="table-cell item col-1 row"> -->
+                        <!-- </div> -->
+                        <div class="table-cell item col-3 row">
+                            <div class="row">
+                                <div class="table-cell item col-2 "></div>
+                                <div class="table-cell item col-5 p-0">&nbsp;&nbsp;數量:</div>
+                                <div class="table-cell item col-5 amount m-0 p-0">
+                                    <span class="quantity">&nbsp;&nbsp;<%= quantit1%>件</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="table-cell item col-2 "></div>
+                                <div class="table-cell item col-5 p-0">&nbsp;&nbsp;價格:</div>
+                                <div class="table-cell item col-5 price m-0 p-0"> &nbsp;&nbsp;$<%= p_price%></div>
+                            </div>
+                            <div class="row">
+                                <div class="table-cell item col-2 "></div>
+                                <div class="table-cell item col-5 p-0">&nbsp;&nbsp;小計:</div>
+                                <div class="table-cell item col-5 price-total m-0 p-0"> &nbsp;&nbsp;$<%= price_total%></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="table-cell item col-2 ">
-                        內含點心品項 11 入，包括 2 入 法式點心、8 入手工餅乾以及脆餅 1 包
-                    </div>
-                    <div class="table-cell item col-3  p-0">
-                    </div>
-                    <div class="table-cell item col-1 row">
-                    </div>
-                    <div class="table-cell item col-4 row">
-                        <div class="table-cell item col-1 "></div>
-                        <div class="table-cell item col-5 p-0">數量</div>
-                        <div class="table-cell item col-5 amount m-0 p-0">
-                            <span class="quantity">1</span>
-                        </div>
-                        <div class="row">
-                            <div class="table-cell item col-1 "></div>
-                            <div class="table-cell item col-5 p-0">價格</div>
-                            <div class="table-cell item col-6 price m-0 p-0"> $410</div>
-                        </div>
-                        <div class="row">
-                            <div class="table-cell item col-1 "></div>
-                            <div class="table-cell item col-5 p-0">小計</div>
-                            <div class="table-cell item col-6 price-total m-0 p-0"> $410</div>
-                        </div>
-                    </div>
-                    <div class="table-cell item col-1">
-                    </div>
-                </div>
                 <div class="table-footer">
                     <div class="table-row table-row1 row">
                         <div class="table-cell col-3"></div>
                         <div class="table-cell col-3"></div>
-                        <div class="table-cell col-2"></div>
-                        <div class="table-cell item col-2">總計商品數：</div>
-                        <div class="table-cell item col-2 product-amount">2件</div>
+                        <div class="table-cell col-3"></div>
+                        <div class="table-cell item col-3 row">
+                            <div class="col-7">商品總計:</div>
+                            <div class="col-5">2件</div>
+                        </div>
+                        <!-- <div class="table-cell item col-1 product-amount ">2件</div> -->
                     </div>
                     <div class="table-row table-row1 row">
                         <div class="table-cell col-3"></div>
                         <div class="table-cell col-3"></div>
-                        <div class="table-cell col-2"></div>
-                        <div class="table-cell item col-2">商品金額：</div>
-                        <div class="table-cell item col-2 product-total">$910</div>
+                        <div class="table-cell col-3"></div>
+                        <div class="table-cell item col-3 row">
+                            <div class="col-7">商品金額:</div>
+                            <div class="col-5">$<%= cp_total%></div>
+                        </div>
+                        <!-- <div class="table-cell item col-1 product-amount ">2件</div> -->
                     </div>
                     <div class="table-row table-row1 row">
                         <div class="table-cell col-3"></div>
                         <div class="table-cell col-3"></div>
-                        <div class="table-cell col-2"></div>
-                        <div class="table-cell item col-2">運費：</div>
-                        <div class="table-cell item col-2 deliver-fee">$80</div>
+                        <div class="table-cell col-3"></div>
+                        <div class="table-cell item col-3 row">
+                            <div class="col-7">運費金額:</div>
+                            <div class="col-5">$<%= deliever_fee%></div>
+                        </div>
+                        <!-- <div class="table-cell item col-1 product-amount ">2件</div> -->
                     </div>
-                    <div class="table-row table-row1 row p-10">
+                    <div class="table-row table-row1 row">
                         <div class="table-cell col-3"></div>
                         <div class="table-cell col-3"></div>
-                        <div class="table-cell col-2"></div>
-                        <div class="table-cell item col-2">訂單總額：</div>
-                        <div class="table-cell item col-2 cash-total ">$990</div>
+                        <div class="table-cell col-3"></div>
+                        <div class="table-cell item col-3 row">
+                            <div class="col-7">訂單總計:</div>
+                            <div class="col-5">$<%= order_total%></div>
+                        </div>
+                        <!-- <div class="table-cell item col-1 product-amount ">2件</div> -->
                     </div>
                 </div>
+                </div>
             </div>
-        </div>
     </div>
     <%-include('footer') %>
     <script src="/js/bootstrap.bundle.js"></script>

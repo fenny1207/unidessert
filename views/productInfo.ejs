@@ -27,8 +27,8 @@
         <div id="headerPage" class="page-top-position"></div>
         <!-- 麵包屑 -->
         <ul class="breadcrumb">
-            <li><a href="/product_singel.ejs">精選單品</a></li>
-            <li>單品資訊</li>
+            <li><a href="/product">精選禮盒</a></li>
+            <li>禮盒資訊</li>
         </ul>
 
         <!-- 產品資訊 -->
@@ -143,17 +143,17 @@
         <div class="carousel">
             <div class="slider_width">
                 <div class="slider_card">
-                    <img src="/pic/product/pd3_pic1.png" alt="">
+                    <img src="/pic/product/pd3_pic1.png" alt="" id="recommend_img1">
                     <div>法式菱格紋禮盒</div>
                     <div>NT 768</div>
                 </div>
                 <div class="slider_card">
-                    <img src="/pic/product/pd4_pic1.png" alt="">
+                    <img src="/pic/product/pd4_pic1.png" alt="" id="recommend_img2">
                     <div>金緻紅禮盒</div>
                     <div>NT 938</div>
                 </div>
                 <div class="slider_card">
-                    <img src="/pic/product/pd2_pic1.png" alt="">
+                    <img src="/pic/product/pd2_pic1.png" alt="" id="recommend_img3">
                     <div>湛藍禮盒</div>
                     <div>NT 798</div>
                 </div>
@@ -163,80 +163,6 @@
 
         <!-- 頁腳 -->
         <%- include("./footer.ejs") %>
-
-            <!-- Javascript Code of the tab -->
-            <!-- <script>
-                // var axios = require('axios')
-                // import axios from "axios";
-                function selectTab(tabIndex) {
-                    //Hide All Tabs
-                    document.getElementById("tab1Content").style.display = "none";
-                    document.getElementById("tab2Content").style.display = "none";
-                    //Show the Selected Tab
-                    document.getElementById("tab" + tabIndex + "Content").style.display = "block";
-                }
-                function selectTabStyle(tabIndex) {
-                    document.getElementById("tab1").style.borderBottom = "none";
-                    document.getElementById("tab2").style.borderBottom = "none";
-                    document.getElementById("tab" + tabIndex).style.borderBottom = "5px solid #b44a60";
-                }
-                function changeImg(i) {
-                    var side_pic = document.getElementById('sidePic' + i);
-                    var attrSrc = side_pic.getAttribute('src');
-                    document.getElementById('mainPic').setAttribute('src', attrSrc);
-
-                }
-                function plus() {
-                    // var product_quantity = 1;
-                    var product_quantity = document.getElementById('productCount').innerHTML
-                    var sum = parseInt(product_quantity) + 1
-                    document.getElementById('productCount').innerHTML = sum;
-                    document.getElementById('productCount_input').value = sum
-                }
-                function minus() {
-                    let i = document.getElementById('productCount').innerHTML;
-                    let total;
-                    if (i == '1') {
-                        total = 1;
-                    } else {
-                        total = parseInt(i) - 1;
-                    }
-                    document.getElementById('productCount').innerHTML = total;
-                }
-                document.getElementById('submit_form').addEventListener('submit', (e)=>{
-                    e.preventDefault();
-                })
-                
-                // let data = {
-                //     "uid": "1",
-                //     "deliever_fee": "100",
-                //     "order_total": "390",
-                //     "order_date": "2023-07-09",
-                //     "recipient": "",
-                //     "recipient_address": "",
-                //     "recipient_phone": "",
-                //     "recipient_email": "",
-                //     "arrive_date": "2023-07-12",
-                //     "payment_type": "貨到付款",
-                //     "status": "購物車"
-                // }
-                // const addproduct = () => {
-                //     axios({
-                //         url: 'http://localhost:5678/product/productInfo',
-                //         method: 'post',
-                //         data: data,
-                //         headers: {
-                //             "Content-Type": "application/json"
-                //         }
-                //     }).then(result => {
-                //         console.log(result.data)
-                //     }).catch(err => {
-                //         console.log(err.message)
-                //     })
-
-                // }
-                // document.getElementById('cart_button').addEventListener('click', addproduct())
-            </script> -->
 
 </body>
 

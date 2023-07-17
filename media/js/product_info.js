@@ -41,6 +41,11 @@ function minus() {
     document.getElementById('productCount_input').value = sum
 }
 $(document).ready(function () {
+    let random_recommend = Math.floor(Math.random()*7) + 1;
+    // console.log(random_recommend)
+    document.getElementById('recommend_img1').src = `/pic/product/pd${random_recommend}_pic1.png`
+    document.getElementById('recommend_img2').src = `/pic/product/pd${random_recommend + 1 || 1}_pic1.png`
+    document.getElementById('recommend_img3').src = `/pic/product/pd${random_recommend + 2 || 2}_pic1.png`
     $("#addtocart").on('click', function(e) {
         e.preventDefault();
         let amount = document.getElementById('productCount_input').value

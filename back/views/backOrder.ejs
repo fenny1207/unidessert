@@ -42,21 +42,31 @@
                           </tr>
                         </thead>
                         <tbody class="text-center">
-                          <%for (let k=0; k < cat.length; k++) { %>
+                          <%for (let k=0; k < order_list.length; k++) { %>
                             <tr>
-                                <th scope="row"><%= cat[k].oid %></th>
-                                <td><%= cat[k].order_date %></td>
-                                <td><%= cat[k].order_status %></td>
-                                <td><%= cat[k].uid %></td>
-                                <td><%= cat[k].recipient %></td>
-                                <td><%= cat[k].order_total %></td>
+                                <th scope="row"><%= order_list[k].oid %></th>
+                                <td><%= order_list[k].order_date %></td>
+                                <td><%= order_list[k].order_status %></td>
+                                <td><%= order_list[k].uid %></td>
+                                <td><%= order_list[k].recipient %></td>
+                                <td><%= order_list[k].order_total %></td>
                                 <th ><button><a href="/backOrderEdit">編輯</a></button>
                                     <button><a href="/backOrderEdit">刪除</a></button>
                                 </th>
                               </tr>
                             <%}%>
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="">
+                                    <%for (let i=0; i <= all_page; i++) { %>
+                                        <span><a href="<%= i%>"><%= i%></a></span>
+                                    <%}%>
+                                </td>
+                            </tr>
+                        </tfoot>
                       </table>
+
                 </div>
             </div>
         </div>

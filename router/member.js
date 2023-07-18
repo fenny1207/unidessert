@@ -45,11 +45,11 @@ app.use(session({
 }));
 
 
-app.get('/', function (req, res) {
-  res.render('index.ejs');
-})
+// app.get('/', function (req, res) {
+//   res.render('index.ejs');
+// })
 
-app.get('/user', (req, res) => {
+app.get('/', (req, res) => {
   res.render('user.ejs');
 })
 

@@ -590,16 +590,17 @@
                 });
 
             })
-            $(document).ready(function () {
+            
                 
-                $("#cardsection").on('submit', function (e) {
-                    var text = document.getElementById('cardtext').value
-                    // console.log(e)
-                    // console.log("這是text");
-                    console.log(text);
-                    document.getElementById("showcard").value = text;
-                })
+            $("#cardsection").on('submit', function (e) {
+                e.preventDefault();
+                var text = document.getElementById('cardtext').value
+                // console.log(e)
+                // console.log("這是text");
+                // console.log(text);
+                document.getElementById("showcard").value = text;
             })
+
             // $(function () {
             //     $('#cardbtn').click(function () {
             //         // console.log("lll")

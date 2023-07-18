@@ -7,6 +7,7 @@ var axios = require('axios')
 var ejs = require('ejs');
 var mysql = require('mysql');
 var bcrypt = require('bcrypt');
+
 var saltRounds = 10; // 設定 salt 的複雜度，數字越大越安全，但計算時間也越長
 const member = require('./router/member.js');
 // var users = require('./routes/user.js');

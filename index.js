@@ -240,7 +240,7 @@ app.get("/order", (req, res) => {
     // var sql = "SELECT * FROM orderlist WHERE oid = ? and recipient = ? and order_total =? ";
     var sql = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b WHERE uid = ?";
     conn.query(sql,[1], (err, data) => {
-        console.log(sql);
+        // console.log(sql);
         if (err) return console.log(err.message)
         let uid = data[0].uid;
         res.render('order.ejs', {

@@ -70,18 +70,18 @@
             <div class="container right-panel-active">
               <!-- 註冊 -->
               <div class="container__form container--signup">
-                <form action="/register" class="form" id="form1" method="post">
+                <form action="/user/register" class="form" id="form1" method="post">
                   <h2 class="form__title">註冊</h2>
                   <input type="text" placeholder="姓名" name="name" class="input" required />
                   <input type="email" placeholder="電子信箱" id="regEmail" name="email" class="input"
                     pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required />
-                  <div class="row">
-                    <div class="col-7">
+                  <div class="row-no">
+                    <div class="col-5">
                       <input type="text" placeholder="驗證碼" name="verificationCode" class="input verificationCode "
                         minlength="6" oninput="setCustomValidity('');" oninvalid="setCustomValidity('請輸入驗證碼');"
                         required />
                     </div>
-                    <div class="col-5 pt-2 ">
+                    <div class="col-7 btn1">
                       <input type="button" class=" btn " value="發送驗證碼" id="verificationbtn"
                         onclick="sendVCode();"></input>
                     </div>
@@ -99,20 +99,15 @@
 
               <!-- 登入 -->
               <div class="container__form container--signin">
-                <form action="/login" class="form" id="form2" method="post">
+                <form action="/user/login" class="form" id="form2" method="post">
                   <h2 class="form__title">登入</h2>
                   <input type="email" placeholder="電子信箱" id="emailInput" name="email" class="input"
-                    pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required />
+                    pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required  value="a0922077081@gmail.com"/>
                   <input type="password" placeholder="密碼" id="passwordInput" name="password" class="input" minlength="8"
-                    pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$" required />
+                    pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$" required value="asd60531" />
                   <a href="#" class="link" style="color: red;">忘記密碼?</a>
                   <input type="submit" class="btn" value="登入" />
-                  <p>其他登入方式</p>
-                  <div style="display: inline-block;">
-                    <a href=""><i class="fa-brands fa-facebook fa-2xl" style="color: #702f43;"></i></a>
-                    <a href=""><i class="fa-brands fa-google fa-2xl" style="color: #702f43;"></i></a>
-                    <a href=""><i class="fa-brands fa-line fa-2xl" style="color: #702f43;"></i></a>
-                  </div>
+                  
                 </form>
               </div>
 
@@ -188,7 +183,7 @@
               function sendEmail() {
                 const email = document.getElementById("regEmail").value;
                 console.log(email)
-                fetch(`/verify?email=${email}`, {
+                fetch(`/user/verify?email=${email}`, {
                   method: "Get",
                   // headers: {
                   //   "Content-Type": "application/json"

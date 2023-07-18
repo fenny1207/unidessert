@@ -45,9 +45,6 @@ app.use(session({
 }));
 
 
-// app.get('/', function (req, res) {
-//   res.render('index.ejs');
-// })
 
 app.get('/', (req, res) => {
   res.render('user.ejs');
@@ -142,6 +139,7 @@ app.post('/login', (req, res) => {
   const selectUserQuery = 'SELECT * FROM user WHERE uemail = ?';
 
   connection.query(selectUserQuery, [email], (err, results) => {
+    
     if (err) {
       res.render('user', { error: true, title: "登入失敗", message: 'Email 尚未被註冊', showAlert: false });
 
@@ -155,12 +153,11 @@ app.post('/login', (req, res) => {
           // 密碼正確，登入成功
           const user = {
             email: results[0].uemail,
-            name: results[0].uemail 
           };
 
           req.session.loggedIn = true;
           req.session.user = user; // 將使用者資訊儲存到 session 中
-          // console.log(user);
+          console.log(user);
           // 密碼正確，登入成功
           res.render('user', { error: false, title: "登入成功", message: '歡迎回來', showAlert: true });
 
@@ -173,6 +170,21 @@ app.post('/login', (req, res) => {
     }
   });
 });
+
+function auth(req, res, next) {
+  if (req.session.user) {
+  console.log('authenticated')
+  next()
+  } else {
+  console.log('not authenticated')
+  return res.redirect('/user')
+  }
+}
+app.get('/order', auth, (req, res) => {
+  const userName = req.session.user
+  return res.render('welcome', { message: `Welcome back, ${userName}!`
+  })
+})
 
 app.get('/protected', (req, res) => {
   if (req.session && req.session.user) {
@@ -198,7 +210,7 @@ app.use((req, res, next) => {
           console.error('無法銷毀 session:', err);
         }
         // 導向登入頁面
-        res.redirect('/login');
+        res.redirect('/user');
       });
     } else {
       // 更新 session 的 lastAccess 時間

@@ -73,23 +73,13 @@ app.post('/', (req, res) => {
 // app.get('/backOrder',function(req,res){
 //     res.render('backOrder.ejs');
 // })
-app.get('/backOrder', function (req, res) {
-    conn.query(`SELECT * FROM orderlist `,
-        function (err, bee) {
-            // console.log(bee);
-            //回傳網頁給使用者
-            res.render('backOrder.ejs', {
-                cat: bee
-            })
-        })
-});
-app.get('/backMember', function (req, res) {
-    conn.query(`SELECT * FROM user `,
-    function (err, bee) {
+app.get('/backOrder',function(req,res){
+    conn.query( `SELECT * FROM orderlist `,
+    function(err,bee){
         // console.log(bee);
         //回傳網頁給使用者
-        res.render('backMember.ejs', {
-            cat: bee
+        res.render('backOrder.ejs',{
+            order_list:data
         })
     })
 });

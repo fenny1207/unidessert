@@ -93,7 +93,7 @@
                     pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$" minlength="8" oninput="setCustomValidity('');"
                     onchange="if(document.getElementById('inputPassword').value != document.getElementById('ConfirmPassword').value){setCustomValidity('密碼不吻合');}"
                     required />
-                  <input type="submit" class="btn" value="註冊" />
+                  <input type="button" class="btn" value="註冊" onclick="submitForm();" />
                 </form>
               </div>
 
@@ -102,12 +102,12 @@
                 <form action="/user/login" class="form" id="form2" method="post">
                   <h2 class="form__title">登入</h2>
                   <input type="email" placeholder="電子信箱" id="emailInput" name="email" class="input"
-                    pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required  value="a0922077081@gmail.com"/>
+                    pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required value="a0922077081@gmail.com" />
                   <input type="password" placeholder="密碼" id="passwordInput" name="password" class="input" minlength="8"
                     pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$" required value="asd60531" />
                   <a href="#" class="link" style="color: red;">忘記密碼?</a>
                   <input type="submit" class="btn" value="登入" />
-                  
+
                 </form>
               </div>
 
@@ -140,9 +140,16 @@
               });
 
             </script>
-            
-            
-            
+
+            <script>
+              function submitForm() {
+                // 自己寫提交表單的動作
+                // (因為如果直接按發送驗證碼沒有填寫email會跳提醒，就算後面都填寫完全，也會一直跳填寫email的提醒)
+                document.getElementById("form1").submit();
+              }
+
+            </script>
+
             <script>
               function sendVCode() {
                 const emailInput = document.getElementById("regEmail");
@@ -198,7 +205,8 @@
                     console.error(error);
                   });
               }
-            // </script>
+            </script>
+
 </body>
 
 </html>

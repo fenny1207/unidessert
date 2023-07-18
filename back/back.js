@@ -3,9 +3,9 @@ var app = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 var path = require('path');
-var axios = require('axios')
 var ejs = require('ejs');
 var mysql = require('mysql');
+app.set('view engine', 'ejs');
 var conn = mysql.createConnection({
     host: 'localhost',
     port: '3306',
@@ -21,25 +21,55 @@ conn.connect(function (err) {
         console.log("資料庫正常啟動");
     }
 });
-var expressSession = require('express-session');
-var s = expressSession({
-    secret: 'unidessert',
-    resave: true,
-    saveUninitialized: true,
+// 登入的 session
+var Session = require('express-session');
+var Session = Session({
+    secret: 'unidessertback',
+    resave: false,
+    saveUninitialized: false,
     cookie: {
-        path: '/',
-        httpOnly: true,
-        secure: false,
+        // path: '/',
+        // httpOnly: true,
+        // secure: false,
         maxAge: 50 * 1000
     }
 })
-app.use(s);
-app.set('view engine', 'ejs');
+app.use(Session);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 // 把media移到根目錄
 app.use(express.static('media'));
 app.get('/', function (req, res) {
-    res.render('backindex.ejs');
+
+    if (!req.session.islogin) {
+        console.log('前端get沒session');
+        // res.render('backindex.ejs');
+        return res.render('backindex.ejs');
+        // res.redirect('backindex.ejs');
+    }
+    console.log('前端get有session')
+    res.render('backProduct.ejs');
+    // res.redirect('backProduct.ejs');
+    // res.render('backProduct.ejs');
 })
+app.post('/', (req, res) => {
+    if (req.body.username !== 'admin' || req.body.password !== '6688') {
+        console.log('後端post失敗')
+        return res.send({
+            status: 1,
+            msg: '登入失敗'
+        })
+    }
+    req.session.user = req.body;
+    req.session.islogin = true;
+    console.log('後端post成功')
+    res.send({
+        status: 0,
+        msg: '登入成功',
+    })
+    // console.log('登入成功')
+})
+
 // app.get('/backOrder',function(req,res){
 //     res.render('backOrder.ejs');
 // })

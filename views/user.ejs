@@ -75,14 +75,14 @@
                   <input type="text" placeholder="姓名" name="name" class="input" required />
                   <input type="email" placeholder="電子信箱" id="regEmail" name="email" class="input"
                     pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required />
-                  <div class="row-no">
+                  <div class="row">
                     <div class="col-5">
                       <input type="text" placeholder="驗證碼" name="verificationCode" class="input verificationCode "
                         minlength="6" oninput="setCustomValidity('');" oninvalid="setCustomValidity('請輸入驗證碼');"
                         required />
                     </div>
                     <div class="col-7 btn1">
-                      <input type="button" class=" btn " value="發送驗證碼" id="verificationbtn"
+                      <input type="button" class=" btn mt-2" value="發送驗證碼" id="verificationbtn"
                         onclick="sendVCode();"></input>
                     </div>
                   </div>

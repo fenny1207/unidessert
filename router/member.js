@@ -7,7 +7,7 @@ const { sendEmail } = require('./nodemailer');
 const { generateVCode } = require('./nodemailer');
 const session = require('express-session');
 const app = express();
-const port = 5678;
+
 
 // 設定 EJS 為視圖引擎
 app.set('view engine', 'ejs');
@@ -36,11 +36,11 @@ connection.connect((err) => {
 
 //設置session
 app.use(session({
-  secret: 'your-secret-key',
+  secret: 'unidessert',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 5 * 60 * 1000 // 5 分鐘的過期時間
+    maxAge: 10 * 60 * 1000 // 10分鐘的過期時間
   }
 }));
 
@@ -69,64 +69,6 @@ const registerTime = () => {
     (ss > 9 ? '' : '0') + ss
   ].join('');
 }
-
-// 註冊路由
-// app.post('/register', (req, res) => {
-//   const { name, email, password, verificationCode } = req.body;
-
-//   // 檢查使用者電子信箱是否已存在於資料庫
-//   const checkQuery = 'SELECT * FROM user WHERE uemail = ?';
-
-//   connection.query(checkQuery, [email], (err, results) => {
-//     if (err) throw err;
-
-//     if (results.length > 0) {
-//       // 使用者電子信箱已存在
-//       res.render('user', { error: true, title: "註冊失敗", message: 'Email 已經被註冊過了', showAlert: false });
-//     } else {
-//       // 生成驗證碼
-//       const vCode = generateVCode();
-
-//       // 將驗證碼存儲在 session 中
-//       req.session.verificationCode = vCode;
-
-//       // 寄送驗證郵件
-//       sendEmail(email, vCode)
-//         .then(() => {
-//           // 驗證碼比對
-//           if (verificationCode !== vCode) {
-//             // 驗證碼不正確，彈出錯誤訊息給使用者
-//             res.render('user', { error: true, title: "驗證失敗", message: '驗證碼不正確', showAlert: false });
-//             return;
-//           }
-
-//           // 加密密碼
-//           bcrypt.hash(password, saltRounds, (err, hash) => {
-//             if (err) throw err;
-
-//             const hashedPassword = hash;
-//             const umembertime = registerTime();
-
-//             const insertQuery = 'INSERT INTO user (uemail, upwd, uname,  umembertime) VALUES (?, ?, ?, ?)';
-//             connection.query(insertQuery, [email, hashedPassword, name, umembertime], (err) => {
-//               if (err) throw err;
-
-//               // 清除 session 中的驗證碼資料
-//               req.session.verificationCode = null;
-
-//               res.render('user', { error: false, title: "註冊成功", message: '請重新登入', showAlert: true });
-//             });
-//           });
-//         })
-//         .catch(error => {
-//           // 郵件發送失敗，處理錯誤
-//           console.error('無法發送驗證郵件:', error);
-//           res.status(500).json({ message: '無法發送驗證郵件' });
-//         });
-//     }
-//   });
-// });
-
 
 
 // 在註冊路由之前處理驗證碼的路由
@@ -187,182 +129,12 @@ app.post('/register', (req, res) => {
           // 清除 session 中的驗證碼資料
           req.session.verificationCode = null;
 
-          // 寄送驗證郵件給使用者註冊的電子信箱
-          sendEmail(email, '註冊成功')
-            .then(() => {
-              // 郵件發送成功，重新導向到登入頁面
-              res.render('user', { error: false, title: "註冊成功", message: '請重新登入', showAlert: true });
-            })
-            .catch(error => {
-              // 郵件發送失敗，處理錯誤
-              console.error('無法發送註冊成功郵件:', error);
-              res.status(500).render('user', { error: true, title: "註冊成功", message: '無法發送註冊成功郵件', showAlert: true });
-            });
+          res.render('user', { error: false, title: "註冊成功", message: '請重新登入', showAlert: true });
         });
       });
     }
   });
 });
-
-// // 在註冊路由之前定義處理驗證碼的路由
-// app.post('/verify', (req, res) => {
-//   const { email } = req.body;
-
-//   // 生成驗證碼
-//   const verificationCode = generateVCode();
-
-//   // 將驗證碼存儲在 session 中
-//   req.session.verificationCode = verificationCode;
-
-//   // 寄送驗證郵件
-//   sendEmail(email, verificationCode)
-//     .then(() => {
-//       // 郵件發送成功，返回成功訊息給前端
-//       res.json({ message: '驗證郵件已成功發送' });
-//     })
-//     .catch(error => {
-//       // 郵件發送失敗，處理錯誤
-//       console.error('無法發送驗證郵件:', error);
-//       res.status(500).json({ message: '無法發送驗證郵件' });
-//     });
-// });
-
-// // 註冊路由
-// app.post('/register', (req, res) => {
-//   const { name, email, mobile, password, verificationCode } = req.body;
-
-//   // 檢查使用者電子信箱是否已存在於資料庫
-//   const checkQuery = 'SELECT * FROM user WHERE uemail = ?';
-
-//   connection.query(checkQuery, [email], (err, results) => {
-//     if (err) throw err;
-
-//     if (results.length > 0) {
-//       // 使用者電子信箱已存在
-//       res.render('user', { error: true, title: "註冊失敗", message: 'Email 已經被註冊過了', showAlert: false });
-//     } else {
-//       // 驗證碼比對
-//       if (!req.session || !req.session.verificationCode || verificationCode !== req.session.verificationCode) {
-//         // 驗證碼不正確，返回錯誤提示給使用者
-//         res.render('user', { error: true, title: "驗證失敗", message: '驗證碼不正確', showAlert: false });
-//         return;
-//       }
-
-//       // 生成加密密碼
-//       bcrypt.hash(password, saltRounds, (err, hash) => {
-//         if (err) throw err;
-
-//         const hashedPassword = hash;
-//         const umembertime = registerTime();
-
-//         const insertQuery = 'INSERT INTO user (uemail, upwd, uname,  umembertime) VALUES (?, ?, ?, ?, ?)';
-//         connection.query(insertQuery, [email, hashedPassword, name,  umembertime], (err) => {
-//           if (err) throw err;
-
-//           // 清除 session 中的驗證碼資料
-//           req.session.verificationCode = null;
-
-//           // 註冊成功，重新導向到登入頁面
-//           res.render('user', { error: false, title: "註冊成功", message: '請重新登入', showAlert: true });
-//         });
-//       });
-//     }
-//   });
-// });
-
-
-
-
-// app.post('/register', (req, res) => {
-//   const { name, email, mobile, password } = req.body;
-
-//   // 檢查使用者電子信箱是否已存在於資料庫
-//   const checkQuery = 'SELECT * FROM user WHERE uemail = ?';
-//   connection.query(checkQuery, [email], (err, results) => {
-//     if (err) throw err;
-
-//     if (results.length > 0) {
-//       // 使用者電子信箱已存在
-//       res.render('user', { error: true, title: "註冊失敗", message: 'Email 已經被註冊過了', showAlert: false });
-//     } else {
-//       const verificationCode = generateVCode();
-
-//       // 寄送驗證郵件
-//       sendEmail(email, verificationCode)
-//         .then(() => {
-//           // 郵件發送成功，進行註冊
-//           bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
-//             const umembertime = registerTime();
-
-//             // 使用者電子信箱可用，將資料插入資料庫
-//             const insertQuery = 'INSERT INTO user (uemail, upwd, uname, umobile, umembertime) VALUES (?, ?, ?, ?, ?)';
-//             connection.query(insertQuery, [email, hashedPassword, name, mobile, umembertime], (err) => {
-//               if (err) throw err;
-
-//               // 清除 session 中的驗證碼資料
-//               req.session.verificationCode = null;
-
-//               // 註冊成功，重新導向到登入頁面
-//               res.render('user', { error: false, title: "註冊成功", message: '請重新登入', showAlert: true });
-//             });
-//           });
-//         })
-//         .catch(error => {
-//           // 郵件發送失敗，處理錯誤
-//           console.error('無法發送驗證郵件:', error);
-//           res.render('user', { error: true, title: "註冊失敗", message: '無法發送驗證郵件', showAlert: false });
-//         });
-//     }
-//   });
-// });
-
-
-// app.post('/register', (req, res) => {
-//   const { name, email, mobile, password } = req.body;
-//   const verificationCode = generateVCode();
-//   // 檢查使用者電子信箱是否已存在於資料庫
-//   const checkQuery = 'SELECT * FROM user WHERE uemail = ?';
-//   connection.query(checkQuery, [email], (err, results) => {
-//     if (err) throw err;
-
-//     if (results.length > 0) {
-//       // 使用者電子信箱已存在
-//       res.render('user', { error: true, title: "註冊失敗", message: 'Email 已經被註冊過了', showAlert: false });
-//     } else {
-//       // 寄送驗證郵件
-//       sendEmail(email, verificationCode)
-//         .then(() => {
-//           // 郵件發送成功，進行註冊
-//           bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
-//             const umembertime = registerTime();
-
-//             // 使用者電子信箱可用，將資料插入資料庫
-//             const insertQuery = 'INSERT INTO user (uemail, upwd, uname, umobile, umembertime) VALUES (?, ?, ?, ?, ?)';
-//             connection.query(insertQuery, [email, hashedPassword, name, mobile, umembertime], (err) => {
-//               if (err) throw err;
-
-//               // 清除 session 中的驗證碼資料
-//               req.session.verificationCode = null;
-
-//               // 註冊成功，重新導向到登入頁面
-//               res.render('user', { error: false, title: "註冊成功", message: '請重新登入', showAlert: true });
-//             });
-//           });
-//         })
-//         .catch(error => {
-//           // 郵件發送失敗，處理錯誤
-//           console.error('無法發送驗證郵件:', error);
-//           res.render('user', { error: true, title: "註冊失敗", message: '無法發送驗證郵件', showAlert: false });
-//         });
-//     }
-//   });
-// });
-
-
-
-
-
-
 
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
@@ -382,12 +154,13 @@ app.post('/login', (req, res) => {
         if (isMatch) {
           // 密碼正確，登入成功
           const user = {
-            id: results[0].uid,
             email: results[0].uemail,
-            name: results[0].uemail // 這裡將名字改為使用者的電子郵件地址，這樣即使使用者名字重複，也能確保每個使用者都有唯一的識別符。
+            name: results[0].uemail 
           };
 
+          req.session.loggedIn = true;
           req.session.user = user; // 將使用者資訊儲存到 session 中
+          // console.log(user);
           // 密碼正確，登入成功
           res.render('user', { error: false, title: "登入成功", message: '歡迎回來', showAlert: true });
 
@@ -438,9 +211,9 @@ app.use((req, res, next) => {
 });
 
 // 啟動伺服器
-app.listen(port, () => {
-  var d = new Date();
-  console.log('胖丁: 伺服器啟動中' + d.toLocaleTimeString());
-});
+// app.listen(5678, () => {
+//   var d = new Date();
+//   console.log('胖丁: 伺服器啟動中' + d.toLocaleTimeString());
+// });
 
 module.exports = app;

@@ -37,7 +37,7 @@ var s = expressSession({
         path: '/',
         httpOnly: true,
         secure: false,
-        maxAge: 50 * 1000
+        maxAge: 500 * 1000
     }
 })
 app.use(s);
@@ -192,7 +192,7 @@ app.get("/order", (req, res) => {
     // var sql = "SELECT * FROM orderlist WHERE oid = ? and recipient = ? and order_total =? ";
     var sql = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b WHERE uid = ?";
     conn.query(sql, [1], (err, data) => {
-        console.log(sql);
+        // console.log(sql);
         if (err) return console.log(err.message)
         let uid = data[0].uid;
         res.render('order.ejs', {
@@ -355,21 +355,28 @@ app.get('/cart/fillout', function (req, res) {
     })
 })
 app.get('/member', auth,function (req, res) {
-    var sql = "select * from user ";
-    conn.query(sql, (err, data) => {
+    var userEmail = req.session.user.email; 
+    var sql = `select * from user where uemail = ?`;
+    conn.query(sql,[userEmail],(err, data) => {
         if (err) return console.log(err.message)
+        let userData = req.session.user;
+        let uid = userData.uid;
         // console.log(data[0].uemail);
-        let uemail = data[0].uemail;
-        let umobile = data[0].umobile;
-        let ubirth = data[0].ubirth;
-        let uname = data[0].uname;
+        let uemail = userData.uemail;
+        let umobile = userData.umobile;
+        let ubirth = userData.ubirth;
+        let uname = userData.uname;
+        console.log(uemail);
+        console.log(umobile);
+        console.log(ubirth);
         res.render('member.ejs', {
             member_user: data,
-            uid: req.body.uid,
-            uemail: uemail,
-            umobile: umobile,
-            ubirth: ubirth,
-            uname: uname
+            uid:uid,
+            uemail:uemail,
+            umobile:umobile,
+            ubirth:ubirth,
+            uname:uname,
+            userData:userData
         })
     })
 }).post('/member', (req, res) => {

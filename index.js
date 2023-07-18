@@ -8,7 +8,7 @@ var ejs = require('ejs');
 var mysql = require('mysql');
 var bcrypt = require('bcrypt');
 var saltRounds = 10; // 設定 salt 的複雜度，數字越大越安全，但計算時間也越長
-// var member = require('./routes/member.js');
+const member = require('./router/member.js');
 // var users = require('./routes/user.js');
 
 
@@ -187,54 +187,54 @@ app.get('/product/productInfo', function (req, res) {
         // console.log(results.insertId)
     })
 })
+app.use('/user',member);
+// app.get('/user', (req, res) => {
+//     res.render('user.ejs');
+// })
 
-app.get('/user', (req, res) => {
-    res.render('user.ejs');
-})
+// app.post('/register', (req, res) => {
+//     const { name, email, mobile, password } = req.body;
 
-app.post('/register', (req, res) => {
-    const { name, email, mobile, password } = req.body;
+//     // 檢查使用者電子信箱是否已存在於資料庫
+//     const checkQuery = 'SELECT * FROM user WHERE uemail = ? ';
+//     conn.query(checkQuery, [email], (err, results) => {
+//         if (err) throw err;
 
-    // 檢查使用者電子信箱是否已存在於資料庫
-    const checkQuery = 'SELECT * FROM user WHERE uemail = ? ';
-    conn.query(checkQuery, [email], (err, results) => {
-        if (err) throw err;
+//         if (results.length > 0) {
+//             // 使用者電子信箱已存在
+//             res.render('user', { error: true, showAlert: false, title: "註冊失敗", message: 'Email 已經被註冊過了' });
+//         } else {
+//             // 使用者電子信箱可用，將資料插入資料庫
+//             const insertQuery = 'INSERT INTO user (uemail, upwd, uname, umobile) VALUES (?, ?, ?, ?)';
+//             conn.query(insertQuery, [email, password, name, mobile], (err) => {
+//                 if (err) throw err;
 
-        if (results.length > 0) {
-            // 使用者電子信箱已存在
-            res.render('user', { error: true, showAlert: false, title: "註冊失敗", message: 'Email 已經被註冊過了' });
-        } else {
-            // 使用者電子信箱可用，將資料插入資料庫
-            const insertQuery = 'INSERT INTO user (uemail, upwd, uname, umobile) VALUES (?, ?, ?, ?)';
-            conn.query(insertQuery, [email, password, name, mobile], (err) => {
-                if (err) throw err;
+//                 // 註冊成功，重新導向到登入頁面
+//                 res.render('user', { error: false, showAlert: true, title: "註冊成功", message: '請重新登入' });
+//             });
+//         }
+//     });
 
-                // 註冊成功，重新導向到登入頁面
-                res.render('user', { error: false, showAlert: true, title: "註冊成功", message: '請重新登入' });
-            });
-        }
-    });
-
-});
+// });
 
 
-app.post('/login', (req, res) => {
-    const { email, password } = req.body;
+// app.post('/login', (req, res) => {
+//     const { email, password } = req.body;
 
-    const selectUserQuery = 'SELECT * FROM user WHERE uemail = ? AND upwd = ?';
+//     const selectUserQuery = 'SELECT * FROM user WHERE uemail = ? AND upwd = ?';
 
-    conn.query(selectUserQuery, [email, password], (err, results) => {
-        if (err) {
-            res.render('user', { error: true, showAlert: false, title: "登入失敗", message: 'Email 尚未註冊過了' });
+//     conn.query(selectUserQuery, [email, password], (err, results) => {
+//         if (err) {
+//             res.render('user', { error: true, showAlert: false, title: "登入失敗", message: 'Email 尚未註冊過了' });
 
-        } else if (results.length === 0) {
-            res.render('user', { error: true, showAlert: false, title: "登入失敗", message: '密碼輸入錯誤' });
+//         } else if (results.length === 0) {
+//             res.render('user', { error: true, showAlert: false, title: "登入失敗", message: '密碼輸入錯誤' });
 
-        } else {
-            res.render('user', { error: false, showAlert: true, title: "登入成功", message: '歡迎回來' });
-        }
-    });
-});
+//         } else {
+//             res.render('user', { error: false, showAlert: true, title: "登入成功", message: '歡迎回來' });
+//         }
+//     });
+// });
 
 app.get("/order", (req, res) => {
     // var sql = "SELECT * FROM orderlist WHERE oid = ? and recipient = ? and order_total =? ";

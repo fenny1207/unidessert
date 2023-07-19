@@ -188,19 +188,18 @@ app.get('/product/productInfo', function (req, res) {
     })
 })
 app.use('/user', member);
-app.get("/order", (req, res) => {
-    // var sql = "SELECT * FROM orderlist WHERE oid = ? and recipient = ? and order_total =? ";
-    var sql = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b WHERE uid = ?";
-    conn.query(sql, [1], (err, data) => {
-        // console.log(sql);
+app.get("/order",authUid, (req, res) => {
+    var uid =  res.locals.uid;
+    console.log(uid +"這是卡比受");
+    var sql = `SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.uid ='${uid}' ORDER BY a.order_date DESC;`;
+    conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)
         let uid = data[0].uid;
+        console.log(uid+'訂單');
         res.render('order.ejs', {
             member_info: data,
             uid: uid
         });
-        // var sql2 = "SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b ";
-
     });
 }).post("/order", (req, res) => {
     const { uid, oid, order_date, order_total, order_status, quantity } = req.body;
@@ -476,30 +475,31 @@ app.post('/addToCart', function(req, res) {
   });
 });
 
+
 app.get('/member', auth,function (req, res) {
     var userEmail = req.session.user.email; 
-    console.log(userEmail+'這是皮卡丘');
+    // console.log(userEmail+'這是皮卡丘');
     var sql = `SELECT uid, uname, umobile, uemail, ubirth FROM user where uemail='${userEmail}'`;
-    conn.query(sql,[userEmail],(err, data) => {
+    conn.query(sql,(err, data) => {
         if (err) return console.log(err.message)
-        let userData = data[0];;
-        console.log(userData+'這是皮卡丘userData');
+        let userData = data[0];
+        // console.log(userData+'這是皮卡丘userData');
         let uid = userData.uid;
-        // console.log(data[0].uemail);
+        console.log(data[0].uemail);
         let uemail = userData.uemail;
         let umobile = userData.umobile;
         let ubirth = userData.ubirth;
         let uname = userData.uname;
-        console.log(uemail);
-        console.log(umobile);
-        console.log(ubirth);
+        // console.log(uemail);
+        // console.log(umobile);
+        // console.log(ubirth);
         res.render('member.ejs', {
             member_user: data,
             uid:uid,
-            uemail:uemail,
-            umobile:umobile,
-            ubirth:ubirth,
             uname:uname,
+            umobile:umobile,
+            uemail:uemail,
+            ubirth:ubirth,
             userData:userData
         })
     })
@@ -549,6 +549,17 @@ function auth(req, res, next) {
         return res.redirect('/user')
     }
 }
+function authUid(req, res, next) {
+    var userEmail = req.session.user.email;
+    var sql = `SELECT * FROM user WHERE uemail = ?`;
+    conn.query(sql, [userEmail], (err, data) => {
+      if (err) return console.log(err.message);
+      let userData = data[0];
+      let uid = userData.uid;
+      res.locals.uid = uid;
+      next();
+    });
+  }
 
 
 

@@ -17,8 +17,9 @@
         </aside>
         <div class="container-uni col-12-uni col-md-9-uni col-lg-10-uni tab_content" id="">
           <div class="member_link mb-2-uni"><a class="active member_link_border_left" href="/member">歷史訂單</a></div>
-          <% for (let i = uid; i < member_info.length; i++) { %>
-            <div class="member_container">
+          <% for (let i = 0; i < member_info.length; i++) { %>
+            <% if (member_info[i].uid === uid) { %>
+              <div class="member_container">
               <form action="/order" id="oder" method="get">
                 <div class="row">
                   <div class="col-6 row">
@@ -45,7 +46,8 @@
                   </div>
                 </div>
               </form>
-            </div>
+              </div>
+            <%}%>
           <%}%>
         </div>
       </div>

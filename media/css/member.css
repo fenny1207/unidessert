@@ -1012,6 +1012,9 @@ footer .container-uni-footer .row-nowrap dd a img {
   font-family: "Noto Sans TC", sans-serif;
   display: block;
 }
+.member_linkleft > a:hover {
+  color: #B44A60;
+}
 
 .member_linkleft > a.active {
   color: #fff;

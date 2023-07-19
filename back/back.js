@@ -79,7 +79,7 @@ app.get('/backOrder',function(req,res){
         // console.log(bee);
         //回傳網頁給使用者
         res.render('backOrder.ejs',{
-            order_list:data
+            order_list:bee
         })
     })
 });

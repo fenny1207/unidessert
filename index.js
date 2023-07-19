@@ -310,8 +310,69 @@ app.get('/order/historyOrder', (req, res) => {
 // })
 
 app.get('/cart', function (req, res) {
-    res.render('cart1.ejs');
-})
+    // 取得頁面資料
+    const sql = `
+      SELECT od.*, c.*, p.*
+      FROM orderdetails od
+      JOIN c_detail2 c ON od.cdetailid = c.cdetailid
+      JOIN product p ON p.pid = od.pid
+    `;
+
+    conn.query(sql, function(err, results) {
+      if (err) {
+        console.error('無法取得資料', err);
+        return;
+      }
+      res.render('cart1.ejs', { c_detail2: results, product: results });
+    });
+  });
+  
+  // 建立訂單信息
+  app.post('/addToCart', function(req, res) {
+    const { productId, price, quantity } = req.body;
+    const userId = req.session.userId;
+
+    // 查詢關於客製化的資料
+    const getCdetailQuery = `
+      SELECT *
+      FROM c_detail2
+      WHERE cdetailid = ?
+    `;
+    conn.query(getCdetailQuery, [productId], function(err, cdetailResult) {
+      if (err) {
+        console.error('無法取得資料', err);
+        return;
+      }
+  
+      if (cdetailResult.length === 0) {
+        console.error('無法尋找關聯');
+        return;
+      }
+  
+      const cdetail = cdetailResult[0];
+  
+      // 將產品資料傳至orderdetails
+      const insertOrderDetailQuery = `
+        INSERT INTO orderdetails (cdetailid, pid, quantity, cprice)
+        VALUES (?, ?, ?, ?)
+      `;
+
+      // 根據產品的價格及數量計算價格總額
+      const totalPrice = price * quantity; 
+      conn.query(insertOrderDetailQuery, [cdetail.cdetailid, productId, quantity, totalPrice], function(err, insertResult) {
+        if (err) {
+          console.error('傳入資料錯誤', err);
+          return;
+        }
+  
+        console.log('已成功加入資料');
+  
+        // 取得回應
+        res.json({ message: '已成功加入購物車' });
+      });
+    });
+  });
+
 app.get('/cart/fillout', function (req, res) {
     conn.query('SELECT * FROM orderlist inner join oderdetails on orderlist.oid =  oderdetails.oid', (err, results) => {
         if (err) return console.log(err.message)
@@ -354,6 +415,67 @@ app.get('/cart/fillout', function (req, res) {
         }
     })
 })
+
+app.get('/cart/check', function (req, res) {
+    const sql = `
+    SELECT od.*, c.*, p.*
+      FROM orderdetails od
+      JOIN c_detail2 c ON od.cdetailid = c.cdetailid
+      JOIN product p ON p.pid = od.pid
+  `;
+
+  conn.query(sql, function(err, results) {
+    if (err) {
+      console.error('無法取得資料：', err);
+      return;
+    }
+    res.render('cart3.ejs', { c_detail2: results, product: results });
+  });
+});
+
+// 添加到購物車
+app.post('/addToCart', function(req, res) {
+  const { productId, price, quantity } = req.body;
+
+  // 查詢信息
+  const getCdetailQuery = `
+    SELECT *
+    FROM c_detail2
+    INNER JOIN orderdetails ON c_detail2.c_detail2_id = orderdetails.c_detail2_id
+    WHERE orderdetails.product_id = ?
+  `;
+  conn.query(getCdetailQuery, [productId], function(err, cdetailResult) {
+    if (err) {
+      console.error('檢索失敗', err);
+      return;
+    }
+
+    if (cdetailResult.length === 0) {
+      console.error('找不到關聯');
+      return;
+    }
+
+    const cdetail = cdetailResult[0];
+
+    // 將產品資料插入orderdetails 
+    const insertOrderDetailQuery = `
+      INSERT INTO orderdetails (c_detail2_id, product_id, quantity, price)
+      VALUES (?, ?, ?, ?)
+    `;
+    const totalPrice = price * quantity; 
+    conn.query(insertOrderDetailQuery, [cdetail.c_detail2_id, productId, quantity, totalPrice], function(err, insertResult) {
+      if (err) {
+        console.error('將產品數據更新在資料庫', err);
+        return;
+      }
+
+      console.log('已成功添加到 orderdetails ');
+
+      res.json({ message: '已成功更新到購物車' });
+    });
+  });
+});
+
 app.get('/member', auth,function (req, res) {
     var userEmail = req.session.user.email; 
     var sql = `select * from user where uemail = ?`;
@@ -394,9 +516,6 @@ app.get('/member', auth,function (req, res) {
 })
 
 
-app.get('/cart/complete', function (req, res) {
-    res.render('order3.ejs');
-})
 
 app.get('/about', function (req, res) {
     res.render('about.ejs');

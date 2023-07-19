@@ -69,11 +69,25 @@ app.post('/', (req, res) => {
     })
     // console.log('登入成功')
 })
-
+app.get('/backMember', function (req, res) {
+    conn.query(`SELECT * FROM user `,
+        function (err, bee) {
+            // console.log(bee);
+            //回傳網頁給使用者
+            res.render('backMember.ejs', {
+                cat: bee
+            })
+        })
+});
 // app.get('/backOrder',function(req,res){
 //     res.render('backOrder.ejs');
 // })
 app.get('/backOrder',function(req,res){
+    if (!req.session.islogin) {
+        console.log('前端get沒session');
+        return res.render('backindex.ejs');
+    }
+    console.log('前端get有session')
     conn.query( `SELECT * FROM orderlist `,
     function(err,bee){
         // console.log(bee);
@@ -84,6 +98,11 @@ app.get('/backOrder',function(req,res){
     })
 });
 app.get('/backOrderEdit', function (req, res) {
+    if (!req.session.islogin) {
+        console.log('前端get沒session');
+        return res.render('backindex.ejs');
+    }
+    console.log('前端get有session')
     conn.query(`SELECT * FROM orderlist `,
         function (err, bee) {
             // console.log(bee);
@@ -95,18 +114,43 @@ app.get('/backOrderEdit', function (req, res) {
 });
 //navbar之後用ejs插入就好
 app.get('/backnavbar', function (req, res) {
+    if (!req.session.islogin) {
+        console.log('前端get沒session');
+        return res.render('backindex.ejs');
+    }
+    console.log('前端get有session')
     res.render('backnavbar.ejs');
 })
 app.get('/backProduct', function (req, res) {
+    if (!req.session.islogin) {
+        console.log('前端get沒session');
+        return res.render('backindex.ejs');
+    }
+    console.log('前端get有session')
     res.render('backProduct.ejs');
 })
 app.get('/backProductAdd', function (req, res) {
+    if (!req.session.islogin) {
+        console.log('前端get沒session');
+        return res.render('backindex.ejs');
+    }
+    console.log('前端get有session')
     res.render('backProductAdd.ejs');
 })
 app.get('/backCustomize', function (req, res) {
+    if (!req.session.islogin) {
+        console.log('前端get沒session');
+        return res.render('backindex.ejs');
+    }
+    console.log('前端get有session')
     res.render('backCustomize.ejs');
 })
 app.get('/backCustomizeAdd', function (req, res) {
+    if (!req.session.islogin) {
+        console.log('前端get沒session');
+        return res.render('backindex.ejs');
+    }
+    console.log('前端get有session')
     res.render('backCustomizeAdd.ejs');
 })
 

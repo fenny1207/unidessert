@@ -105,7 +105,7 @@
                     pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required value="a0922077081@gmail.com" />
                   <input type="password" placeholder="密碼" id="passwordInput" name="password" class="input" minlength="8"
                     pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$" required value="asd60531" />
-                  <a href="/forgot" class="forgot" id="forgot" >忘記密碼?</a>
+                  <a href="/user/forgot" class="forgot" id="forgot" >忘記密碼?</a>
                   <input type="submit" class=" btn1" value="登入" />
 
                 </form>
@@ -175,7 +175,7 @@
 
                 function sub() {
                   time--;
-                  $('#verificationbtn').attr("value", "請" + time + "秒後再试");
+                  $('#verificationbtn').attr("value", "請" + time + "秒後再試");
                   if (time === 0) {
                     clearInterval(mytime);
                     $('#verificationbtn').attr("value", "驗證碼");

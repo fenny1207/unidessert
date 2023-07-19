@@ -133,6 +133,35 @@ app.post('/register', (req, res) => {
   });
 });
 
+app.post('/forgot', (req, res)=>{
+  const {  email,  verificationCode } = req.body;
+
+  // 檢查使用者電子信箱是否已存在於資料庫
+  const checkQuery = 'SELECT * FROM user WHERE uemail = ?';
+
+  connection.query(checkQuery, [email], (err, results) => {
+    if (err) throw err;
+    if (!results.length > 0) {
+      // 使用者電子信箱不存在
+      res.render('forgot', { error: true, title: "驗證失敗", message: 'Email 尚未註冊過', showAlert: false });
+    } else {
+      // 驗證碼比對
+      if ( verificationCode !== req.session.verificationCode) {
+        // 驗證碼不正確，返回錯誤提示給使用者
+        res.render('forgot', { error: true, title: "驗證失敗", message: '驗證碼不正確', showAlert: false });
+        return;
+      } else {
+        req.session.verificationCode = null;
+        res.render('forgot', { error: false, title: "驗證成功", message: '請重新更改密碼', showAlert: true });
+
+      }
+
+      
+    }
+
+  })
+})
+
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
@@ -180,11 +209,11 @@ function auth(req, res, next) {
   return res.redirect('/user')
   }
 }
-app.get('/order', auth, (req, res) => {
-  const userName = req.session.user
-  return res.render('welcome', { message: `Welcome back, ${userName}!`
-  })
-})
+// app.get('/order', auth, (req, res) => {
+//   const userName = req.session.user
+//   return res.render('welcome', { message: `Welcome back, ${userName}!`
+//   })
+// })
 
 app.get('/forgot', (req, res) => {
   res.render('forgot.ejs')

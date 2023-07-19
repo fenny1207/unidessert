@@ -19,11 +19,10 @@
             width: 25%;
             position: absolute;
             top: 20%;
-            left: 28%;
+            left: 40%;
             display: flex;
             flex-direction: column;
             padding: 5% 2% 5% 2%;
-            /* border: 2px solid #702F43; */
             border-radius: 5px;
             background-color: #B44A60;
         }
@@ -35,7 +34,6 @@
             margin: 0.5rem 0;
             width: 100%;
             font-size: 1rem;
-            /* border-radius: 8px; */
         }
 
         .login_container p {
@@ -53,6 +51,7 @@
             background-color: #702F43;
             border: none;
         }
+
         #verificationbtn {
             width: 100%;
         }
@@ -60,24 +59,80 @@
 </head>
 
 <body>
-    <div class="container">
-        <form id="login_form" class="login_container" method="post" action="/">
-            <p>忘記密碼</p>
-            <input id="regEmail" class="input" type="text" placeholder="請輸入email" name="email">
-            <div class="row">
-                <div class="col-6">
-                    <input type="text" placeholder="請輸入驗證碼" name="verificationCode" class="input verificationCode "
-                        minlength="6" oninput="setCustomValidity('');" oninvalid="setCustomValidity('請輸入驗證碼');"
-                        required />
-                </div>
-                <div class="col-6">
-                    <input type="button" class="login_btn " value="發送驗證碼" id="verificationbtn" onclick="sendVCode();">
-                    </input>
-                </div>
-            </div>
-            <input class="login_btn" type="submit" value="驗證">
-        </form>
-    </div>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <script>
+            $(document).ready(function () {
+                $('#alertModalLabel').text('<%= title %>');
+                $('#alertModalBody').text('<%= message %>');
+                $('#alertModal').modal('show');
+            });
+        </script>
+        <% } %>
+            <% var showAlert; %>
+                <% if (showAlert) { %>
+                    <script>
+                        $(document).ready(function () {
+                            $('#alertModalLabel').text('<%= title %>');
+                            $('#alertModalBody').text('<%= message %>');
+                            $('#alertModal').modal('show');
+                            if ('<%= title %>' === '驗證成功') {
+                                $('#alertModalBody').text('<%= message %>  即將在一秒內自動跳轉更改密碼頁面');
+                                setTimeout(function () {
+                                    window.location.href = '/'
+                                }, 1000)
+                            }
+                        });
+                    </script>
+                    <% } %>
+
+                        <!-- modal -->
+                        <div class="modal fade" id="alertModal" tabindex="-1" role="dialog"
+                            aria-labelledby="alertModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="alertModalLabel">
+                                            標題
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" id="alertModalBody">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="confirmbtn"
+                                            data-bs-dismiss="modal">確認</button>
+                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                                            onclick="redirectIndex()" id="redirectIndex"
+                                            style="display: none; ">確認</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <form id="login_form" class="login_container" method="post" action="/user/forgot">
+                                <p>忘記密碼</p>
+                                <input id="regEmail" class="input" type="text" placeholder="請輸入email" name="email">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input type="text" placeholder="請輸入驗證碼" name="verificationCode"
+                                            class="input verificationCode " minlength="6"
+                                            oninput="setCustomValidity('');" oninvalid="setCustomValidity('請輸入驗證碼');"
+                                            required />
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="button" class="login_btn " value="發送驗證碼" id="verificationbtn"
+                                            onclick="sendVCode();">
+                                        </input>
+                                    </div>
+                                </div>
+                                <input class="login_btn" type="submit" value="驗證">
+                            </form>
+                        </div>
+
+
 
 </body>
 

@@ -67,7 +67,7 @@ const sendEmail = (email, vCode) => {
                     <div class="content">
                         <h1>你好！</h1>
                         <h1>你的驗證碼是：<strong style="color: #702F43;">${vCode} </strong></h1>
-                        <h2>***該驗證碼5分鐘内有效***</h2>
+                        <h2 style="color: red;">該驗證碼5分鐘内有效</h2>
                     </div> 
                 </div>    
             </body>        

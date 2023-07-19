@@ -186,6 +186,10 @@ app.get('/order', auth, (req, res) => {
   })
 })
 
+app.get('/forgot', (req, res) => {
+  res.render('forgot.ejs')
+})
+
 app.get('/protected', (req, res) => {
   if (req.session && req.session.user) {
     // session 存在且使用者已登入

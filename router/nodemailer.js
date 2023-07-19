@@ -17,18 +17,62 @@ const sendEmail = (email, vCode) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'a0922077081@gmail.com',
-                pass: 'lcdjsnyosidnolpi'
+                user: 'unidessert0802@gmail.com',
+                pass: 'rpgeabnasncgwsil'
             }
         });
 
         const mailOptions = {
-            from: 'a0922077081@gmail.com',
+            from: 'unidessert0802@gmail.com',
             to: email,
-            subject: '請驗證您的帳號',
-            html: ` <p>你好！</p>
-                <p>你的驗證碼是：<strong style="color: #ff4e2a;">${vCode} </strong></p>
-                <p>***該驗證碼5分鐘内有效***</p>`
+            subject: 'Unidessert驗證信',
+            html: ` 
+            <!DOCTYPE html>
+            <html>
+
+            <head>
+                <meta charset="UTF-8" />
+                <style>
+                    body {
+                        background-color: #F0C7CD;
+                        background-size: cover;
+                        color: #702F43;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    .container {
+                        background-color: #CC7F91;
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding: 50px;
+                        text-align: center;
+                        border-radius: 8px;
+                    }
+
+                    .content {
+                        background-color: rgb(234, 223, 217);
+                        border-radius: 8px;
+                        padding: 20px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                <img src="https://i.imgur.com/49ORnnq.png" title="source: imgur.com" style="width: 200px;"/ >
+                    <div class="content">
+                        <h1>你好！</h1>
+                        <h1>你的驗證碼是：<strong style="color: #702F43;">${vCode} </strong></h1>
+                        <h2>***該驗證碼5分鐘内有效***</h2>
+                    </div> 
+                </div>    
+            </body>        
+            </html>
+        `
         };
 
         transporter.sendMail(mailOptions, (err, info) => {

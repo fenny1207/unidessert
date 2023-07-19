@@ -35,10 +35,10 @@
               $('#alertModalBody').text('<%= message %>');
               $('#alertModal').modal('show');
               if ('<%= title %>' === '登入成功') {
-                $('#alertModalBody').text('<%= message %>  即將在五秒內自動跳轉首頁');
+                $('#alertModalBody').text('<%= message %>  即將在一秒內自動跳轉首頁');
                 setTimeout(function () {
                   window.location.href = '/'
-                }, 5000)
+                }, 1000)
               }
             });
           </script>
@@ -76,12 +76,12 @@
                   <input type="email" placeholder="電子信箱" id="regEmail" name="email" class="input"
                     pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required />
                   <div class="row">
-                    <div class="col-5">
+                    <div class="col-6">
                       <input type="text" placeholder="驗證碼" name="verificationCode" class="input verificationCode "
                         minlength="6" oninput="setCustomValidity('');" oninvalid="setCustomValidity('請輸入驗證碼');"
                         required />
                     </div>
-                    <div class="col-7 btn1">
+                    <div class="col-6 ">
                       <input type="button" class=" btn mt-2" value="發送驗證碼" id="verificationbtn"
                         onclick="sendVCode();"></input>
                     </div>
@@ -93,7 +93,7 @@
                     pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$" minlength="8" oninput="setCustomValidity('');"
                     onchange="if(document.getElementById('inputPassword').value != document.getElementById('ConfirmPassword').value){setCustomValidity('密碼不吻合');}"
                     required />
-                  <input type="button" class="btn" value="註冊" onclick="submitForm();" />
+                  <input type="button" class=" btn1 mt-2" value="註冊" onclick="submitForm();" />
                 </form>
               </div>
 
@@ -105,8 +105,8 @@
                     pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required value="a0922077081@gmail.com" />
                   <input type="password" placeholder="密碼" id="passwordInput" name="password" class="input" minlength="8"
                     pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$" required value="asd60531" />
-                  <a href="#" class="link" style="color: red;">忘記密碼?</a>
-                  <input type="submit" class="btn" value="登入" />
+                  <a href="/forgot" class="forgot" id="forgot" >忘記密碼?</a>
+                  <input type="submit" class=" btn1" value="登入" />
 
                 </form>
               </div>
@@ -115,10 +115,10 @@
               <div class="container__overlay">
                 <div class="overlay">
                   <div class="overlay__panel overlay--left">
-                    <button class="btn" id="signIn">登入</button>
+                    <button class="btn1" id="signIn">登入</button>
                   </div>
                   <div class="overlay__panel overlay--right">
-                    <button class="btn" id="signUp">註冊</button>
+                    <button class="btn1" id="signUp">註冊</button>
                   </div>
                 </div>
               </div>

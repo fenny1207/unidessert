@@ -99,7 +99,7 @@ body {
 .overlay {
   background-color: var(--lightpink);
   background: rgb(256, 256, 256) no-repeat center top / 100% 100%;
-            background-image: linear-gradient(90deg, rgba(256, 256, 256, 0.2) 0%, rgba(256, 256, 256, 0.2) 100%), url("../pic/member/pink1.jpg");
+  background-image: linear-gradient(90deg, rgba(256, 256, 256, 0.2) 0%, rgba(256, 256, 256, 0.2) 100%), url("../pic/member/pink1.jpg");
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
@@ -162,10 +162,30 @@ body {
   transition: transform 80ms ease-in;
 }
 
+.btn1 {
+  background-color: var(--pink);
+  background-image: linear-gradient(90deg, var(--pink) 0%, var(--lightpink) 74%);
+  border-radius: 8px;
+  border: 1px solid var(--pink);
+  color: var(--white);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.1rem;
+  padding: 15px 30px;
+  text-transform: uppercase;
+  transition: transform 80ms ease-in;
+}
 
- .form > .btn {
+.forgot {
+  color: red;
+  margin: 10px;
+  text-decoration:none
+}
+
+.form>.btn {
   margin-top: 0.5rem;
-} 
+}
 
 .btn:active {
   transform: scale(0.95);
@@ -197,13 +217,16 @@ body {
 }
 
 @keyframes show {
-  0%, 49.99% {
+
+  0%,
+  49.99% {
     opacity: 0;
     z-index: 1;
   }
-  50%, 100% {
+
+  50%,
+  100% {
     opacity: 1;
     z-index: 5;
   }
 }
-

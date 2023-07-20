@@ -15,7 +15,7 @@
             background-color: #EADFD9;
         }
 
-        .login_container {
+        .forgot_container {
             width: 25%;
             position: absolute;
             top: 20%;
@@ -36,13 +36,13 @@
             font-size: 1rem;
         }
 
-        .login_container p {
+        .forgot_container p {
             text-align: center;
             font-size: 2rem;
             color: #FFF4E0;
         }
 
-        .login_btn {
+        .forgot_btn {
             font-size: 1.2rem;
             font-weight: 600;
             padding: 10px;
@@ -77,10 +77,10 @@
                             $('#alertModalBody').text('<%= message %>');
                             $('#alertModal').modal('show');
                             if ('<%= title %>' === '驗證成功') {
-                                $('#alertModalBody').text('<%= message %>  即將在一秒內自動跳轉更改密碼頁面');
+                                $('#alertModalBody').text('<%= message %>  即將在三秒內自動跳轉更改密碼頁面');
                                 setTimeout(function () {
-                                    window.location.href = '/'
-                                }, 1000)
+                                    window.location.href = '/user/change'
+                                }, 3000)
                             }
                         });
                     </script>
@@ -103,18 +103,15 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-primary" id="confirmbtn"
                                             data-bs-dismiss="modal">確認</button>
-                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                                            onclick="redirectIndex()" id="redirectIndex"
-                                            style="display: none; ">確認</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="container">
-                            <form id="login_form" class="login_container" method="post" action="/user/forgot">
+                            <form id="forgot_form" class="forgot_container" method="post" action="/user/forgot">
                                 <p>忘記密碼</p>
-                                <input id="regEmail" class="input" type="text" placeholder="請輸入email" name="email">
+                                <input id="regEmail" class="input" type="text" placeholder="請輸入email" name="email" pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required >
                                 <div class="row">
                                     <div class="col-6">
                                         <input type="text" placeholder="請輸入驗證碼" name="verificationCode"
@@ -123,12 +120,12 @@
                                             required />
                                     </div>
                                     <div class="col-6">
-                                        <input type="button" class="login_btn " value="發送驗證碼" id="verificationbtn"
+                                        <input type="button" class="forgot_btn " value="發送驗證碼" id="verificationbtn"
                                             onclick="sendVCode();">
                                         </input>
                                     </div>
                                 </div>
-                                <input class="login_btn" type="submit" value="驗證">
+                                <input class="forgot_btn" type="submit" value="驗證">
                             </form>
                         </div>
 
@@ -136,40 +133,6 @@
 
 </body>
 
-<!-- <script>
-    $(document).ready(function () {
-        $('#login_form').on('submit', function (e) {
-            e.preventDefault();
-            let username = document.getElementById('username_id').value
-            console.log(username)
-            let password = document.getElementById('password_id').value
-            console.log(password)
-            let data = {
-                "username": username,
-                "password": password
-            }
-            $.post({
-                url: "http://localhost:5432",
-                method: "post",
-                contentType: "application/json",
-                data: JSON.stringify(data),
-                success: function (res) {
-                    if (res.status === 0) {
-                        console.log(res.msg)
-                        window.location.href = '/backOrder'
-                    } else {
-                        console.log(res.msg)
-                        alert('密碼錯誤')
-                    }
-                },
-                error: function (err) {
-                    console.log(err.msg);
-
-                }
-            })
-        })
-    })
-</script> -->
 
 <script>
     function sendVCode() {

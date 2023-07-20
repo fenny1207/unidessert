@@ -173,39 +173,46 @@ app.get('/product/single', function (req, res) {
 
 app.get('/product/productInfo', function (req, res) {
     // var product_info
-    conn.query('SELECT pd_name, p_price, p_pic, p_pic2, p_pic3, p_pic4 FROM product where p_type="set" && (pid=1 || pid=2)', (err, results) => {
+    conn.query('SELECT * FROM product where p_type="set" && (pid=1 || pid=2)', (err, results) => {
         if (err) return console.log(err.message)
-        product_info = results;
-        res.render('productInfo.ejs', { product_info: product_info });
+        var product_info = results;
+        conn.query('SELECT * FROM product where p_type="set"', (err, results) => {
+            if (err) return console.log(err.message)
+            var product = results;
+            res.render('productInfo.ejs', { product_info: product_info , product: product});
+        })
     })
 }).post('/product/productInfo', auth_product, function (req, res) {
     conn.query(`select * from user where uemail='${req.session.user.email}'`, (err, results) => {
         console.log(results)
         let uid = results[0].uid
-        let order_total = req.body.total_price
+        let order_total = req.body.order_total
         let product_Title = req.body.product_Title
         let productPrice = req.body.productPrice
         let quantity = req.body.quantity
-        conn.query(`select * from orderlist where uid='?'`, [uid], (err, results) => {
+        conn.query(`select * from orderlist where uid='?' && status="購物車"`, [uid], (err, results) => {
             // console.log(typeof results)
             if (err) return console.log(err.message)
             // 當會員之前沒有加過購物車
             if (!results[0]) {
                 // // let uid = results[0].uid
                 conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, status) VALUES (NULL, ?, 150, ?, "", "", "", "", "", "", "", "購物車")`,
-                    [uid, total_price],
+                    [uid, order_total],
                     (err, results) => {
                         // 要再加orderdetail
                         if (err) return console.log(err.message)
-                        var oid = results[0].oid
-                        // conn.query(`select * from product where uid='${uid}'`,[oid], (err, results) => {
-                        //     if (err) return console.log(err.message)
-                        // })
-                        // conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price) VALUES (NULL, ?, "set", '3', '蘋果樹磅蛋糕', '1', '50')`,
-                        //  [oid], 
-                        //  (err, results) => {
-                        //     if (err) return console.log(err.message)
-                        // })
+                        console.log(results.insertId)
+                        var oid = results.insertId
+                        conn.query(`select * from product where pd_name = ?`,[product_Title], (err, results) => {
+                            if (err) return console.log(err.message)
+                            // results[0].p_type
+                            conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price) VALUES (NULL, ?, ?, ?, ?, ?, ?)`,
+                             [oid, results[0].p_type, results[0].pid, results[0].pd_name, quantity, order_total], 
+                             (err, results) => {
+                                if (err) return console.log(err.message)
+                                console.log(results)
+                            })
+                        })
                     })
                 res.send({
                     status: 0,
@@ -215,13 +222,27 @@ app.get('/product/productInfo', function (req, res) {
             }
             // 會員之前有加過購物車
             console.log('之前有加過購物車')
-            conn.query(`select order_total from orderlist where uid='?'`, [uid], (err, results) => {
+            conn.query(`select * from orderlist where uid = '?'`, [uid], (err, results) => {
                 if (err) return console.log(err.message)
                 order_total = results[0].order_total + parseInt(order_total)
                 conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [order_total, uid], (err, results) => {
                     if (err) return console.log(err.message)
-                    console.log(results)
+                    console.log('orderlist的', results)
                 })
+                // conn.query(`select * from oderdetails where oid = ${results[0].oid}`, (err, results) => {
+                //     if (err) return console.log(err.message)
+                //     console.log(results[0].oid)
+                //     console.log(results)
+
+                    quantity = results[0].quantity + parseInt(quantity)
+                    console.log(quantity)
+                    // total_price = parseInt(productPrice) * parseInt(quantity)
+                    // console.log(total_price)
+                    conn.query(`UPDATE oderdetails SET quantity = ?, total_price = ? WHERE oid = ?`, [quantity, order_total, results[0].oid], (err, results) => {
+                        if (err) return console.log(err.message)
+                        console.log('orderdetails的',results)
+                    })
+                // })
             })
         })
     })
@@ -588,6 +609,18 @@ function auth(req, res, next) {
     } else {
         console.log('not authenticated')
         return res.redirect('/user')
+    }
+}
+function auth_product(req, res, next) {
+    if (req.session.user) {
+        console.log('已登入')
+        next()
+    } else {
+        console.log('not authenticateda')
+        res.send({
+            status: 1,
+            msg: '還沒登入'
+        })
     }
 }
 //抓登入帳號的uid

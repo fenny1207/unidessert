@@ -38,7 +38,7 @@
                 $('#alertModalBody').text('<%= message %>  即將在三秒內自動跳轉首頁');
                 setTimeout(function () {
                   window.location.href = '/'
-                }, 3000)
+                }, 1000)
               }
             });
           </script>
@@ -100,7 +100,7 @@
                 <form action="/user/login" class="form" id="form2" method="post">
                   <h2 class="form__title">登入</h2>
                   <input type="email" placeholder="電子信箱" id="emailInput" name="email" class="input"
-                    pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required value="a0922077081@gmail.com" />
+                    pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required value="asd60531jp@gmail.com" />
                   <input type="password" placeholder="密碼" id="passwordInput" name="password" class="input" minlength="8"
                     pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$" required value="asd60531" />
                   <a href="/user/forgot" class="forgot" id="forgot" >忘記密碼?</a>

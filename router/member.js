@@ -246,23 +246,7 @@ function auth(req, res, next) {
     return res.redirect('/user')
   }
 }
-// app.get('/order', auth, (req, res) => {
-//   const userName = req.session.user
-//   return res.render('welcome', { message: `Welcome back, ${userName}!`
-//   })
-// })
-
-
-
-// app.get('/protected', (req, res) => {
-//   if (req.session && req.session.user) {
-//     // session 存在且使用者已登入
-//     res.render('protected', { user: req.session.user });
-//   } else {
-//     // session 不存在或使用者未登入，重新導向到登入頁面
-//     res.redirect('/user');
-//   }
-// });
+  
 
 // 設定 session 過期時的處理
 app.use((req, res, next) => {

@@ -178,13 +178,52 @@ app.get('/product/productInfo', function (req, res) {
         product_info = results;
         res.render('productInfo.ejs', { product_info: product_info });
     })
-}).post('/product/productInfo', function (req, res) {
-    const productNumber = req.body.order_amout;
-    // console.log((productNumber)*390)
-    order_total = productNumber * 390
-    conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, status) VALUES (NULL, 1, 100, ?, "", "", "", "", "", "", "", "購物車")`, [order_total], (err, results) => {
-        if (err) return console.log(err.message)
-        // console.log(results.insertId)
+}).post('/product/productInfo', auth_product, function (req, res) {
+    conn.query(`select * from user where uemail='${req.session.user.email}'`, (err, results) => {
+        console.log(results)
+        let uid = results[0].uid
+        let order_total = req.body.total_price
+        let product_Title = req.body.product_Title
+        let productPrice = req.body.productPrice
+        let quantity = req.body.quantity
+        conn.query(`select * from orderlist where uid='?'`, [uid], (err, results) => {
+            // console.log(typeof results)
+            if (err) return console.log(err.message)
+            // 當會員之前沒有加過購物車
+            if (!results[0]) {
+                // // let uid = results[0].uid
+                conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, status) VALUES (NULL, ?, 150, ?, "", "", "", "", "", "", "", "購物車")`,
+                    [uid, total_price],
+                    (err, results) => {
+                        // 要再加orderdetail
+                        if (err) return console.log(err.message)
+                        var oid = results[0].oid
+                        // conn.query(`select * from product where uid='${uid}'`,[oid], (err, results) => {
+                        //     if (err) return console.log(err.message)
+                        // })
+                        // conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price) VALUES (NULL, ?, "set", '3', '蘋果樹磅蛋糕', '1', '50')`,
+                        //  [oid], 
+                        //  (err, results) => {
+                        //     if (err) return console.log(err.message)
+                        // })
+                    })
+                res.send({
+                    status: 0,
+                    msg: 'insert success'
+                })
+                return
+            }
+            // 會員之前有加過購物車
+            console.log('之前有加過購物車')
+            conn.query(`select order_total from orderlist where uid='?'`, [uid], (err, results) => {
+                if (err) return console.log(err.message)
+                order_total = results[0].order_total + parseInt(order_total)
+                conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [order_total, uid], (err, results) => {
+                    if (err) return console.log(err.message)
+                    console.log(results)
+                })
+            })
+        })
     })
 })
 app.use('/user', member);
@@ -308,7 +347,7 @@ app.get('/order/historyOrder', (req, res) => {
 //     });
 // })
 
-app.get('/cart', function (req, res) {
+app.get('/cart', auth, function (req, res) {
     // 取得頁面資料
     const sql = `
       SELECT od.*, c.*, p.*
@@ -337,38 +376,38 @@ app.post('/addToCart', function(req, res) {
       FROM c_detail2
       WHERE cdetailid = ?
     `;
-    conn.query(getCdetailQuery, [productId], function(err, cdetailResult) {
-      if (err) {
-        console.error('無法取得資料', err);
-        return;
-      }
-  
-      if (cdetailResult.length === 0) {
-        console.error('無法尋找關聯');
-        return;
-      }
-  
-      const cdetail = cdetailResult[0];
-  
-      // 將產品資料傳至orderdetails
-      const insertOrderDetailQuery = `
+    conn.query(getCdetail, [productId], function (err, cdetailResult) {
+        if (err) {
+            console.error('無法取得資料', err);
+            return;
+        }
+
+        if (cdetailResult.length === 0) {
+            console.error('無法尋找關聯');
+            return;
+        }
+
+        var cdetail = cdetailResult[0];
+
+        // 將產品資料傳至orderdetails inOD=insertOrderDetails
+        var inOD = `
         INSERT INTO orderdetails (cdetailid, pid, quantity, cprice)
         VALUES (?, ?, ?, ?)
       `;
 
-      // 根據產品的價格及數量計算價格總額
-      const totalPrice = price * quantity; 
-      conn.query(insertOrderDetailQuery, [cdetail.cdetailid, productId, quantity, totalPrice], function(err, insertResult) {
-        if (err) {
-          console.error('傳入資料錯誤', err);
-          return;
-        }
-  
-        console.log('已成功加入資料');
-  
-        // 取得回應
-        res.json({ message: '已成功加入購物車' });
-      });
+        // 根據產品的價格及數量計算價格總額
+        var totalPrice = price * quantity;
+        conn.query(inOD, [cdetail.cdetailid, productId, quantity, totalPrice], function (err, insertResult) {
+            if (err) {
+                console.error('傳入資料錯誤', err);
+                return;
+            }
+
+            console.log('已成功加入資料');
+
+            // 取得回應
+            res.json({ message: '已成功加入購物車' });
+        });
     });
   });
 

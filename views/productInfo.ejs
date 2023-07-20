@@ -35,31 +35,23 @@
         <figure class="mainContainer">
             <div class="imgOutsideContainer">
                 <div class="imgLContainer">
-                    <div>
-                        <img id="sidePic1" onClick="JavaScript: changeImg(1)" src="/pic/product/pd1_pic1.png">
-                    </div>
-
-                    <div>
-                        <img id="sidePic2" onClick="JavaScript: changeImg(2)" src="/pic/product/pd1_pic2.png">
-                    </div>
-                    <div>
-                        <img id="sidePic3" onClick="JavaScript: changeImg(3)" src="/pic/product/pd1_pic3.png">
-                    </div>
-                    <div>
-                        <img id="sidePic4" onClick="JavaScript: changeImg(4)" src="/pic/product/pd1_pic4.png">
-                    </div>
+                    <% for (let i=1; i < 5; i++) {%>
+                        <div>
+                            <img id="sidePic1" onClick="JavaScript: changeImg(1)"
+                                src="/pic/product/pd1_pic<%= i %>.png">
+                        </div>
+                        <% } %>
                 </div>
                 <div class="imgRContainer">
                     <img id="mainPic" src="/pic/product/pd1_pic1.png">
                 </div>
             </div>
             <div class="imgInfoContainer">
-                <p class="imgInfoTitle">彤粉情人節禮盒</p>
-                <div class='imgInfoText'>
-                    撞色美學與法式時尚花框的優雅邂逅。<br>
-                    內含點心品項&nbsp;11&nbsp;入，包括&nbsp;2&nbsp;入 法式點心、8&nbsp;入手工餅乾以及脆餅&nbsp;1&nbsp;包
+                <p class="imgInfoTitle" id="p_title">彤粉情人節禮盒</p>
+                <div id="p_text" class='imgInfoText'>
+                    <%- product_info[0].pd_content %>
                 </div>
-                <div class="productInfoPrice">NT$ 390</div>
+                <div id="p_price" class="productInfoPrice">NT$ <%- product_info[0].p_price %></div>
                 <div class="productCount">
                     <div onclick="minus()" id="productCount_minus">-</div>
                     <div id="productCount"></div>
@@ -68,9 +60,7 @@
                 <form style="display: flex;" action="/product/productInfo" method="post" id="submit_form">
                     <input type="text" style="display: none" name="product_quantity" id="productCount_input">
                     <button style="margin: auto; " type="submit" class="addtocart" id="addtocart">加入購物車</button>
-                    
                 </form>
-
             </div>
         </figure>
 
@@ -84,17 +74,7 @@
         <div id="tab1Content">
             <h3>｜點心品項｜Pâtisserie & Biscuits</h3>
             <p>
-                蜂蜜杏仁瑪德蓮、
-                安貝栗子烏龍 · 達克瓦茲<br>
-                咖啡奶酥曲奇、
-                巧克力杏仁餅乾<br>
-                皇家伯爵茶圓餅、
-                黑芝麻法國小餅<br>
-                蔓越莓方餅、
-                檸檬三重奏<br>
-                匈牙利紅椒起司餅乾(鹹)、
-                香草抹茶沙布蕾<br>
-                加斯科涅· 雲朵脆餅
+                <%- product_info[0].pd_describe_contents %>
             </p>
             <h3>｜產品規格｜Spec.</h3>
             <p>
@@ -130,8 +110,7 @@
                 宅配到府<br>
             </p>
             <h3>付款方式</h3>
-            <p>
-                <!-- 信用卡付款<br>
+            <p><!-- 信用卡付款<br>
                 銀行轉帳／ATM - 匯款完畢請備註『帳號後五碼』 -->
                 貨到付款
             </p>
@@ -143,25 +122,38 @@
 
         <div class="carousel">
             <div class="slider_width">
-                <div class="slider_card">
-                    <img src="/pic/product/pd3_pic1.png" alt="" id="recommend_img1">
-                    <div>法式菱格紋禮盒</div>
-                    <div>NT 768</div>
-                </div>
-                <div class="slider_card">
-                    <img src="/pic/product/pd4_pic1.png" alt="" id="recommend_img2">
-                    <div>金緻紅禮盒</div>
-                    <div>NT 938</div>
-                </div>
-                <div class="slider_card">
-                    <img src="/pic/product/pd2_pic1.png" alt="" id="recommend_img3">
-                    <div>湛藍禮盒</div>
-                    <div>NT 798</div>
-                </div>
+                <% for(let i=0; i < 3; i++) {%>
+                    <% var random_recommend = Math.floor(Math.random()*7) + 1 %>
+                    <% if( i === 0){ %>
+                        <div class="slider_card">
+                            <img src="/pic/product/pd<%= random_recommend %>_pic1.png" alt="" id="recommend_img1">
+                            <div><%- product[random_recommend-1].pd_name %></div>
+                            <div>NT$ <%- product[random_recommend-1].p_price %></div>
+                        </div>
+                        <% var temp1 = random_recommend %>
+                    <% } else if( i === 1 ) {%>
+                        <% while( temp1 === random_recommend) {%>
+                            <% random_recommend = Math.floor(Math.random()*7) + 1 %>
+                        <% } %>
+                        <div class="slider_card">
+                            <img src="/pic/product/pd<%= random_recommend %>_pic1.png" alt="" id="recommend_img1">
+                            <div><%- product[random_recommend-1].pd_name %></div>
+                            <div>NT$ <%- product[random_recommend-1].p_price %></div>
+                        </div>
+                        <% var temp2 = random_recommend %>
+                    <% } else {%>
+                            <% while( temp1 === random_recommend || temp2 === random_recommend) {%>
+                                <% random_recommend = Math.floor(Math.random()*7) + 1 %>
+                            <% } %>
+                        <div class="slider_card">
+                            <img src="/pic/product/pd<%= random_recommend %>_pic1.png" alt="" id="recommend_img1">
+                            <div><%- product[random_recommend-1].pd_name %></div>
+                            <div>NT$ <%- product[random_recommend-1].p_price %></div>
+                        </div>
+                    <% } %>
+                <% } %>
             </div>
         </div>
-
-
         <!-- 頁腳 -->
         <%- include("./footer.ejs") %>
 

@@ -1,4 +1,3 @@
-
 function selectTab(tabIndex) {
     //Hide All Tabs
     document.getElementById("tab1Content").style.display = "none";
@@ -17,11 +16,6 @@ function changeImg(i) {
     document.getElementById('mainPic').setAttribute('src', attrSrc);
 
 }
-$(document).ready(function () {
-    let count = 1
-    document.getElementById('productCount').innerHTML = count
-    document.getElementById('productCount_input').value = count
-});
 function plus() {
     // var product_quantity = 1;
     let product_quantity = parseInt(document.getElementById('productCount').innerHTML);
@@ -41,19 +35,23 @@ function minus() {
     document.getElementById('productCount_input').value = sum
 }
 $(document).ready(function () {
-    let random_recommend = Math.floor(Math.random()*7) + 1;
-    // console.log(random_recommend)
-    document.getElementById('recommend_img1').src = `/pic/product/pd${random_recommend}_pic1.png`
-    document.getElementById('recommend_img2').src = `/pic/product/pd${random_recommend + 1 || 1}_pic1.png`
-    document.getElementById('recommend_img3').src = `/pic/product/pd${random_recommend + 2 || 2}_pic1.png`
+    let count = 1
+    document.getElementById('productCount').innerHTML = count
+    document.getElementById('productCount_input').value = count
+    let product_Title = document.getElementById('p_title').innerText
+    let productPrice = parseInt(document.getElementById('p_price').innerHTML.substring(4))
+    
     $("#addtocart").on('click', function(e) {
         e.preventDefault();
-        let amount = document.getElementById('productCount_input').value
-        console.log(amount)
+        let quantity = document.getElementById('productCount_input').value
+        let total_price = document.getElementById('productCount_input').value * productPrice
         let data = {
                 "uid": "1",
-                "deliever_fee": "100",
-                "order_amout": amount,
+                "deliever_fee": "150",
+                "product_Title": product_Title,
+                "quantity": quantity,
+                "productPrice": productPrice,
+                "total_price": total_price,
                 "status": "購物車"
             }
         $.ajax({
@@ -61,42 +59,10 @@ $(document).ready(function () {
             method: "post",
             contentType: "application/json",
             data: JSON.stringify(data),
-            // success: function(res) {
-            //     console.log("data")
-            // }
+            success: function(res) {
+                console.log(res.msg)
+            }
         })
     })
 })
-
-// let data = {
-//     "uid": "1",
-//     "deliever_fee": "100",
-//     "order_total": "390",
-//     "order_date": "",
-//     "recipient": "",
-//     "recipient_address": "",
-//     "recipient_phone": "",
-//     "recipient_email": "",
-//     "arrive_date": "",
-//     "payment_type": "",
-//     "status": "購物車"
-// }
-// const addproduct = () => {
-//     axios({
-//         url: 'http://localhost:5678/product/productInfo',
-//         method: 'post',
-//         data: data,
-//         headers: {
-//             "Content-Type": "application/json"
-//         }
-//     }).then(() => {
-//         console.log("success");
-//     }).catch(err => {
-//         console.log(err.message)
-//     })
-
-// }
-// $(document).ready(function () {
-//     document.getElementById('submit_form').addEventListener('submit', addproduct())
-// });
 

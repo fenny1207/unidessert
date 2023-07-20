@@ -31,8 +31,8 @@ conn.connect(function (err) {
 var expressSession = require('express-session');
 var s = expressSession({
     secret: 'unidessert',
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     cookie: {
         path: '/',
         httpOnly: true,
@@ -173,18 +173,40 @@ app.get('/product/single', function (req, res) {
 
 app.get('/product/productInfo', function (req, res) {
     // var product_info
-    conn.query('SELECT pd_name, p_price, p_pic, p_pic2, p_pic3, p_pic4 FROM product where p_type="set" && (pid=1 || pid=2)', (err, results) => {
+    conn.query('SELECT * FROM product where p_type="set" && (pid=1 || pid=2)', (err, results) => {
         if (err) return console.log(err.message)
-        product_info = results;
-        res.render('productInfo.ejs', { product_info: product_info });
+        let product_info = results;
+        conn.query('SELECT pd_name, p_price, p_pic FROM product where p_type="set"', (err, results) => {
+            if (err) return console.log(err.message)
+            let product = results
+            res.render('productInfo.ejs', { product_info: product_info, product: product });
+        })
     })
-}).post('/product/productInfo', function (req, res) {
-    const productNumber = req.body.order_amout;
-    // console.log((productNumber)*390)
-    order_total = productNumber * 390
-    conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, status) VALUES (NULL, 1, 100, ?, "", "", "", "", "", "", "", "購物車")`, [order_total], (err, results) => {
-        if (err) return console.log(err.message)
-        // console.log(results.insertId)
+}).post('/product/productInfo', auth, function (req, res) {
+    function auth(req, res, next) {
+        if (req.session.user) {
+            console.log('authenticated')
+            next()
+        } else {
+            console.log('not authenticated')
+            return res.redirect('/user')
+        }
+    }
+    conn.query(`select * from user where uemail='${req.session.user.email}'`, (err, results) => {
+        if(err) return console.log(err.message)
+        let uid = results[0].uid
+        let total_price = req.body.total_price
+    
+        conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, status) VALUES (NULL, ?, 150, ?, "", "", "", "", "", "", "", "購物車")`,
+         [uid ,total_price ],
+          (err, results) => {
+            if (err) return console.log(err.message)
+            console.log(results.insertId)
+            res.send({
+                status: 0,
+                msg: 'insert success'
+            })
+        })
     })
 })
 app.use('/user', member);

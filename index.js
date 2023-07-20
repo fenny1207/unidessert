@@ -277,17 +277,19 @@ app.get("/order",authUid, (req, res) => {
     });
 });
 // SELECT user.uid, orderlist.oid,orderlist.order_total,orderlist.order_date,orderlist.payment_type FROM user LEFT JOIN orderlist ON user.uid=orderlist.uid;
-app.get('/order/historyOrder', (req, res) => {
+app.get('/order/historyOrder/:oid', (req, res) => {
     // const history_sql = [
     //     'SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b  WHERE oid = ? ',
     //     'SELECT c.*, d.* FROM `c_detail2` as c NATURAL JOIN `product` as d  ',        
     // ];
-    let uid = res.locals.uid;
-    const sql = `SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b  where uid = ${uid}`;
+    let oid = req.params.oid;
+    // let uid = res.locals.uid;
+    // const sql = `SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b  where uid = ?`;
+    const sql = `SELECT * FROM oderdetails WHERE oid = ?;`
     // conn.query(history_sql.join(';'),[1], (err, data) => {
-    conn.query(sql, (err, data) => {
+    conn.query(sql,[oid], (err, data) => {
         // console.log(history_sql);
-        if (err) res.send("訂單資料失敗");
+        if (err) res.send(`這是訂單編號'${oid}:'`);
         let oid = data[0].oid;
         let order_date = data[0].order_date;
         let order_total = data[0].order_total;

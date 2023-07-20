@@ -331,6 +331,15 @@ app.get('/order/historyOrder', (req, res) => {
 // })
 
 app.get('/cart', function (req, res) {
+    function auth(req, res, next) {
+        if (req.session.user) {
+            console.log('authenticated')
+            next()
+        } else {
+            console.log('not authenticated')
+            return res.redirect('/user')
+        }
+    }
     // 取得頁面資料
     const sql = `
       SELECT od.*, c.*, p.*
@@ -354,12 +363,12 @@ app.get('/cart', function (req, res) {
     const userId = req.session.userId;
 
     // 查詢關於客製化的資料
-    const getCdetailQuery = `
+    const getCdetail = `
       SELECT *
       FROM c_detail2
       WHERE cdetailid = ?
     `;
-    conn.query(getCdetailQuery, [productId], function(err, cdetailResult) {
+    conn.query(getCdetail, [productId], function(err, cdetailResult) {
       if (err) {
         console.error('無法取得資料', err);
         return;
@@ -370,17 +379,17 @@ app.get('/cart', function (req, res) {
         return;
       }
   
-      const cdetail = cdetailResult[0];
+      var cdetail = cdetailResult[0];
   
-      // 將產品資料傳至orderdetails
-      const insertOrderDetailQuery = `
+      // 將產品資料傳至orderdetails inOD=insertOrderDetails
+     var inOD = `
         INSERT INTO orderdetails (cdetailid, pid, quantity, cprice)
         VALUES (?, ?, ?, ?)
       `;
 
       // 根據產品的價格及數量計算價格總額
-      const totalPrice = price * quantity; 
-      conn.query(insertOrderDetailQuery, [cdetail.cdetailid, productId, quantity, totalPrice], function(err, insertResult) {
+      var totalPrice = price * quantity; 
+      conn.query(inOD, [cdetail.cdetailid, productId, quantity, totalPrice], function(err, insertResult) {
         if (err) {
           console.error('傳入資料錯誤', err);
           return;

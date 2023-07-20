@@ -49,6 +49,15 @@ app.use(session({
 app.get('/', (req, res) => {
   res.render('user.ejs');
 })
+app.get('/forgot', (req, res) => {
+  res.render('forgot.ejs')
+})
+app.get('/change', (req, res) => {
+  res.render('change.ejs')
+})
+
+
+
 
 const registerTime = () => {
   const date = new Date();
@@ -77,7 +86,7 @@ app.get('/verify', (req, res) => {
 
   // 將驗證碼存儲在 session 中
   req.session.verificationCode = verificationCode;
-
+  req.session.email = email;
   // 寄送驗證郵件
   sendEmail(email, verificationCode)
     .then(() => {
@@ -90,6 +99,38 @@ app.get('/verify', (req, res) => {
       res.status(500).json({ message: '無法發送驗證郵件' });
     });
 });
+
+app.post('/change', (req, res) => {
+  const { email, password } = req.body;
+  const useremail = req.session.email; // 從 session 中取出之前儲存的email
+
+  if (email === useremail) {
+    //使用者輸入的email和前面驗證的email是同一
+    const updatequery = `UPDATE user SET upwd = ? WHERE uemail = '${useremail}'`
+    console.log('新密碼:', password);
+    console.log('欲更新的 email:', email);
+
+    bcrypt.hash(password, saltRounds, (err, hash) =>{
+      if (err) throw err;
+
+      const hashedPassword = hash;  
+      connection.query(updatequery, [hashedPassword, email], (err, result) => {
+        if (err) {
+          console.log('更換密碼失敗')
+          res.render('change', { error: true, title: "更換密碼失敗", message: '更換密碼發生錯誤', showAlert: false });
+        } else {
+          // 更新成功，清除 session 中的 mail
+          req.session.email = null;
+          console.log('更換密碼成功')
+          res.render('change', { error: false, title: "更換密碼成功", message: "請再重新登入", showAlert: true });
+        }
+      })
+    })
+  } else {
+    res.render('change', { error: true, title: "更換密碼失敗", message: '這不是剛剛驗證的email', showAlert: false });
+  }
+})
+
 
 // 註冊路由
 app.post('/register', (req, res) => {
@@ -106,7 +147,7 @@ app.post('/register', (req, res) => {
       res.render('user', { error: true, title: "註冊失敗", message: 'Email 已經被註冊過了', showAlert: false });
     } else {
       // 驗證碼比對
-      if ( verificationCode !== req.session.verificationCode) {
+      if (verificationCode !== req.session.verificationCode) {
         // 驗證碼不正確，返回錯誤提示給使用者
         res.render('user', { error: true, title: "驗證失敗", message: '驗證碼不正確', showAlert: false });
         return;
@@ -133,9 +174,9 @@ app.post('/register', (req, res) => {
   });
 });
 
-app.post('/forgot', (req, res)=>{
-  const {  email,  verificationCode } = req.body;
-
+app.post('/forgot', (req, res) => {
+  const { email, verificationCode } = req.body;
+  console.log(req.session.email)
   // 檢查使用者電子信箱是否已存在於資料庫
   const checkQuery = 'SELECT * FROM user WHERE uemail = ?';
 
@@ -146,19 +187,15 @@ app.post('/forgot', (req, res)=>{
       res.render('forgot', { error: true, title: "驗證失敗", message: 'Email 尚未註冊過', showAlert: false });
     } else {
       // 驗證碼比對
-      if ( verificationCode !== req.session.verificationCode) {
+      if (verificationCode !== req.session.verificationCode) {
         // 驗證碼不正確，返回錯誤提示給使用者
         res.render('forgot', { error: true, title: "驗證失敗", message: '驗證碼不正確', showAlert: false });
         return;
       } else {
         req.session.verificationCode = null;
         res.render('forgot', { error: false, title: "驗證成功", message: '請重新更改密碼', showAlert: true });
-
       }
-
-      
     }
-
   })
 })
 
@@ -168,7 +205,7 @@ app.post('/login', (req, res) => {
   const selectUserQuery = 'SELECT * FROM user WHERE uemail = ?';
 
   connection.query(selectUserQuery, [email], (err, results) => {
-    
+
     if (err) {
       res.render('user', { error: true, title: "登入失敗", message: 'Email 尚未被註冊', showAlert: false });
 
@@ -202,11 +239,11 @@ app.post('/login', (req, res) => {
 
 function auth(req, res, next) {
   if (req.session.user) {
-  console.log('authenticated')
-  next()
+    console.log('authenticated')
+    next()
   } else {
-  console.log('not authenticated')
-  return res.redirect('/user')
+    console.log('not authenticated')
+    return res.redirect('/user')
   }
 }
 // app.get('/order', auth, (req, res) => {
@@ -215,19 +252,17 @@ function auth(req, res, next) {
 //   })
 // })
 
-app.get('/forgot', (req, res) => {
-  res.render('forgot.ejs')
-})
 
-app.get('/protected', (req, res) => {
-  if (req.session && req.session.user) {
-    // session 存在且使用者已登入
-    res.render('protected', { user: req.session.user });
-  } else {
-    // session 不存在或使用者未登入，重新導向到登入頁面
-    res.redirect('/user');
-  }
-});
+
+// app.get('/protected', (req, res) => {
+//   if (req.session && req.session.user) {
+//     // session 存在且使用者已登入
+//     res.render('protected', { user: req.session.user });
+//   } else {
+//     // session 不存在或使用者未登入，重新導向到登入頁面
+//     res.redirect('/user');
+//   }
+// });
 
 // 設定 session 過期時的處理
 app.use((req, res, next) => {
@@ -255,10 +290,6 @@ app.use((req, res, next) => {
   }
 });
 
-// 啟動伺服器
-// app.listen(5678, () => {
-//   var d = new Date();
-//   console.log('胖丁: 伺服器啟動中' + d.toLocaleTimeString());
-// });
+
 
 module.exports = app;

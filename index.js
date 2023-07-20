@@ -222,7 +222,7 @@ app.get('/order/historyOrder', (req, res) => {
     //     'SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b  WHERE oid = ? ',
     //     'SELECT c.*, d.* FROM `c_detail2` as c NATURAL JOIN `product` as d  ',        
     // ];
-    let uid = 1;
+    let uid = res.locals.uid;
     const sql = `SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b  where uid = ${uid}`;
     // conn.query(history_sql.join(';'),[1], (err, data) => {
     conn.query(sql, (err, data) => {
@@ -327,7 +327,7 @@ app.get('/cart', function (req, res) {
   });
   
   // 建立訂單信息
-  app.post('/addToCart', function(req, res) {
+app.post('/addToCart', function(req, res) {
     const { productId, price, quantity } = req.body;
     const userId = req.session.userId;
 
@@ -503,11 +503,13 @@ app.get('/member', auth,function (req, res) {
             userData:userData
         })
     })
-}).post('/member', (req, res) => {
-    const { uname, umobile, ubirth } = req.body;
+}).post('/member', authUid,(req, res) => {
+    const { uname, umobile, ubirth} = req.body;
+    var uid =  res.locals.uid;
     // var sql = 'SELECT * FROM user WHERE uemail =?'
-    var sql = 'UPDATE  user SET uname =?,umobile=?,ubirth =?WHERE uid = 1';
-    conn.query(sql, [uname, umobile, ubirth], (err, data) => {
+    var sql = `UPDATE  user SET uname =?,umobile=?,ubirth =? WHERE uid = ?`;
+    conn.query(sql, [uname, umobile, ubirth, uid], (err, data) => {
+        console.log(uid + '0720');
         console.log(data)
         if (err) {
             res.send("無法更新");
@@ -549,6 +551,7 @@ function auth(req, res, next) {
         return res.redirect('/user')
     }
 }
+//抓登入帳號的uid
 function authUid(req, res, next) {
     var userEmail = req.session.user.email;
     var sql = `SELECT * FROM user WHERE uemail = ?`;
@@ -557,9 +560,24 @@ function authUid(req, res, next) {
       let userData = data[0];
       let uid = userData.uid;
       res.locals.uid = uid;
+      console.log(uid+'皮卡丘')
       next();
     });
   }
+function authOrder(req, res, next) {
+    var uid =  res.locals.uid;
+    console.log(uid +"這是卡比受訂單");
+    var sql = ` SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.oid ='${oid}';`;
+    conn.query(sql, (err, data) => {
+        if (err) return console.log(err.message)
+        let uid = data[0].uid;
+        console.log(uid+'訂單');
+        res.render('order.ejs', {
+            member_info: data,
+            uid: uid
+        });
+    });
+}
 
 
 

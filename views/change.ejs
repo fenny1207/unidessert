@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>忘記密碼</title>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="/js/bootstrap.bundle.js"></script>
+    <script src="/js/jquery-3.7.0.min.js"></script>
+    <script src="/js/jquery-ui.js"></script>
+    <style>
+        body {
+            /* background-color: #FFF4E0 FFBF9B B46060 4D4D4D; */
+            background-color: #EADFD9;
+        }
+
+        .change_container {
+            width: 25%;
+            position: absolute;
+            top: 20%;
+            left: 40%;
+            display: flex;
+            flex-direction: column;
+            padding: 5% 2% 5% 2%;
+            border-radius: 5px;
+            background-color: #CC7F91;
+        }
+
+        .input {
+            background-color: #fff;
+            border: none;
+            padding: 10px;
+            margin: 0.5rem 0;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .change_container p {
+            text-align: center;
+            font-size: 2rem;
+            color: #FFF4E0;
+        }
+
+        .change_btn {
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 10px;
+            margin: 0.5rem 0;
+            color: #EADFD9;
+            background-color: #B44A60;
+            border: none;
+        }
+
+        #verificationbtn {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <% if (typeof error !=='undefined' && error) { %>
+        <script>
+            $(document).ready(function () {
+                $('#alertModalLabel').text('<%= title %>');
+                $('#alertModalBody').text('<%= message %>');
+                $('#alertModal').modal('show');
+            });
+        </script>
+        <% } %>
+            <% var showAlert; %>
+                <% if (showAlert) { %>
+                    <script>
+                        $(document).ready(function () {
+                            $('#alertModalLabel').text('<%= title %>');
+                            $('#alertModalBody').text('<%= message %>');
+                            $('#alertModal').modal('show');
+                            if ('<%= title %>' === "更換密碼成功") {
+                                $('#alertModalBody').text('<%= message %>  即將在三秒內自動跳轉登入頁面');
+                                setTimeout(function () {
+                                    window.location.href = '/user'
+                                }, 3000)
+                            }
+                        });
+                    </script>
+                    <% } %>
+
+                        <!-- modal -->
+                        <div class="modal fade" id="alertModal" tabindex="-1" role="dialog"
+                            aria-labelledby="alertModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="alertModalLabel">
+                                            標題
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" id="alertModalBody">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="confirmbtn"
+                                            data-bs-dismiss="modal">確認</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <form id="change_form" class="change_container" method="post" action="/user/change">
+                                <p>更換密碼</p>
+                                <input id="regEmail" class="input" type="text" placeholder="請輸入email" name="email" pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" required >
+                                <input type="password" placeholder="請輸入新密碼" class="input" id="inputPassword" pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$" oninput="setCustomValidity('');"
+                                oninvalid="setCustomValidity('請輸入正確的密碼格式:含英數至少八個字元');" minlength="8" required name="password">
+                                <input type="password" placeholder="確認密碼" class="input" id="ConfirmPassword"  pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$" minlength="8" oninput="setCustomValidity('');"
+                                onchange="if(document.getElementById('inputPassword').value != document.getElementById('ConfirmPassword').value){setCustomValidity('密碼不吻合');}"
+                                required>
+                                <input class="change_btn" type="submit" value="更換">
+                            </form>
+                        </div>
+
+
+
+</body>
+
+<!-- <script>
+    $(document).ready(function () {
+        $('#change_form').on('submit', function (e) {
+            e.preventDefault();
+            let username = document.getElementById('username_id').value
+            console.log(username)
+            let password = document.getElementById('password_id').value
+            console.log(password)
+            let data = {
+                "username": username,
+                "password": password
+            }
+            $.post({
+                url: "http://localhost:5432",
+                method: "post",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (res) {
+                    if (res.status === 0) {
+                        console.log(res.msg)
+                        window.location.href = '/backOrder'
+                    } else {
+                        console.log(res.msg)
+                        alert('密碼錯誤')
+                    }
+                },
+                error: function (err) {
+                    console.log(err.msg);
+
+                }
+            })
+        })
+    })
+</script> -->
+
+
+
+
+</html>

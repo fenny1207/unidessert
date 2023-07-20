@@ -35,10 +35,10 @@
               $('#alertModalBody').text('<%= message %>');
               $('#alertModal').modal('show');
               if ('<%= title %>' === '登入成功') {
-                $('#alertModalBody').text('<%= message %>  即將在一秒內自動跳轉首頁');
+                $('#alertModalBody').text('<%= message %>  即將在三秒內自動跳轉首頁');
                 setTimeout(function () {
                   window.location.href = '/'
-                }, 1000)
+                }, 3000)
               }
             });
           </script>
@@ -59,8 +59,6 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="confirmbtn" data-bs-dismiss="modal">確認</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="redirectIndex()"
-                      id="redirectIndex" style="display: none; ">確認</button>
                   </div>
                 </div>
               </div>

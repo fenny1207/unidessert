@@ -330,16 +330,7 @@ app.get('/order/historyOrder', (req, res) => {
 //     });
 // })
 
-app.get('/cart', function (req, res) {
-    function auth(req, res, next) {
-        if (req.session.user) {
-            console.log('authenticated')
-            next()
-        } else {
-            console.log('not authenticated')
-            return res.redirect('/user')
-        }
-    }
+app.get('/cart',auth, function (req, res) {
     // 取得頁面資料
     const sql = `
       SELECT od.*, c.*, p.*

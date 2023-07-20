@@ -182,42 +182,70 @@ app.get('/product/productInfo', function (req, res) {
             res.render('productInfo.ejs', { product_info: product_info, product: product });
         })
     })
-}).post('/product/productInfo', auth, function (req, res) {
-    function auth(req, res, next) {
-        if (req.session.user) {
-            console.log('authenticated')
-            next()
-        } else {
-            console.log('not authenticated')
-            return res.redirect('/user')
-        }
-    }
+}).post('/product/productInfo', auth_product, function (req, res) {
+    // if (req.session.user) {
+    //     console.log('已登入')
+    //     next()
+    // } else {
+    //     console.log('not authenticateda')
+    //     res.send({
+    //         status: 1,
+    //         msg: '還沒登入'
+    //     })
+    // }
     conn.query(`select * from user where uemail='${req.session.user.email}'`, (err, results) => {
-        if(err) return console.log(err.message)
+        console.log(results)
         let uid = results[0].uid
-        let total_price = req.body.total_price
-    
-        conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, status) VALUES (NULL, ?, 150, ?, "", "", "", "", "", "", "", "購物車")`,
-         [uid ,total_price ],
-          (err, results) => {
+        let order_total = req.body.total_price
+        conn.query(`select * from orderlist where uid='${uid}'`, (err, results) => {
+            // console.log(typeof results)
             if (err) return console.log(err.message)
-            console.log(results.insertId)
-            res.send({
-                status: 0,
-                msg: 'insert success'
+            // 當會員之前沒有加過購物車
+            if (!results[0]) {
+                // // let uid = results[0].uid
+                conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, status) VALUES (NULL, ?, 150, ?, "", "", "", "", "", "", "", "購物車")`,
+                    [uid, total_price],
+                    (err, results) => {
+                        // 要再加orderdetail
+                        if (err) return console.log(err.message)
+                        console.log(results)
+                        // conn.query(`select order_total from orderlist where uid='?'`, [uid], (err, results) => {
+                        //     if (err) return console.log(err.message)
+                        //     order_total = results[0].order_total + parseInt(order_total)
+                        //     conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [order_total, uid], (err, results) => {
+                        //         if (err) return console.log(err.message)
+                        //         console.log(results)
+                        //     })
+                        // })
+                        res.send({
+                            status: 0,
+                            msg: 'insert success'
+                        })
+                    })
+                return
+            }
+            // 會員之前有加過購物車
+            console.log('之前有加過購物車')
+            conn.query(`select order_total from orderlist where uid='?'`, [uid], (err, results) => {
+                if (err) return console.log(err.message)
+                order_total = results[0].order_total + parseInt(order_total)
+                conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [order_total, uid], (err, results) => {
+                    if (err) return console.log(err.message)
+                    console.log(results)
+                })
             })
         })
     })
 })
 app.use('/user', member);
-app.get("/order",authUid, (req, res) => {
-    var uid =  res.locals.uid;
-    console.log(uid +"這是卡比受");
+app.get("/order", authUid, (req, res) => {
+    var uid = res.locals.uid;
+    console.log(uid + "這是卡比受");
     var sql = `SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.uid ='${uid}' ORDER BY a.order_date DESC;`;
     conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)
         let uid = data[0].uid;
-        console.log(uid+'訂單');
+        console.log(uid + '訂單');
         res.render('order.ejs', {
             member_info: data,
             uid: uid
@@ -339,17 +367,17 @@ app.get('/cart',auth, function (req, res) {
       JOIN product p ON p.pid = od.pid
     `;
 
-    conn.query(sql, function(err, results) {
-      if (err) {
-        console.error('無法取得資料', err);
-        return;
-      }
-      res.render('cart1.ejs', { c_detail2: results, product: results });
+    conn.query(sql, function (err, results) {
+        if (err) {
+            console.error('無法取得資料', err);
+            return;
+        }
+        res.render('cart1.ejs', { c_detail2: results, product: results });
     });
-  });
-  
-  // 建立訂單信息
-  app.post('/addToCart', function(req, res) {
+});
+
+// 建立訂單信息
+app.post('/addToCart', function (req, res) {
     const { productId, price, quantity } = req.body;
     const userId = req.session.userId;
 
@@ -392,7 +420,7 @@ app.get('/cart',auth, function (req, res) {
         res.json({ message: '已成功加入購物車' });
       });
     });
-  });
+});
 
 app.get('/cart/fillout', function (req, res) {
     conn.query('SELECT * FROM orderlist inner join oderdetails on orderlist.oid =  oderdetails.oid', (err, results) => {
@@ -445,64 +473,64 @@ app.get('/cart/check', function (req, res) {
       JOIN product p ON p.pid = od.pid
   `;
 
-  conn.query(sql, function(err, results) {
-    if (err) {
-      console.error('無法取得資料：', err);
-      return;
-    }
-    res.render('cart3.ejs', { c_detail2: results, product: results });
-  });
+    conn.query(sql, function (err, results) {
+        if (err) {
+            console.error('無法取得資料：', err);
+            return;
+        }
+        res.render('cart3.ejs', { c_detail2: results, product: results });
+    });
 });
 
 // 添加到購物車
-app.post('/addToCart', function(req, res) {
-  const { productId, price, quantity } = req.body;
+app.post('/addToCart', function (req, res) {
+    const { productId, price, quantity } = req.body;
 
-  // 查詢信息
-  const getCdetailQuery = `
+    // 查詢信息
+    const getCdetailQuery = `
     SELECT *
     FROM c_detail2
     INNER JOIN orderdetails ON c_detail2.c_detail2_id = orderdetails.c_detail2_id
     WHERE orderdetails.product_id = ?
   `;
-  conn.query(getCdetailQuery, [productId], function(err, cdetailResult) {
-    if (err) {
-      console.error('檢索失敗', err);
-      return;
-    }
+    conn.query(getCdetailQuery, [productId], function (err, cdetailResult) {
+        if (err) {
+            console.error('檢索失敗', err);
+            return;
+        }
 
-    if (cdetailResult.length === 0) {
-      console.error('找不到關聯');
-      return;
-    }
+        if (cdetailResult.length === 0) {
+            console.error('找不到關聯');
+            return;
+        }
 
-    const cdetail = cdetailResult[0];
+        const cdetail = cdetailResult[0];
 
-    // 將產品資料插入orderdetails 
-    const insertOrderDetailQuery = `
+        // 將產品資料插入orderdetails 
+        const insertOrderDetailQuery = `
       INSERT INTO orderdetails (c_detail2_id, product_id, quantity, price)
       VALUES (?, ?, ?, ?)
     `;
-    const totalPrice = price * quantity; 
-    conn.query(insertOrderDetailQuery, [cdetail.c_detail2_id, productId, quantity, totalPrice], function(err, insertResult) {
-      if (err) {
-        console.error('將產品數據更新在資料庫', err);
-        return;
-      }
+        const totalPrice = price * quantity;
+        conn.query(insertOrderDetailQuery, [cdetail.c_detail2_id, productId, quantity, totalPrice], function (err, insertResult) {
+            if (err) {
+                console.error('將產品數據更新在資料庫', err);
+                return;
+            }
 
-      console.log('已成功添加到 orderdetails ');
+            console.log('已成功添加到 orderdetails ');
 
-      res.json({ message: '已成功更新到購物車' });
+            res.json({ message: '已成功更新到購物車' });
+        });
     });
-  });
 });
 
 
-app.get('/member', auth,function (req, res) {
-    var userEmail = req.session.user.email; 
+app.get('/member', auth, function (req, res) {
+    var userEmail = req.session.user.email;
     // console.log(userEmail+'這是皮卡丘');
     var sql = `SELECT uid, uname, umobile, uemail, ubirth FROM user where uemail='${userEmail}'`;
-    conn.query(sql,(err, data) => {
+    conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)
         let userData = data[0];
         // console.log(userData+'這是皮卡丘userData');
@@ -517,12 +545,12 @@ app.get('/member', auth,function (req, res) {
         // console.log(ubirth);
         res.render('member.ejs', {
             member_user: data,
-            uid:uid,
-            uname:uname,
-            umobile:umobile,
-            uemail:uemail,
-            ubirth:ubirth,
-            userData:userData
+            uid: uid,
+            uname: uname,
+            umobile: umobile,
+            uemail: uemail,
+            ubirth: ubirth,
+            userData: userData
         })
     })
 }).post('/member', (req, res) => {
@@ -553,14 +581,14 @@ app.get('/card', function (req, res) {
 app.get('/logout', (req, res) => {
     // 破壞session
     req.session.destroy((err) => {
-      if (err) {
-        console.error('session不能破壞:', err);
-      }
-      // 轉址到首頁
-      res.redirect('/');
+        if (err) {
+            console.error('session不能破壞:', err);
+        }
+        // 轉址到首頁
+        res.redirect('/');
     });
-  });
-  
+});
+
 
 function auth(req, res, next) {
     if (req.session.user) {
@@ -575,14 +603,25 @@ function authUid(req, res, next) {
     var userEmail = req.session.user.email;
     var sql = `SELECT * FROM user WHERE uemail = ?`;
     conn.query(sql, [userEmail], (err, data) => {
-      if (err) return console.log(err.message);
-      let userData = data[0];
-      let uid = userData.uid;
-      res.locals.uid = uid;
-      next();
+        if (err) return console.log(err.message);
+        let userData = data[0];
+        let uid = userData.uid;
+        res.locals.uid = uid;
+        next();
     });
-  }
-
+}
+function auth_product(req, res, next) {
+    if (req.session.user) {
+        console.log('已登入')
+        next()
+    } else {
+        console.log('not authenticateda')
+        res.send({
+            status: 1,
+            msg: '還沒登入'
+        })
+    }
+}
 
 
 // 設定 session 過期時的處理

@@ -60,8 +60,15 @@ $(document).ready(function () {
             contentType: "application/json",
             data: JSON.stringify(data),
             success: function(res) {
-                console.log(res.msg)
-            }
+                if(res.status === 1 ) {
+                    alert('請先登入後再進行此操作')
+                    location.href='/user';
+                }
+            },
+            error: function(res) {
+                console.log('fail')
+            } 
+            
         })
     })
 })

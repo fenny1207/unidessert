@@ -9,7 +9,6 @@ var mysql = require('mysql');
 var bcrypt = require('bcrypt');
 var saltRounds = 10; // 設定 salt 的複雜度，數字越大越安全，但計算時間也越長
 var member = require('./router/member');
-// var users = require('./routes/user.js');
 
 
 var conn = mysql.createConnection({
@@ -599,6 +598,7 @@ function auth(req, res, next) {
         return res.redirect('/user')
     }
 }
+
 function authUid(req, res, next) {
     var userEmail = req.session.user.email;
     var sql = `SELECT * FROM user WHERE uemail = ?`;

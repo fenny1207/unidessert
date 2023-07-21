@@ -30,10 +30,10 @@
             <div class=" mb-3 text-center fz-3r">歷史訂單</div>
             <div class="p-4 row  topic">
                 <div class="row">
-                        <div class="col-md-6 text-center">
-                            訂單編號:<%= oid%>
+                        <div class="col-md-4 pe-2">
+                            <span class="ms-4">訂單編號:<%= oid%></span>
                         </div>
-                        <div class="col-md-6 text-center">
+                        <div class="col-md-8 text-center">
                             訂單日期:<%= order_date%>
                         </div>
                     </div>
@@ -42,88 +42,105 @@
         <div class="table">
             <div class="ps-5 bigform">
                 <div class="table-header row">
-                    <div class="table-cell col-2 px-2">商品明细</div>
+                    <div class="table-cell col-2 px-2">&nbsp;&nbsp;商品明细</div>
                     <div class="table-cell col-3">客製化規格</div>
                     <div class="table-cell col-1"></div>
                     <div class="table-cell col-4">客製化卡片</div>
                     <div class="table-cell col-2"></div>
                 </div>
-                <div class="table-row table-row1 order row">
-                    <div class="table-cell col-2 px-2">
-                        <div class="product-info p-10">
-                            <img class="m-10" src="/pic/product/product_info1.webp" width="150px" alt="Product 1">
-                            <p class="m-10 product-name p-10">客製化禮盒</p>
-                        </div>
-                    </div>
-                    <div class="table-cell item col-4 p-3">
-                        <li>規格:四格</li>
-                        <li>內容物:<%= cookie1%>,
-                            <%= cookie4%><br>
-                            <%= cookie3%>,<%= cookie2%></li>
-                        <li>禮物盒:<%= boxcolor%></li>
-                        <li>紙袋:<%= bagcolor%></li>
-                    </div>
-                    <div class="table-cell item col-3  p-0">
-                        <div><%= cardcontent%></div>
-                    </div>
-                    <!-- <div class="table-cell item col-1 row"> -->
-                    <!-- </div> -->
-                    <div class="table-cell item col-3 row">
-                        <div class="row">
-                            <div class="table-cell item col-2 "></div>
-                            <div class="table-cell item col-5 p-0">&nbsp;&nbsp;數量:</div>
-                            <div class="table-cell item col-5 amount m-0 p-0">
-                                <span class="quantity">&nbsp;&nbsp;<%= quantity%>件</span>
+                <% for (let i = 0; i < history_Order.length; i++) { %>
+                    <% if (history_Order[i].size !== null || history_Order[i].cookie1 !== null || history_Order[i].cookie2 !== null || history_Order[i].cookie3 !== null || history_Order[i].cookie4 !== null || history_Order[i].boxcolor !== null || history_Order[i].bagcolor !== null || history_Order[i].cardcontent !== null || history_Order[i].quantity !== null || history_Order[i].cprice !== null || !isNaN(history_Order[i].cprice_total) || history_Order[i].pd_name !== null || history_Order[i].pd_content !== null || history_Order[i].p_price !== null || history_Order[i].price_total !== null) { %>
+                        <div class="table-row table-row1 order row">
+                        <% if (history_Order[i].size !== null) { %>
+                            <div class="table-cell col-2 ">
+                                <div class="product-info p-10">
+                                    <img class="m-10" src="<%= history_Order[i].p_pic%>" width="150px" alt="Product 1">
+                                    <p class="m-10 product-name p-10">客製化禮盒</p>
+                                </div>
                             </div>
+                        <% }%>
+                        <% if (history_Order[i].size !== null && history_Order[i].cookie1 !== null && history_Order[i].cookie2 !== null && history_Order[i].cookie3 !== null && history_Order[i].cookie4 !== null && history_Order[i].boxcolor !== null && history_Order[i].bagcolor !== null) { %>
+                            <div class="table-cell item col-4 p-3">
+                                <li>規格:<%= history_Order[i].size%></li>
+                                <li>內容物:<%= history_Order[i].cookie1%>,
+                                    <%= history_Order[i].cookie2%><br>
+                                    <%= history_Order[i].cookie3%>,<%= history_Order[i].cookie4%>
+                                </li>
+                                <li>禮物盒:<%= history_Order[i].boxcolor%></li>
+                                <li>紙袋:<%= history_Order[i].bagcolor%></li>
+                            </div>
+                        <% } %>
+                        <% if (history_Order[i].cardcontent !== null) { %>
+                            <div class="table-cell item col-3  p-0">
+                                <div><%= history_Order[i].cardcontent%></div>
+                            </div>
+                        <% } %>
+                        <% if (history_Order[i].quantity !== null && history_Order[i].cprice !== null && !isNaN(history_Order[i].cprice_total )) { %>
+                            <div class="table-cell item col-3 row">
+                                <div class="row">
+                                    <div class="table-cell item col-2 "></div>
+                                    <div class="table-cell item col-5 p-0">&nbsp;&nbsp;數量:</div>
+                                        <div class="table-cell item col-5 amount m-0 p-0">
+                                            <span class="quantity">&nbsp;&nbsp;<%= history_Order[i].quantity%>件</span>
+                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="table-cell item col-2 "></div>
+                                    <div class="table-cell item col-5 p-0">&nbsp;&nbsp;價格:</div>
+                                        <div class="table-cell item col-5 price m-0 p-0"> &nbsp;&nbsp;$<%= history_Order[i].cprice%></div>
+                                </div>
+                                <div class="row">
+                                    <div class="table-cell item col-2 "></div>
+                                    <div class="table-cell item col-5 p-0">&nbsp;&nbsp;小計:</div>
+                                        <div class="table-cell item col-5 price-total m-0 p-0">&nbsp;&nbsp;$<%= history_Order[i].cprice_total%></div>
+                                </div>
+                            </div>
+                        <% } %>
                         </div>
-                        <div class="row">
-                            <div class="table-cell item col-2 "></div>
-                            <div class="table-cell item col-5 p-0">&nbsp;&nbsp;價格:</div>
-                            <div class="table-cell item col-5 price m-0 p-0"> &nbsp;&nbsp;$<%= cprice%></div>
-                        </div>
-                        <div class="row">
-                            <div class="table-cell item col-2 "></div>
-                            <div class="table-cell item col-5 p-0">&nbsp;&nbsp;小計:</div>
-                            <div class="table-cell item col-5 price-total m-0 p-0">&nbsp;&nbsp;$<%= cprice_total%></div>
-                        </div>
-                    </div>
-                    <!-- <div class="table-cell item col-1"> -->
-                    </div>
-                    <div class="table-row table-row1 order row">
-                        <div class="table-cell col-2 px-2">
+                        <div class="table-row table-row1 order row">
+                        <% if (history_Order[i].pd_name !== null) { %>
+                            <div class="table-cell col-2 px-2">
                             <div class="product-info p-10">
-                                <img class="m-10" src="<%= p_pic%>" width="150px" alt="Product 1">
-                                <p class="m-10 product-name p-10"><%= pd_name%></p>
+                                <img class="m-10" src="<%= history_Order[i].p_pic%>" width="150px" alt="Product 1">
+                                    <p class="m-10 product-name p-10"><%= history_Order[i].pd_name%></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="table-cell item col-4 ">
-                            <li class="p-3"><%= pd_content%></li>
-                        </div>
+                        <% }%>
+                        <% if (history_Order[i].pd_content !== null) { %>
+                            <div class="table-cell item col-4 ">
+                                <li class="p-3"><%= history_Order[i].pd_content%></li>
+                            </div>
+                        <% }%>
                         <div class="table-cell item col-3  p-0">
-                            <!-- <div>你是我生命中最美麗的浪漫。愛你直到永遠！</div> -->
                         </div>
-                        <!-- <div class="table-cell item col-1 row"> -->
-                        <!-- </div> -->
                         <div class="table-cell item col-3 row">
                             <div class="row">
                                 <div class="table-cell item col-2 "></div>
                                 <div class="table-cell item col-5 p-0">&nbsp;&nbsp;數量:</div>
-                                <div class="table-cell item col-5 amount m-0 p-0">
-                                    <span class="quantity">&nbsp;&nbsp;<%= quantit1%>件</span>
-                                </div>
+                                <% if (history_Order[i].quantity !== null) { %>
+                                    <div class="table-cell item col-5 amount m-0 p-0">
+                                        <span class="quantity">&nbsp;&nbsp;<%= history_Order[i].quantity%>件</span>
+                                    </div>
+                                <% }%>
                             </div>
                             <div class="row">
                                 <div class="table-cell item col-2 "></div>
                                 <div class="table-cell item col-5 p-0">&nbsp;&nbsp;價格:</div>
-                                <div class="table-cell item col-5 price m-0 p-0"> &nbsp;&nbsp;$<%= p_price%></div>
+                                <% if (history_Order[i].p_price !== null) { %>
+                                    <div class="table-cell item col-5 price m-0 p-0"> &nbsp;&nbsp;$<%= history_Order[i].p_price%></div>
+                                <% }%>
                             </div>
                             <div class="row">
                                 <div class="table-cell item col-2 "></div>
                                 <div class="table-cell item col-5 p-0">&nbsp;&nbsp;小計:</div>
-                                <div class="table-cell item col-5 price-total m-0 p-0"> &nbsp;&nbsp;$<%= price_total%></div>
+                                <% if (history_Order[i].price_total !== null) { %>
+                                    <div class="table-cell item col-5 price-total m-0 p-0"> &nbsp;&nbsp;$<%= history_Order[i].price_total%></div>
+                                <% }%>
                             </div>
                         </div>
-                    </div>
+                        </div>
+                    <% }%>    
+                <% }%>
                 <div class="table-footer">
                     <div class="table-row table-row1 row">
                         <div class="table-cell col-3"></div>

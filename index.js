@@ -235,107 +235,105 @@ app.get('/product/productInfo', function (req, res) {
     })
 })
 app.use('/user', member);
-app.get("/order", authUid, (req, res) => {
-    var uid = res.locals.uid;
-    console.log(uid + "這是卡比受");
+app.get("/order",authUid, (req, res) => {
+    var uid =  res.locals.uid;
+    console.log(uid +"這是卡比受");
     var sql = `SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.uid ='${uid}' ORDER BY a.order_date DESC;`;
     conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)
         let uid = data[0].uid;
-        console.log(uid + '訂單');
+        console.log(uid+'訂單');
         res.render('order.ejs', {
             member_info: data,
-            uid: uid
+            uid: uid,
+            oid:oid,
+            order_date:order_date,
+            order_total:order_total,
+            order_status:order_status,
+            quantity:quantity
         });
     });
-}).post("/order", (req, res) => {
-    const { uid, oid, order_date, order_total, order_status, quantity } = req.body;
-    var sql = "SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b WHERE uid= ? and oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?; ";
-    // var sql = "select * from orderlist ";
-    // [oid,recipient,order_total]
-    conn.query(sql, [uid, oid, order_date, order_total, order_status, quantity], (err, data) => {
-        console.log(data)
-        if (err) { res.send("無法新增"); }
-        // let uid = data[0].uid;
-        // res.render('order.ejs', {
-        //     member_info: data,
-        //     uid:uid
-        // });
-    });
-});
+})
+// .post("/order", (req, res) => {
+//     const { uid, oid, order_date, order_total, order_status, quantity } = req.body;
+//     var sql = "SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b WHERE uid= ? and oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?; ";
+//     // var sql = "select * from orderlist ";
+//     // [oid,recipient,order_total]
+//     conn.query(sql, [uid, oid, order_date, order_total, order_status, quantity], (err, data) => {
+//         console.log(data)
+//         if (err) { res.send("無法新增"); }
+//         // let uid = data[0].uid;
+//         // res.render('order.ejs', {
+//         //     member_info: data,
+//         //     uid:uid
+//         // });
+//     });
+// });
 // SELECT user.uid, orderlist.oid,orderlist.order_total,orderlist.order_date,orderlist.payment_type FROM user LEFT JOIN orderlist ON user.uid=orderlist.uid;
-app.get('/order/historyOrder/:oid', (req, res) => {
-    // const history_sql = [
-    //     'SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b  WHERE oid = ? ',
-    //     'SELECT c.*, d.* FROM `c_detail2` as c NATURAL JOIN `product` as d  ',        
-    // ];
+app.get('/order/historyOrder/:oid', (req, res) => { 
     let oid = req.params.oid;
-    // let uid = res.locals.uid;
     // const sql = `SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b  where uid = ?`;
     const sql = `SELECT * FROM oderdetails WHERE oid = ?;`
     // conn.query(history_sql.join(';'),[1], (err, data) => {
-    conn.query(sql, [oid], (err, data) => {
+    conn.query(sql,[oid], (err, data) => {
         // console.log(history_sql);
         if (err) res.send(`這是訂單編號'${oid}:'`);
         let oid = data[0].oid;
+        console.log(data);
         let order_date = data[0].order_date;
         let order_total = data[0].order_total;
         let deliever_fee = data[0].deliever_fee;
-        const sql2 = "SELECT a.*, b.* FROM `c_detail2` as a NATURAL JOIN `product` as b ";
-        conn.query(sql2, (err, data) => {
-            let cdetailid = data[0].cdetailid;
-            let size = data[0].size;
-            let cookie1 = data[0].cookie1;
-            let cookie2 = data[0].cookie2;
-            let cookie3 = data[0].cookie3;
-            let cookie4 = data[0].cookie4;
-            let boxcolor = data[0].boxcolor;
-            let bagcolor = data[0].bagcolor;
-            let cardcontent = data[0].cardcontent;
-            let quantity = data[0].quantity;
-            let cprice = data[0].cprice;
-            let cprice_total = cprice * quantity;
-            let p_price = data[0].p_price;//價格
-            let quantit1 = 1;
-            let price_total = quantit1 * p_price;
-            let pid = data[0].pid;
-            let pd_name = data[0].pd_name;
-            let pd_describe_specification = data[0].pd_describe_specification;
-            let p_pic = data[0].p_pic;
-            let pd_content = data[0].pd_content;
-            let cp_total = price_total + cprice_total;
-            let order_total = deliever_fee + cp_total;
-            // var 
-            if (err) res.send("訂單資料失敗");
-            res.render('historyOrder.ejs', {
-                history_Order: data,
-                oid: oid,
-                order_date: order_date,
-                order_total: order_total,
-                deliever_fee: deliever_fee,
-                cdetailid: cdetailid,
-                size: size,
-                cookie1: cookie1,
-                cookie2: cookie2,
-                cookie3: cookie3,
-                cookie4: cookie4,
-                boxcolor: boxcolor,
-                bagcolor: bagcolor,
-                cardcontent: cardcontent,
-                quantity: quantity,
-                cprice: cprice,
-                cprice_total: cprice_total,
-                pid: pid,
-                pd_name: pd_name,
-                p_price: p_price,
-                quantit1: quantit1,
-                pd_describe_specification: pd_describe_specification,
-                p_pic: p_pic,
-                pd_content: pd_content,
-                price_total: price_total,
-                cp_total: cp_total,
-                order_total: order_total
-            });
+        let cdetailid = data[0].cdetailid;
+        let size = data[0].size;
+        let cookie1 = data[0].cookie1;
+        let cookie2 = data[0].cookie2;
+        let cookie3 = data[0].cookie3;
+        let cookie4 = data[0].cookie4;
+        let boxcolor = data[0].boxcolor;
+        let bagcolor = data[0].bagcolor;
+        let cardcontent = data[0].cardcontent;
+        let quantity = data[0].quantity;
+        let cprice = data[0].cprice;
+        let cprice_total = parseInt(cprice) * parseInt(quantity);
+        console.log(cprice_total+"111");
+        let p_price = data[0].p_price;//價格
+        let price_total = quantity * p_price;
+        let pid = data[0].pid;
+        let pd_name = data[0].pd_name;
+        let pd_describe_specification = data[0].pd_describe_specification;
+        let p_pic = data[0].p_pic;
+        let pd_content = data[0].pd_content;
+        let cp_total = price_total + cprice_total;
+        // let order_total = deliever_fee + cp_total;
+        // var 
+        if (err) res.send("訂單資料失敗");
+        res.render('historyOrder.ejs', {
+            history_Order: data,
+            oid: oid,
+            order_date: order_date,
+            order_total: order_total,
+            deliever_fee: deliever_fee,
+            cdetailid: cdetailid,
+            size: size,
+            cookie1: cookie1,
+            cookie2: cookie2,
+            cookie3: cookie3,
+            cookie4: cookie4,
+            boxcolor: boxcolor,
+            bagcolor: bagcolor,
+            cardcontent: cardcontent,
+            quantity: quantity,
+            cprice: cprice,
+            cprice_total: cprice_total,
+            pid: pid,
+            pd_name: pd_name,
+            p_price: p_price,
+            pd_describe_specification: pd_describe_specification,
+            p_pic: p_pic,
+            pd_content: pd_content,
+            price_total: price_total,
+            cp_total: cp_total,
+            order_total: order_total
         });
     });
 })
@@ -617,22 +615,22 @@ function authUid(req, res, next) {
     var userEmail = req.session.user.email;
     var sql = `SELECT * FROM user WHERE uemail = ?`;
     conn.query(sql, [userEmail], (err, data) => {
-        if (err) return console.log(err.message);
-        let userData = data[0];
-        let uid = userData.uid;
-        res.locals.uid = uid;
-        console.log(uid + '皮卡丘')
-        next();
+      if (err) return console.log(err.message);
+      let userData = data[0];
+      let uid = userData.uid;
+      res.locals.uid = uid;
+      console.log(uid+'皮卡丘')
+      next();
     });
-}
+  }
 function authOrder(req, res, next) {
-    var uid = res.locals.uid;
-    console.log(uid + "這是卡比受訂單");
+    var uid =  res.locals.uid;
+    console.log(uid +"這是卡比受訂單");
     var sql = ` SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.oid ='${oid}';`;
     conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)
         let uid = data[0].uid;
-        console.log(uid + '訂單');
+        console.log(uid+'訂單');
         res.render('order.ejs', {
             member_info: data,
             uid: uid

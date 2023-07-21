@@ -70,6 +70,13 @@ app.post('/', (req, res) => {
     // console.log('登入成功')
 })
 app.get('/backMember', function (req, res) {
+    if (!req.session.islogin) {
+        console.log('前端get沒session');
+        // res.render('backindex.ejs');
+        return res.render('backindex.ejs');
+        // res.redirect('backindex.ejs');
+    }
+    console.log('前端get有session')
     conn.query(`SELECT * FROM user `,
         function (err, bee) {
             // console.log(bee);
@@ -153,6 +160,37 @@ app.get('/backCustomizeAdd', function (req, res) {
     console.log('前端get有session')
     res.render('backCustomizeAdd.ejs');
 })
+app.get('/backchart', function (req, res) {
+    const monthsToFetch = [1,2,3,4,5,6,7, 8, 9,10,11,12]; // 选择要查询的月份
+
+    const query = `SELECT * FROM orderlist WHERE EXTRACT(MONTH FROM order_date) IN (${monthsToFetch.join(',')});`;
+
+    conn.query(query, function (err, result) {
+        if (err) {
+            console.error(err.message);
+            return;
+        }
+
+        // 将查询结果按月份分类存储在对象中
+        const ordersByMonth = {};
+        for (const month of monthsToFetch) {
+            ordersByMonth[month] = result.filter(order => new Date(order.order_date).getMonth() + 1 === month);
+        }
+
+        // 计算每个月份的订单总金额
+        const monthlyTotals = {};
+        for (const month in ordersByMonth) {
+            const orders = ordersByMonth[month];
+            const totalAmount = orders.reduce((sum, order) => sum + order.order_total, 0);
+            monthlyTotals[month] = totalAmount;
+        }
+
+        // console.log(monthlyTotals);
+
+        // 回傳網頁給使用者，将 ordersByMonth 和 monthlyTotals 传递给模板进行渲染
+        res.render('backchart.ejs', { ordersByMonth, monthlyTotals });
+    });
+});
 
 app.listen(5432, function () {
     console.log('5432這是後台！');

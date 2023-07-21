@@ -541,8 +541,8 @@ app.post('/addToCart', function(req, res) {
 app.get('/member', auth,function (req, res) {
     var userEmail = req.session.user.email; 
     // console.log(userEmail+'這是皮卡丘');
-    var sql = `SELECT uid, uname, umobile, uemail, ubirth FROM user where uemail='${userEmail}'`;
-    conn.query(sql,(err, data) => {
+    var sql = `SELECT uid, uname, umobile, uemail, ubirth FROM user where uemail=?`;
+    conn.query(sql,[userEmail],(err, data) => {
         if (err) return console.log(err.message)
         let userData = data[0];
         // console.log(userData+'這是皮卡丘userData');

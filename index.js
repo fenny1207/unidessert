@@ -266,7 +266,6 @@ app.get('/product/productInfo', function (req, res) {
 app.use('/user', member);
 app.get("/order",authUid, (req, res) => {
     var uid =  res.locals.uid;
-    console.log(uid +"這是卡比受");
     var sql = `SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.uid ='${uid}' GROUP BY a.oid ORDER BY a.order_date DESC;`;
     conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)
@@ -276,7 +275,6 @@ app.get("/order",authUid, (req, res) => {
         let order_date = data[0].order_date;
         let order_status = data[0].order_status;
         let quantity = data[0].quantity;
-        console.log(oid+'訂單');
         res.render('order.ejs', {
             member_info: data,
             uid: uid,
@@ -306,69 +304,71 @@ app.get("/order",authUid, (req, res) => {
 // SELECT user.uid, orderlist.oid,orderlist.order_total,orderlist.order_date,orderlist.payment_type FROM user LEFT JOIN orderlist ON user.uid=orderlist.uid;
 app.get('/order/historyOrder/:oid', (req, res) => { 
     let oid = req.params.oid;
+    console.log(oid +'訂單')
     // const sql = `SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b  where uid = ?`;
-    const sql = `SELECT * FROM oderdetails WHERE oid = ?;`
-    // conn.query(history_sql.join(';'),[1], (err, data) => {
+    const sql = `select *
+    FROM orderlist LEFT JOIN oderdetails ON orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  where oderdetails.oid = ?`
     conn.query(sql,[oid], (err, data) => {
         // console.log(history_sql);
-        if (err) res.send(`這是訂單編號'${oid}:'`);
-        let oid = data[0].oid;
-        console.log(data);
-        let order_date = data[0].order_date;
-        let order_total = data[0].order_total;
-        let deliever_fee = data[0].deliever_fee;
-        let cdetailid = data[0].cdetailid;
-        let size = data[0].size;
-        let cookie1 = data[0].cookie1;
-        let cookie2 = data[0].cookie2;
-        let cookie3 = data[0].cookie3;
-        let cookie4 = data[0].cookie4;
-        let boxcolor = data[0].boxcolor;
-        let bagcolor = data[0].bagcolor;
-        let cardcontent = data[0].cardcontent;
-        let quantity = data[0].quantity;
-        let cprice = data[0].cprice;
-        let cprice_total = parseInt(cprice) * parseInt(quantity);
-        console.log(cprice_total+"111");
-        let p_price = data[0].p_price;//價格
-        let price_total = quantity * p_price;
-        let pid = data[0].pid;
-        let pd_name = data[0].pd_name;
-        let pd_describe_specification = data[0].pd_describe_specification;
-        let p_pic = data[0].p_pic;
-        let pd_content = data[0].pd_content;
-        let cp_total = price_total + cprice_total;
-        // let order_total = deliever_fee + cp_total;
-        // var 
-        if (err) res.send("訂單資料失敗");
-        res.render('historyOrder.ejs', {
-            history_Order: data,
-            oid: oid,
-            order_date: order_date,
-            order_total: order_total,
-            deliever_fee: deliever_fee,
-            cdetailid: cdetailid,
-            size: size,
-            cookie1: cookie1,
-            cookie2: cookie2,
-            cookie3: cookie3,
-            cookie4: cookie4,
-            boxcolor: boxcolor,
-            bagcolor: bagcolor,
-            cardcontent: cardcontent,
-            quantity: quantity,
-            cprice: cprice,
-            cprice_total: cprice_total,
-            pid: pid,
-            pd_name: pd_name,
-            p_price: p_price,
-            pd_describe_specification: pd_describe_specification,
-            p_pic: p_pic,
-            pd_content: pd_content,
-            price_total: price_total,
-            cp_total: cp_total,
-            order_total: order_total
-        });
+        if (err) {res.send(`失敗，這是訂單編號'${oid}:'`);
+        } else {
+            if(data.length >0){
+            let order_date = data[0].order_date;
+            let order_total = data[0].order_total;
+            let deliever_fee = data[0].deliever_fee;
+            let cdetailid = data[0].cdetailid;
+            let size = data[0].size;
+            let cookie1 = data[0].cookie1;
+            let cookie2 = data[0].cookie2;
+            let cookie3 = data[0].cookie3;
+            let cookie4 = data[0].cookie4;
+            let boxcolor = data[0].boxcolor;
+            let bagcolor = data[0].bagcolor;
+            let cardcontent = data[0].cardcontent;
+            let quantity = data[0].quantity;
+            let cprice = data[0].cprice;
+            let cprice_total = parseInt(cprice) * parseInt(quantity);
+            console.log(cprice_total+"111");
+            let p_price = data[0].p_price;//價格
+            let price_total = quantity * p_price;
+            let pid = data[0].pid;
+            let pd_name = data[0].pd_name;
+            let pd_describe_specification = data[0].pd_describe_specification;
+            let p_pic = data[0].p_pic;
+            let pd_content = data[0].pd_content;
+            let cp_total = price_total + cprice_total;
+            res.render('historyOrder.ejs', {
+                history_Order: data,
+                oid: oid,
+                order_date: order_date,
+                order_total: order_total,
+                deliever_fee: deliever_fee,
+                cdetailid: cdetailid,
+                size: size,
+                cookie1: cookie1,
+                cookie2: cookie2,
+                cookie3: cookie3,
+                cookie4: cookie4,
+                boxcolor: boxcolor,
+                bagcolor: bagcolor,
+                cardcontent: cardcontent,
+                quantity: quantity,
+                cprice: cprice,
+                cprice_total: cprice_total,
+                pid: pid,
+                pd_name: pd_name,
+                p_price: p_price,
+                pd_describe_specification: pd_describe_specification,
+                p_pic: p_pic,
+                pd_content: pd_content,
+                price_total: price_total,
+                cp_total: cp_total,
+                order_total: order_total
+            });
+         } else{
+            res.send(`找不到訂單編號 '${oid}' 的訂單資料`);
+         }
+        }
     });
 })
 // app.post('/order/historyOrder', (req, res) => {
@@ -559,12 +559,10 @@ app.post('/addToCart', function (req, res) {
 
 app.get('/member', auth, function (req, res) {
     var userEmail = req.session.user.email;
-    // console.log(userEmail+'這是皮卡丘');
     var sql = `SELECT uid, uname, umobile, uemail, ubirth FROM user where uemail=?`;
     conn.query(sql, [userEmail], (err, data) => {
         if (err) return console.log(err.message)
         let userData = data[0];
-        // console.log(userData+'這是皮卡丘userData');
         let uid = userData.uid;
         console.log(data[0].uemail);
         let uemail = userData.uemail;
@@ -653,18 +651,15 @@ function authUid(req, res, next) {
       let userData = data[0];
       let uid = userData.uid;
       res.locals.uid = uid;
-      console.log(uid+'皮卡丘')
       next();
     });
   }
 function authOrder(req, res, next) {
     var uid =  res.locals.uid;
-    console.log(uid +"這是卡比受訂單");
     var sql = ` SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.oid ='${oid}';`;
     conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)
         let uid = data[0].uid;
-        console.log(uid+'訂單');
         res.render('order.ejs', {
             member_info: data,
             uid: uid

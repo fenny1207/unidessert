@@ -267,11 +267,16 @@ app.use('/user', member);
 app.get("/order",authUid, (req, res) => {
     var uid =  res.locals.uid;
     console.log(uid +"這是卡比受");
-    var sql = `SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.uid ='${uid}' ORDER BY a.order_date DESC;`;
+    var sql = `SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.uid ='${uid}' GROUP BY a.oid ORDER BY a.order_date DESC;`;
     conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)
         let uid = data[0].uid;
-        console.log(uid+'訂單');
+        let oid = data[0].oid;
+        let order_total = data[0].order_total;
+        let order_date = data[0].order_date;
+        let order_status = data[0].order_status;
+        let quantity = data[0].quantity;
+        console.log(oid+'訂單');
         res.render('order.ejs', {
             member_info: data,
             uid: uid,

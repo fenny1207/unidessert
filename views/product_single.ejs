@@ -37,10 +37,8 @@
                         <div class="productPic_container">
                             <img class="productPic" src=<%=p_single_info[i].p_pic %> alt="cannelé">
                         </div>
-                        <div class="productText">
-                            <%= p_single_info[i].pd_name %>
-                        </div>
-                        <div class="productPrice">NT <%= p_single_info[i].p_price %>
+                        <div class="productText" id="p_name<%= i+1 %>"><%= p_single_info[i].pd_name %></div>
+                        <div class="productPrice" id="product_price<%= i+1 %>">NT <%= p_single_info[i].p_price %>
                         </div>
                         <button class="add_to_cart_button addtocart" id="add_to_cart_button<%= i+1 %>">加入購物車</button>
                     </div>

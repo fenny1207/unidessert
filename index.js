@@ -122,53 +122,75 @@ app.get('/product', function (req, res) {
 })
 app.get('/product/single', function (req, res) {
     var p_single_info
-    conn.query('SELECT pd_name, p_price, p_pic FROM product where p_type="single"', (err, results) => {
+    conn.query('SELECT * FROM product where p_type="single"', (err, results) => {
         if (err) return console.log(err.message)
         p_single_info = results;
         res.render('product_single.ejs', { p_single_info: p_single_info });
     })
-}).post('/product/single', function (req, res) {
-    const pid = parseInt(req.body.pid) + 2
-    const quantity = req.body.quantity
-    // req.session.islogin = true;
-    // const login_alert = !req.session.islogin;
-    // let cart_pause = req.body.cart_pause;
-    // 確認是否已經登入(先寫死的)
-    // if(!req.session.islogin) {
-    //     res.send(login_alert);
-    //     return
-    // }
-    // if(!cart_pause) {
-    //     res.send(login_alert);
-    //     return
-    // }
-    // res.send(login_alert)
-    // console.log('後端傳送資料')
-    conn.query(`select * from product where p_type="single" && pid=${pid}`, (err, results) => {
+}).post('/product/single', auth_product, function (req, res) {
+    // 抓會員的資料
+    conn.query(`select * from user where uemail=?`, [req.session.user.email], (err, results) => {
         if (err) return console.log(err.message)
-        let pid = results[0].pid
-        let pd_name = results[0].pd_name
-        let p_price = results[0].p_price
-        let total_price = p_price * quantity
-        let p_type = results[0].p_type
-        conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, status) 
-                    VALUES (null, 1, 150, "", "", "", "", "", "", "", "", "購物車")`, (err, results) => {
+        var uid = results[0].uid
+        var pid = parseInt(req.body.pid) + 2
+        var quantity = req.body.quantity
+        var p_name = req.body.p_name
+        var p_price = req.body.p_price
+        var single_order_total = req.body.order_total
+        var p_type = req.body.p_type
+        // 抓會員在資料庫的購物車的紀錄，看會員是否有加過商品到購物車
+        conn.query(`select * from orderlist where uid='?' && order_status = "購物車"`, [uid], (err, results) => {
             if (err) return console.log(err.message)
-            console.log(results.insertId)
-            const insert_oid = results.insertId
-            conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price)
-                    VALUES (NULL, ?, ?, ?, ?, ?, ?)`, [insert_oid, p_type, pid, pd_name, quantity, total_price], (err, results) => {
+            // 當會員之前沒有加過購物車
+            if (!results[0]) {
+                // 抓使用者要加入購物車的單品資訊
+                conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, order_status) 
+                        VALUES (null, ?, 150, ?, "", "", "", "", "", "", "貨到付款", "購物車")`,
+                    [uid, single_order_total], (err, results) => {
+                        if (err) return console.log(err.message)
+                        const insert_oid = results.insertId
+                        conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price) VALUES (NULL, ?, ?, ?, ?, ?, ?)`,
+                            [insert_oid, p_type, pid, p_name, quantity, single_order_total],
+                            (err, results) => {
+                                if (err) return console.log(err.message)
+                                console.log("insert into oderdetails: ", results)
+                            })
+                    })
+                return
+            }
+            // 當會員之前有加過購物車
+            // 找會員的購物車資料
+            var oid = results[0].oid
+            order_total = results[0].order_total + single_order_total
+            // 更新orderlist
+            conn.query(`UPDATE orderlist SET order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
                 if (err) return console.log(err.message)
-                console.log(results.insertId)
-
+                console.log('update orderlist:', results)
             })
-            // 等session 寫好再改成 判斷是不是同一個使用者，輸入成一筆訂單多個產品
-            // 點擊按鈕 -> 藉由點擊的按鈕位置，去資料庫抓到某個產品名字價格 -> 再依資料庫抓到的名字輸入進資料庫(orderlist 跟 orderdetails)
-            // --> 先輸入進 orderlist 後取得 oid ，再依 oid 輸入進 orderdetails -> 但是是點擊一次跑一次搜尋及輸入orderlist、orderdetails指令
-            // --> 所以會點擊一次就產生一筆訂單，無法輸入成一筆訂單多個產品
+            // 更新 orderdetails
+            // 找 orderdetails 有沒有相同產品，沒有新增，有則更新
+            conn.query(`select * from oderdetails where oid = ? && product_id = ?`, [oid, pid], (err, results) => {
+                if (err) return console.log(err.message)
+                // orderdetails 沒有相同的產品
+                if (!results[0]) {
+                    conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price, cdetailid) VALUES (NULL, ?, ?, ?, ?, ?, ?, NULL)`,
+                        [oid, p_type, pid, p_name, quantity, single_order_total],
+                        (err, results) => {
+                            if (err) return console.log(err.message)
+                            console.log('insert orderlists success:', results)
+                        })
+                    return
+                }
+                // orderdetails 有相同的產品
+                let total_quantity = results[0].quantity + quantity
+                let total_price = results[0].total_price + single_order_total
+                conn.query(`UPDATE oderdetails SET quantity = ?, total_price= ? WHERE product_id = ?`, [total_quantity, total_price, pid], (err, results) => {
+                    if (err) return console.log(err.message)
+                    console.log('orderdetails update success: ', results)
+                })
+            })
         })
     })
-    // console.log('後端傳送資料完成')
 })
 
 app.get('/product/productInfo', function (req, res) {
@@ -183,21 +205,19 @@ app.get('/product/productInfo', function (req, res) {
     })
 }).post('/product/productInfo', auth_product, function (req, res) {
     conn.query(`select * from user where uemail='${req.session.user.email}'`, (err, results) => {
-        console.log(results)
         var uid = results[0].uid
         var order_total = req.body.order_total
         var product_Title = req.body.product_Title
         var productPrice = req.body.productPrice
         var quantity = req.body.quantity
-        conn.query(`select * from orderlist where uid='?' && status="購物車"`, [uid], (err, results) => {
+        conn.query(`select * from orderlist where uid='?' && order_status="購物車"`, [uid], (err, results) => {
             if (err) return console.log(err.message)
             // 當會員之前沒有加過購物車
             if (!results[0]) {
-                conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, status) VALUES (NULL, ?, 150, ?, "", "", "", "", "", "", "", "購物車")`,
+                conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, order_status) VALUES (NULL, ?, 150, ?, "", "", "", "", "", "", "", "購物車")`,
                     [uid, order_total],
                     (err, results) => {
                         if (err) return console.log(err.message)
-                        console.log(results.insertId)
                         var oid = results.insertId
                         conn.query(`select * from product where pd_name = ?`, [product_Title], (err, results) => {
                             if (err) return console.log(err.message)
@@ -205,7 +225,7 @@ app.get('/product/productInfo', function (req, res) {
                                 [oid, results[0].p_type, results[0].pid, results[0].pd_name, quantity, order_total],
                                 (err, results) => {
                                     if (err) return console.log(err.message)
-                                    console.log(results)
+                                    console.log("insert into oderdetails: ", results)
                                 })
                         })
                     })
@@ -216,19 +236,28 @@ app.get('/product/productInfo', function (req, res) {
                 return
             }
             // 會員之前有加過購物車
-            console.log('之前有加過購物車')
-            conn.query(`select * from orderlist where uid = '?' && status = '購物車'`, [uid], (err, results) => {
+            conn.query(`select * from orderlist where uid = '?' && order_status = '購物車'`, [uid], (err, results) => {
                 if (err) return console.log(err.message)
                 order_total = results[0].order_total + parseInt(order_total)
-                console.log('order_total:', order_total)
+                let oid = results[0].oid
                 conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [order_total, uid], (err, results) => {
                     if (err) return console.log(err.message)
-                    console.log('orderlist的', results)
+                    console.log('update orderlist: ', results)
                 })
-                let order_details_quantity = order_total / productPrice
-                conn.query(`UPDATE oderdetails SET quantity = ?, total_price = ? WHERE oid = ?`, [order_details_quantity, order_total, results[0].oid], (err, results) => {
+                conn.query(`select * from oderdetails where oid = ? && p_name = ?`, [oid, product_Title], (err, results) => {
                     if (err) return console.log(err.message)
-                    console.log('orderdetails的', results)
+                    if (!results[0]) {
+                        conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price) VALUES (NULL, ?, 'set', 1, ?, ?, ?)`, [oid, product_Title, quantity, productPrice * quantity], (err, results) => {
+                            if (err) return console.log(err.message)
+                        })
+                        return
+                    }
+                    quantity = results[0].quantity + parseInt(quantity)
+                    total_price = parseInt(quantity) * productPrice
+                    conn.query(`UPDATE oderdetails SET quantity = ?, total_price = ? WHERE oid = ? && p_name = ?`, [quantity, total_price, oid, product_Title], (err, results) => {
+                        if (err) return console.log(err.message)
+                        console.log('update orderdetails: ', results)
+                    })
                 })
             })
         })
@@ -527,7 +556,7 @@ app.get('/member', auth, function (req, res) {
     var userEmail = req.session.user.email;
     // console.log(userEmail+'這是皮卡丘');
     var sql = `SELECT uid, uname, umobile, uemail, ubirth FROM user where uemail=?`;
-    conn.query(sql,[userEmail],(err, data) => {
+    conn.query(sql, [userEmail], (err, data) => {
         if (err) return console.log(err.message)
         let userData = data[0];
         // console.log(userData+'這是皮卡丘userData');

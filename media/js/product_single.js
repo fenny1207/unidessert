@@ -1,28 +1,39 @@
 $(document).ready(function () {
-    $(document).on('click', function (e) {
-        target_id = e.target.id.substr(18)
-        // 抓取第幾個產品傳入後端，依第幾個產品去SELECT後取值[i]再INSERT INTO進資料庫
-        // e.preventDefault();
+    $(".add_to_cart_button").on('click', function (e) {
+        let target_id = e.target.id.substr(18)
+        // console.log(target_id)
+
+        let p_name = document.getElementById(`p_name${target_id}`).innerHTML
+        // console.log(`p_name${target_id}`)
+        let p_price = parseInt(document.getElementById(`product_price${target_id}`).innerHTML.substring(3))
+        // console.log(`product_price${target_id}`)
         let quantity = 1
+        let order_total = p_price * quantity
+        console.log(order_total)
+        // e.preventDefault();
+        let p_type = "single"
         let data = {
             "pid": target_id,
-            "quantity": quantity
+            "quantity": quantity,
+            "p_name": p_name,
+            "p_price": p_price,
+            "order_total": order_total,
+            "p_type": p_type
         }
         $.post({
             url: "http://localhost:5678/product/single",
             method: "post",
             contentType: "application/json",
             data: JSON.stringify(data),
-            success: function (res) {
-                if(res) {
-                    console.log('表示未登入');
-                    return alert('請先登入再進行此操作');
+            success: function(res) {
+                if(res.status === 1 ) {
+                    alert('請先登入後再進行此操作')
+                    location.href='/user';
                 }
-                alert('成功加入購物車')
             },
-            error: function (err) {
-                alert("發生錯誤");
-            }
+            error: function(res) {
+                console.log('fail')
+            } 
         })
     })
 })

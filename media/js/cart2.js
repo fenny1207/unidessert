@@ -62,13 +62,6 @@ function toggleCloudInfo() {
     }
 }
 
-// function parentFunction() {
-//     validateForm()
-//     // console.log(validateForm())
-//     // console.log(validatePaymentForm())
-//     // console.log(submitForms())
-//     submitForms()
-// }
 function validateForm() {
     var recipient = document.getElementById('recipient').value;
     var address_code = document.getElementById('address_code').value;
@@ -111,22 +104,6 @@ function validateForm() {
 // }
 
 $(document).ready(function () {
-    var offsetBottom;
-    console.log(pagetopposition)
-    // 1258.99
-    // $(window).scroll(function () {
-    //     var pagetopposition = $('#order_info_card').offset();
-    //     offsetBottom = $(window).scrollTop();
-    //     console.log("window", offsetBottom)
-    //     console.log('card', pagetopposition)
-    //     if (offsetBottom >= 958) {
-    //         var order_info_card = document.getElementById('order_info_card')
-    //         order_info_card.id = 'add_order_info_card';
-    //     } else {
-    //         var order_info_card = document.getElementById('add_order_info_card')
-    //         order_info_card.setAttribute('id', 'order_info_card');
-    //     }
-    // });
     const today = new Date();
     let formattedToday = today.setDate(today.getDate() + 7)  // 最快到貨時間為七天後
     formattedToday = today.toISOString().split('T')[0];  //格式化成 YYYY-MM-DD
@@ -140,8 +117,8 @@ $(document).ready(function () {
         var tel = document.getElementById('tel').value
         var email = document.getElementById('email').value
         var bill_option_checked = document.getElementById('invoiceTypeSelect').value
+        var arrive_date = document.getElementById('arrive_date').value
 
-        // console.log(document.getElementById('cloud-invoice-info').style.display)
         if (document.getElementById('cloud-invoice-info').style.display === 'block') {
             if (bill_option_checked === 'naturalInvoice') {
                 var bill_option_input = document.getElementById('naturalInfo_input').value
@@ -162,16 +139,17 @@ $(document).ready(function () {
             tel: tel,
             email: email,
             bill_option: bill_option,
-            bill_option_input: bill_option_input
+            bill_option_input: bill_option_input,
+            arrive_date: arrive_date
         }
         $.ajax({
             url: "http://localhost:5678/cart/fillout",
             method: "post",
             contentType: "application/json",
             data: JSON.stringify(data),
-            // success: function (res) {
-            //     console.log('表單填寫完成')
-            // },
+            success: function (res) {
+                console.log('表單填寫完成')
+            },
             error: function (err) {
                 alert("發生錯誤 請重新操作");
             }

@@ -278,11 +278,11 @@ app.get("/order",authUid, (req, res) => {
         res.render('order.ejs', {
             member_info: data,
             uid: uid,
-            oid:oid,
-            order_date:order_date,
-            order_total:order_total,
-            order_status:order_status,
-            quantity:quantity
+            oid: oid,
+            order_date: order_date,
+            order_total: order_total,
+            order_status: order_status,
+            quantity: quantity
         });
     });
 })
@@ -302,7 +302,7 @@ app.get("/order",authUid, (req, res) => {
 //     });
 // });
 // SELECT user.uid, orderlist.oid,orderlist.order_total,orderlist.order_date,orderlist.payment_type FROM user LEFT JOIN orderlist ON user.uid=orderlist.uid;
-app.get('/order/historyOrder/:oid', (req, res) => { 
+app.get('/order/historyOrder/:oid', (req, res) => {
     let oid = req.params.oid;
     console.log(oid +'訂單')
     // const sql = `SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b  where uid = ?`;
@@ -474,24 +474,23 @@ app.post('/addToCart', function(req, res) {
   });
 
 
-app.get('/cart/fillout', function (req, res) {
-    conn.query('SELECT * FROM orderlist inner join oderdetails on orderlist.oid =  oderdetails.oid', (err, results) => {
+app.get('/cart/fillout', auth_cart2, function (req, res) {
+    conn.query(`select * from user where uemail=?`, [req.session.user.email], (err, results) => {
         if (err) return console.log(err.message)
-        var order_id = results[0].oid;
-        var deliever_fee = results[0].deliever_fee
-        var sum = 0; // 算出數個商品總額
-        var product_quantity;
-        conn.query(`SELECT * FROM oderdetails where oid = ${order_id}`, (err, results) => {
-            var order_info = results // 取得某個訂單訂購的全部商品資訊
-            product_quantity = JSON.parse(JSON.stringify(order_info)).length // 取總計商品數
-            for (let i = 0; i < product_quantity; i++) {
-                sum = sum + order_info[i].total_price;
+        let uid = results[0].uid
+        conn.query('SELECT * FROM orderlist inner join oderdetails on orderlist.oid = oderdetails.oid where uid = ? and order_status = "購物車"', [uid], (err, results) => {
+            if (err) return console.log(err.message)
+            var deliever_fee = results[0].deliever_fee
+            var orderdetail_length = JSON.parse(JSON.stringify(results)).length
+            var sum = results[0].order_total // 商品總額
+            var product_quantity = 0; // 計算商品數
+            var order_total = sum + deliever_fee // 訂單總額
+            for (let i = 0; i < orderdetail_length; i++) {
+                product_quantity = results[i].quantity + product_quantity
             }
-            var order_total = sum + deliever_fee // 計算訂單總額
-            // console.log(order_total);
             res.render('cart2.ejs',
                 {
-                    order_info: order_info,
+                    product_quantity: product_quantity,
                     sum: sum,
                     deliever_fee: deliever_fee,
                     order_total: order_total
@@ -499,21 +498,27 @@ app.get('/cart/fillout', function (req, res) {
             );
         })
     })
-}).post('/cart/fillout', function (req, res) {
-    var recipient = req.body.recipient
-    var recipient_address_code = req.body.address_code
-    var address = req.body.address
-    var tel = req.body.tel
-    var email = req.body.email
-    var bill_option = req.body.bill_option
-    var bill_option_input = req.body.bill_option_input
-    var sql = `UPDATE orderlist SET recipient = ?, recipient_address_code = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = '2023-07-16', payment_type = '到貨付款', bill_option_type = ?, cloud_invoice = ? WHERE orderlist.oid = 12`
-    conn.query(sql, [recipient, recipient_address_code, address, tel, email, bill_option, bill_option_input], (err, results) => {
+}).post('/cart/fillout', auth_cart2, function (req, res) {
+    conn.query(`select * from user where uemail=?`, [req.session.user.email], (err, results) => {
         if (err) return console.log(err.message)
-        console.log(results)
-        if (results.serverStatus === 2) {
-            console.log('資料庫資料更新成功')
-        }
+        var uid = results[0].uid
+        var recipient = req.body.recipient
+        // var recipient_address_code = req.body.address_code
+        var address = req.body.address
+        var tel = req.body.tel
+        var email = req.body.email
+        var bill_option = req.body.bill_option
+        var bill_option_input = req.body.bill_option_input
+        var arrive_date = req.body.arrive_date
+        // 資料庫可能要加一欄 recipient_address_code
+        var sql = `UPDATE orderlist SET recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款' WHERE uid = ?`
+        conn.query(sql, [recipient, address, tel, email, arrive_date, uid], (err, results) => {
+            if (err) return console.log(err.message)
+            console.log(results)
+            if (results.serverStatus === 2) {
+                console.log('資料庫資料更新成功')
+            }
+        })
     })
 })
 
@@ -686,6 +691,15 @@ function auth_product(req, res, next) {
         })
     }
 }
+function auth_cart2(req, res, next) {
+    if (req.session.user) {
+        console.log('已登入')
+        next()
+    } else {
+        console.log('not authenticateda')
+        return res.redirect('/user')
+    }
+}
 //抓登入帳號的uid
 function authUid(req, res, next) {
     var userEmail = req.session.user.email;
@@ -697,7 +711,7 @@ function authUid(req, res, next) {
       res.locals.uid = uid;
       next();
     });
-  }
+}
 function authOrder(req, res, next) {
     var uid =  res.locals.uid;
     var sql = ` SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.oid ='${oid}';`;

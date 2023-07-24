@@ -235,7 +235,7 @@
                             <!-- 選大小 -->
                             <span> Size：</span>
 
-                            <input  onclick="hide(this)" type="radio" id="<%= cat[39].cid %>" name="boxsize"
+                            <input onclick="hide(this)" type="radio" id="<%= cat[39].cid %>" name="boxsize"
                                 value="<%= cat[39].cname %> " class="<%= cat[39].cprice %>">
                             <label for="<%= cat[39].cid %>"><span>$<%= cat[39].cprice %></span><img
                                     src="<%= cat[39].cpic %>"></label>
@@ -308,7 +308,7 @@
                             <img class="stepbar w-75" id="imgstep1" src="/pic/customize/bag11.png">
                         </div>
                         <div class="col-lg-6 ">
-                            `
+                            
                             <br>
                             <span> BagColor：</span>
                             <%for (let k=10; k <=14; k++) { %>
@@ -590,8 +590,8 @@
                 });
 
             })
-            
-                
+
+
             $("#cardsection").on('submit', function (e) {
                 e.preventDefault();
                 var text = document.getElementById('cardtext').value
@@ -607,7 +607,7 @@
             //         $('#showcard').value($('#cardtext').val());
             //     });
             // });
-            
+
 
             $(document).ready(function () {
                 $("#customize1").on('submit', function (e) {
@@ -644,9 +644,14 @@
                         method: "post",
                         contentType: "application/json",
                         data: JSON.stringify(data),
-                        // success: function(res) {
-                        //     console.log("data")
-                        // }
+
+                        success: function (res) {
+                            if (res.status === 1) {
+                                alert('請先登入後再進行此操作')
+                                location.href = '/user';
+                            }
+                            console.log("data")
+                        }
                     })
                 })
             })

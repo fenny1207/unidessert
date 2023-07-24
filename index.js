@@ -89,8 +89,14 @@ app.get('/customize', function (req, res) {
             })
         })
 });
-app.post('/customize', function (req, res) {
+//原本的：
+app.post('/customize', auth_product, function (req, res) {
     // res.send('success');
+    conn.query(`select * from user where uemail='${req.session.user.email}'`, (err, results) => {
+        console.log(results)
+        var uid = results[0].uid
+        console.log("這是uid" + uid)
+    })
     var insertc = "INSERT INTO c_detail2 ( size ,cookie1,cookie2,cookie3,cookie4, boxcolor ,bagcolor,cardcontent,quantity,cprice) VALUES (?,?,?,?,?,?,?,?,?,?);";
     var userInput = [
         req.body.size,
@@ -109,8 +115,50 @@ app.post('/customize', function (req, res) {
         if (err) {
             res.send('無法新增')
         }
+        const insert_oid = data.insertId
+        console.log('這是insert_oid' + insert_oid);
+        const currentDate = new Date();
+
+        // 使用 Date 物件的方法獲取年、月、日等資訊
+        const year = currentDate.getFullYear(); // 取得年份，例如 2023
+        const month = currentDate.getMonth() + 1; // 月份是從 0 開始的，因此需要加 1，例如 7 (代表 8 月)
+        const day = currentDate.getDate(); // 取得當月的幾號，例如 20
+        
+
+        // 將取得的年、月、日組合成字串表示現在的日期
+        const formattedDate = `${year}-${month}-${day}`;
+        
+
+        // console.log(formattedDate); // 輸出範例：2023-7-20
+
+        conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, order_status) 
+                    VALUES (null, 1, 150, 600, '${formattedDate}', "", "", "", "", '${formattedDate}', "", "購物車")`, (err, results) => {
+            if (err) return console.log(err.message)
+            const insert_oid2 = results.insertId
+            console.log("第2個data" + insert_oid2)
+            console.log("insert_oid" + insert_oid)
+            
+            
+            conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price,cdetailid)
+                    VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [insert_oid2, "Customize", "", "客製化禮盒", userInput[8], 600,insert_oid], (err, results) => {
+                if (err) return console.log(err.message)
+                console.log(results.insertId)
+            })
+
+        })
     })
 })
+// })
+
+//新的測試中
+
+
+
+
+
+
+
+
 
 app.get('/product', function (req, res) {
     var p_info

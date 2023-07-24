@@ -49,7 +49,7 @@
                     <div class="table-cell col-2"></div>
                 </div>
                 <% for (let i = 0; i < history_Order.length; i++) { %>
-                    <% if (history_Order[i].size !== null || history_Order[i].cookie1 !== null || history_Order[i].cookie2 !== null || history_Order[i].cookie3 !== null || history_Order[i].cookie4 !== null || history_Order[i].boxcolor !== null || history_Order[i].bagcolor !== null || history_Order[i].cardcontent !== null || history_Order[i].quantity !== null || history_Order[i].cprice !== null || !isNaN(history_Order[i].cprice_total) || history_Order[i].pd_name !== null || history_Order[i].pd_content !== null || history_Order[i].p_price !== null || history_Order[i].price_total !== null) { %>
+                    <% if (history_Order[i].size !== null || history_Order[i].cookie1 !== null || history_Order[i].cookie2 !== null || history_Order[i].cookie3 !== null || history_Order[i].cookie4 !== null || history_Order[i].boxcolor !== null || history_Order[i].bagcolor !== null || history_Order[i].cardcontent !== null || history_Order[i].quantity !== null || history_Order[i].cprice !== null || !isNaN(cprice_total) || history_Order[i].pd_name !== null || history_Order[i].pd_content !== null || history_Order[i].p_price !== null || history_Order[i].price_total !== null) { %>
                         <div class="table-row table-row1 order row">
                         <% if (history_Order[i].size !== null) { %>
                             <div class="table-cell col-2 ">
@@ -62,8 +62,8 @@
                         <% if (history_Order[i].size !== null && history_Order[i].cookie1 !== null && history_Order[i].cookie2 !== null && history_Order[i].cookie3 !== null && history_Order[i].cookie4 !== null && history_Order[i].boxcolor !== null && history_Order[i].bagcolor !== null) { %>
                             <div class="table-cell item col-4 p-3">
                                 <li>規格:<%= history_Order[i].size%></li>
-                                <li>內容物:<%= history_Order[i].cookie1%>,
-                                    <%= history_Order[i].cookie2%><br>
+                                <li>內容物:<%= history_Order[i].cookie1%>,<br>
+                                    <%= history_Order[i].cookie2%>
                                     <%= history_Order[i].cookie3%>,<%= history_Order[i].cookie4%>
                                 </li>
                                 <li>禮物盒:<%= history_Order[i].boxcolor%></li>
@@ -75,72 +75,83 @@
                                 <div><%= history_Order[i].cardcontent%></div>
                             </div>
                         <% } %>
-                        <% if (history_Order[i].quantity !== null && history_Order[i].cprice !== null && !isNaN(history_Order[i].cprice_total )) { %>
+                            <% let cprice_total = history_Order[i].quantity2 * history_Order[i].cprice; %>
                             <div class="table-cell item col-3 row">
-                                <div class="row">
-                                    <div class="table-cell item col-2 "></div>
-                                    <div class="table-cell item col-5 p-0">&nbsp;&nbsp;數量:</div>
-                                        <div class="table-cell item col-5 amount m-0 p-0">
-                                            <span class="quantity">&nbsp;&nbsp;<%= history_Order[i].quantity%>件</span>
-                                        </div>
-                                </div>
-                                <div class="row">
-                                    <div class="table-cell item col-2 "></div>
-                                    <div class="table-cell item col-5 p-0">&nbsp;&nbsp;價格:</div>
-                                        <div class="table-cell item col-5 price m-0 p-0"> &nbsp;&nbsp;$<%= history_Order[i].cprice%></div>
-                                </div>
-                                <div class="row">
-                                    <div class="table-cell item col-2 "></div>
-                                    <div class="table-cell item col-5 p-0">&nbsp;&nbsp;小計:</div>
-                                        <div class="table-cell item col-5 price-total m-0 p-0">&nbsp;&nbsp;$<%= history_Order[i].cprice_total%></div>
-                                </div>
+                                <% if (history_Order[i].quantity2 !== null) { %>
+                                    <div class="row">
+                                        <div class="table-cell item col-2 "></div>
+                                        <div class="table-cell item col-5 p-0">&nbsp;&nbsp;數量:</div>
+                                            <div class="table-cell item col-5 amount m-0 p-0">
+                                                <span class="quantity">&nbsp;&nbsp;<%= history_Order[i].quantity2%>件</span>
+                                            </div>
+                                    </div>
+                                <% } %>
+                                <% if (history_Order[i].cprice !== null) { %>
+                                    <div class="row">
+                                        <div class="table-cell item col-2 "></div>
+                                        <div class="table-cell item col-5 p-0">&nbsp;&nbsp;價格:</div>
+                                            <div class="table-cell item col-5 price m-0 p-0"> &nbsp;&nbsp;$<%= history_Order[i].cprice%></div>
+                                    </div>
+                                <% } %>
+                                <% if(!isNaN( cprice_total) && cprice_total != null && cprice_total !== 0) {%>
+                                    <div class="row">
+                                        <div class="table-cell item col-2 "></div>
+                                        <div class="table-cell item col-5 p-0">&nbsp;&nbsp;小計:</div>
+                                            <div class="table-cell item col-5 price-total m-0 p-0">&nbsp;&nbsp;$<%=  cprice_total%></div>
+                                    </div>
+                                <% } %>
                             </div>
-                        <% } %>
+                            <% cp_total += cprice_total; %>
                         </div>
                         <div class="table-row table-row1 order row">
-                        <% if (history_Order[i].pd_name !== null) { %>
-                            <div class="table-cell col-2 px-2">
-                            <div class="product-info p-10">
-                                <img class="m-10" src="<%= history_Order[i].p_pic%>" width="150px" alt="Product 1">
-                                    <p class="m-10 product-name p-10"><%= history_Order[i].pd_name%></p>
+                            <% if (history_Order[i].pd_name !== null) { %>
+                                <div class="table-cell col-2 px-2">
+                                    <div class="product-info p-10">
+                                        <img class="m-10" src="<%= history_Order[i].p_pic%>" width="150px" alt="Product 1">
+                                        <p class="m-10 product-name p-10"><%= history_Order[i].pd_name%></p>
+                                    </div>
                                 </div>
-                            </div>
-                        <% }%>
-                        <% if (history_Order[i].pd_content !== null) { %>
-                            <div class="table-cell item col-4 ">
-                                <li class="p-3"><%= history_Order[i].pd_content%></li>
-                            </div>
-                        <% }%>
-                        <div class="table-cell item col-3  p-0">
-                        </div>
-                        <div class="table-cell item col-3 row">
-                            <div class="row">
-                                <div class="table-cell item col-2 "></div>
-                                <div class="table-cell item col-5 p-0">&nbsp;&nbsp;數量:</div>
+                            <% }%>
+                            <% if (history_Order[i].pd_content !== null) { %>
+                                <div class="table-cell item col-4 ">
+                                    <li class="p-3"><%= history_Order[i].pd_content%></li>
+                                </div>
+                            <% }%>
+                            <% if (history_Order[i].pd_content !== null) { %>
+                                <div class="table-cell item col-3  p-0">
+                                </div>
+                            <% }%>
+                            <% let price_total = history_Order[i].quantity * history_Order[i].p_price; %>
+                            <div class="table-cell item col-3 row">
                                 <% if (history_Order[i].quantity !== null) { %>
-                                    <div class="table-cell item col-5 amount m-0 p-0">
-                                        <span class="quantity">&nbsp;&nbsp;<%= history_Order[i].quantity%>件</span>
+                                    <div class="row">
+                                        <div class="table-cell item col-2 "></div>
+                                        <div class="table-cell item col-5 p-0">&nbsp;&nbsp;數量:</div>
+                                            <div class="table-cell item col-5 amount m-0 p-0">
+                                                <span class="quantity">&nbsp;&nbsp;<%= history_Order[i].quantity%>件</span>
+                                            </div>
+                                    </div>
+                                <% }%>
+                                <% if (history_Order[i].p_price !== null) { %>
+                                    <div class="row">
+                                        <div class="table-cell item col-2 "></div>
+                                        <div class="table-cell item col-5 p-0">&nbsp;&nbsp;價格:</div>
+                                            <div class="table-cell item col-5 price m-0 p-0"> &nbsp;&nbsp;$<%= history_Order[i].p_price%></div>
+                                    </div>
+                                <% }%>
+                                <% if(!isNaN(price_total) && price_total != null && price_total !== 0) { %>
+                                    <div class="row">
+                                        <div class="table-cell item col-2 "></div>
+                                        <div class="table-cell item col-5 p-0">&nbsp;&nbsp;小計:</div>
+                                            <div class="table-cell item col-5 price-total m-0 p-0"> &nbsp;&nbsp;$<%=price_total%></div>
                                     </div>
                                 <% }%>
                             </div>
-                            <div class="row">
-                                <div class="table-cell item col-2 "></div>
-                                <div class="table-cell item col-5 p-0">&nbsp;&nbsp;價格:</div>
-                                <% if (history_Order[i].p_price !== null) { %>
-                                    <div class="table-cell item col-5 price m-0 p-0"> &nbsp;&nbsp;$<%= history_Order[i].p_price%></div>
-                                <% }%>
-                            </div>
-                            <div class="row">
-                                <div class="table-cell item col-2 "></div>
-                                <div class="table-cell item col-5 p-0">&nbsp;&nbsp;小計:</div>
-                                <% if (history_Order[i].price_total !== null) { %>
-                                    <div class="table-cell item col-5 price-total m-0 p-0"> &nbsp;&nbsp;$<%= history_Order[i].price_total%></div>
-                                <% }%>
-                            </div>
-                        </div>
+                            <% cp_total += price_total; %>
                         </div>
                     <% }%>    
                 <% }%>
+                <% let order_total = cp_total +deliever_fee%>
                 <div class="table-footer">
                     <div class="table-row table-row1 row">
                         <div class="table-cell col-3"></div>
@@ -148,7 +159,7 @@
                         <div class="table-cell col-3"></div>
                         <div class="table-cell item col-3 row">
                             <div class="col-7">商品總計:</div>
-                            <div class="col-5">2件</div>
+                            <div class="col-5"><%= quantity_total%>件</div>
                         </div>
                         <!-- <div class="table-cell item col-1 product-amount ">2件</div> -->
                     </div>

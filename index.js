@@ -314,7 +314,7 @@ app.get('/product/productInfo', function (req, res) {
 app.use('/user', member);
 app.get("/order",authUid, (req, res) => {
     var uid =  res.locals.uid;
-    var sql = `SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.uid ='${uid}' GROUP BY a.oid ORDER BY a.order_date DESC;`;
+    var sql = `SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.uid ='${uid}'  and a.order_status <> "購物車" GROUP BY a.oid ORDER BY a.order_date DESC;`;
     conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)
         let uid = data[0].uid;
@@ -536,15 +536,15 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
     conn.query(`select * from user where uemail=?`, [req.session.user.email], (err, results) => {
         if (err) return console.log(err.message)
         let uid = results[0].uid
-        conn.query('SELECT * FROM orderlist inner join oderdetails on orderlist.oid = oderdetails.oid where uid = ? and order_status = "購物車"', [uid], (err, results) => {
+        conn.query('SELECT * FROM orderlist inner join oderdetails on orderlist.oid = oderdetails.oid  inner join c_detail2 on oderdetails.cdetailid = c_detail2.cdetailid where uid = ? and order_status = "購物車"', [uid], (err, results) => {
             if (err) return console.log(err.message)
-            var deliever_fee = results[0].deliever_fee
+            var deliever_fee = results[0].deliever_fee;
             var orderdetail_length = JSON.parse(JSON.stringify(results)).length
-            var sum = results[0].order_total // 商品總額
+            var sum = parseInt(results[0].order_total) +parseInt( results[0].cprice)// 商品總額
             var product_quantity = 0; // 計算商品數
             var order_total = sum + deliever_fee // 訂單總額
             for (let i = 0; i < orderdetail_length; i++) {
-                product_quantity = results[i].quantity + product_quantity
+                product_quantity =parseInt( results[i].quantity) +parseInt(results[i].quantity2)+ product_quantity
             }
             res.render('cart2.ejs',
                 {

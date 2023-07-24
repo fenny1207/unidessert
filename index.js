@@ -352,10 +352,9 @@ app.get("/order",authUid, (req, res) => {
 // SELECT user.uid, orderlist.oid,orderlist.order_total,orderlist.order_date,orderlist.payment_type FROM user LEFT JOIN orderlist ON user.uid=orderlist.uid;
 app.get('/order/historyOrder/:oid', (req, res) => {
     let oid = req.params.oid;
-    console.log(oid +'訂單')
     // const sql = `SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b  where uid = ?`;
-    const sql = `select *
-    FROM orderlist LEFT JOIN oderdetails ON orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  where oderdetails.oid = ?`
+    const sql = `select * FROM orderlist LEFT JOIN oderdetails ON orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON
+     c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  LEFT JOIN customize on c_detail2.boxcolor=customize.cname where oderdetails.oid =?`
     conn.query(sql,[oid], (err, data) => {
         // console.log(history_sql);
         if (err) {res.send(`失敗，這是訂單編號'${oid}:'`);
@@ -370,6 +369,7 @@ app.get('/order/historyOrder/:oid', (req, res) => {
             let cookie3 = data[0].cookie3;
             let cookie4 = data[0].cookie4;
             let boxcolor = data[0].boxcolor;
+            let cpic = data[0].cpic;
             let bagcolor = data[0].bagcolor;
             let cardcontent = data[0].cardcontent;
             let quantity = data[0].quantity;
@@ -378,7 +378,6 @@ app.get('/order/historyOrder/:oid', (req, res) => {
             let cprice_total = cprice * parseInt( quantity2);
             let p_price = parseInt(data[0].p_price);//價格
             let price_total = p_price * parseInt(quantity);
-            console.log(quantity2+"111");
             let pid = data[0].pid;
             let pd_name = data[0].pd_name;
             let pd_describe_specification = data[0].pd_describe_specification;
@@ -386,7 +385,6 @@ app.get('/order/historyOrder/:oid', (req, res) => {
             let pd_content = data[0].pd_content;
             // let cp_total = price_total + cprice_total;
             let cp_total =0;
-            console.log(cp_total +"0724");
             let order_total = cp_total+deliever_fee;
             let quantity_total = 0;
             for (let i = 0; i < data.length; i++) {
@@ -422,7 +420,8 @@ app.get('/order/historyOrder/:oid', (req, res) => {
                 cp_total: cp_total,
                 order_total: order_total,
                 quantity2:quantity2,
-                quantity_total:quantity_total
+                quantity_total:quantity_total,
+                cpic:cpic
             });
          } else{
             res.send(`找不到訂單編號 '${oid}' 的訂單資料`);

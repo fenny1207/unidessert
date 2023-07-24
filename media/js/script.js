@@ -54,32 +54,32 @@ $(document).ready(function () {
         }, 500);
       }, 300);
 
-      // 從點擊的按鈕的 data 屬性或其他來源取得產品資訊
-      var productId = button.attr("data-productid"); // 產品 ID
-      var price = parseFloat(button.attr("data-price")); // 產品價格
-      var quantity = 1; // 你可以在這裡設定數量，或從其他來源獲取數量（如果需要的話）
+      // // 從點擊的按鈕的 data 屬性或其他來源取得產品資訊
+      // var productId = button.attr("data-productid"); // 產品 ID
+      // var price = parseFloat(button.attr("data-price")); // 產品價格
+      // var quantity = 1; // 你可以在這裡設定數量，或從其他來源獲取數量（如果需要的話）
 
-      // 建立產品資料物件，準備傳送給伺服器
-      var productData = {
-        productId: productId, // 產品 ID
-        price: price, // 產品價格
-        quantity: quantity, // 產品數量
-      };
+      // // 建立產品資料物件，準備傳送給伺服器
+      // var productData = {
+      //   productId: productId, // 產品 ID
+      //   price: price, // 產品價格
+      //   quantity: quantity, // 產品數量
+      // };
 
       // 使用 AJAX 將產品資料傳送給伺服器
-      $.ajax({
-        type: "POST",
-        url: "/addToCart", // 伺服器端的處理端點
-        data: productData, // 要傳送的產品資料
-        success: function (response) {
+      // $.ajax({
+      //   type: "POST",
+      //   url: "/addToCart", // 伺服器端的處理端點
+      //   data: productData, // 要傳送的產品資料
+      //   success: function (response) {
 
-          console.log(response.message); // 返回的成功訊息
-        },
-        error: function (error) {
-          // 處理錯誤
-          console.error("加入購物車時發生錯誤:", error);
-        },
-      });
+      //     console.log(response.message); // 返回的成功訊息
+      //   },
+      //   error: function (error) {
+      //     // 處理錯誤
+      //     console.error("加入購物車時發生錯誤:", error);
+      //   },
+      // });
     }, false);
   }
 });

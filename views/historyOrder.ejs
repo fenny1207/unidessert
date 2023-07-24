@@ -76,8 +76,8 @@
                             </div>
                         <% } %>
                             <% let cprice_total = history_Order[i].quantity2 * history_Order[i].cprice; %>
+                            <% if (history_Order[i].quantity2 !== null) { %>
                             <div class="table-cell item col-3 row">
-                                <% if (history_Order[i].quantity2 !== null) { %>
                                     <div class="row">
                                         <div class="table-cell item col-2 "></div>
                                         <div class="table-cell item col-5 p-0">&nbsp;&nbsp;數量:</div>
@@ -86,7 +86,7 @@
                                             </div>
                                     </div>
                                 <% } %>
-                                <% if (history_Order[i].cprice !== null) { %>
+                                <% if (history_Order[i].cprice !== null ) { %>
                                     <div class="row">
                                         <div class="table-cell item col-2 "></div>
                                         <div class="table-cell item col-5 p-0">&nbsp;&nbsp;價格:</div>
@@ -99,8 +99,8 @@
                                         <div class="table-cell item col-5 p-0">&nbsp;&nbsp;小計:</div>
                                             <div class="table-cell item col-5 price-total m-0 p-0">&nbsp;&nbsp;$<%=  cprice_total%></div>
                                     </div>
+                                </div>
                                 <% } %>
-                            </div>
                             <% cp_total += cprice_total; %>
                         </div>
                         <div class="table-row table-row1 order row">

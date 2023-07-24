@@ -123,11 +123,11 @@ app.post('/customize', auth_product, function (req, res) {
         const year = currentDate.getFullYear(); // 取得年份，例如 2023
         const month = currentDate.getMonth() + 1; // 月份是從 0 開始的，因此需要加 1，例如 7 (代表 8 月)
         const day = currentDate.getDate(); // 取得當月的幾號，例如 20
-        
+
 
         // 將取得的年、月、日組合成字串表示現在的日期
         const formattedDate = `${year}-${month}-${day}`;
-        
+
 
         // console.log(formattedDate); // 輸出範例：2023-7-20
 
@@ -137,10 +137,10 @@ app.post('/customize', auth_product, function (req, res) {
             const insert_oid2 = results.insertId
             console.log("第2個data" + insert_oid2)
             console.log("insert_oid" + insert_oid)
-            
-            
+
+
             conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price,cdetailid)
-                    VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [insert_oid2, "Customize", "", "客製化禮盒", userInput[8], 600,insert_oid], (err, results) => {
+                    VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [insert_oid2, "Customize", "", "客製化禮盒", userInput[8], 600, insert_oid], (err, results) => {
                 if (err) return console.log(err.message)
                 console.log(results.insertId)
             })
@@ -201,7 +201,6 @@ app.get('/product/single', function (req, res) {
                             [insert_oid, p_type, pid, p_name, quantity, single_order_total],
                             (err, results) => {
                                 if (err) return console.log(err.message)
-                                console.log("insert into oderdetails: ", results)
                             })
                     })
                 return
@@ -213,7 +212,6 @@ app.get('/product/single', function (req, res) {
             // 更新orderlist
             conn.query(`UPDATE orderlist SET order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
                 if (err) return console.log(err.message)
-                console.log('update orderlist:', results)
             })
             // 更新 orderdetails
             // 找 orderdetails 有沒有相同產品，沒有新增，有則更新
@@ -225,7 +223,6 @@ app.get('/product/single', function (req, res) {
                         [oid, p_type, pid, p_name, quantity, single_order_total],
                         (err, results) => {
                             if (err) return console.log(err.message)
-                            console.log('insert orderlists success:', results)
                         })
                     return
                 }
@@ -234,7 +231,6 @@ app.get('/product/single', function (req, res) {
                 let total_price = results[0].total_price + single_order_total
                 conn.query(`UPDATE oderdetails SET quantity = ?, total_price= ? WHERE product_id = ?`, [total_quantity, total_price, pid], (err, results) => {
                     if (err) return console.log(err.message)
-                    console.log('orderdetails update success: ', results)
                 })
             })
         })
@@ -273,7 +269,6 @@ app.get('/product/productInfo', function (req, res) {
                                 [oid, results[0].p_type, results[0].pid, results[0].pd_name, quantity, order_total],
                                 (err, results) => {
                                     if (err) return console.log(err.message)
-                                    console.log("insert into oderdetails: ", results)
                                 })
                         })
                     })
@@ -290,7 +285,6 @@ app.get('/product/productInfo', function (req, res) {
                 let oid = results[0].oid
                 conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [order_total, uid], (err, results) => {
                     if (err) return console.log(err.message)
-                    console.log('update orderlist: ', results)
                 })
                 conn.query(`select * from oderdetails where oid = ? && p_name = ?`, [oid, product_Title], (err, results) => {
                     if (err) return console.log(err.message)
@@ -304,7 +298,6 @@ app.get('/product/productInfo', function (req, res) {
                     total_price = parseInt(quantity) * productPrice
                     conn.query(`UPDATE oderdetails SET quantity = ?, total_price = ? WHERE oid = ? && p_name = ?`, [quantity, total_price, oid, product_Title], (err, results) => {
                         if (err) return console.log(err.message)
-                        console.log('update orderdetails: ', results)
                     })
                 })
             })
@@ -357,7 +350,8 @@ app.get('/order/historyOrder/:oid', (req, res) => {
      c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  LEFT JOIN customize on c_detail2.boxcolor=customize.cname where oderdetails.oid =?`
     conn.query(sql,[oid], (err, data) => {
         // console.log(history_sql);
-        if (err) {res.send(`失敗，這是訂單編號'${oid}:'`);
+        if (err) {
+            res.send(`失敗，這是訂單編號'${oid}:'`);
         } else {
             if(data.length >0){
             let order_date = data[0].order_date;
@@ -466,70 +460,70 @@ app.get('/cart', function (req, res) {
 });
 
 // 建立訂單信息
-app.post('/addToCart', function(req, res) {
+app.post('/addToCart', function (req, res) {
     const { productId, price, quantity } = req.body;
     const userId = req.session.userId;
-  
+
     // 查詢關於客製化的資料 (c_detail2)
     const getCdetail = `
       SELECT *
       FROM c_detail2
       WHERE cdetailid = ?
     `;
-    conn.query(getCdetail, [productId], function(err, cdetailResult) {
-      if (err) {
-        console.error('無法取得資料', err);
-        return;
-      }
-  
-      if (cdetailResult.length === 0) {
-        console.error('無法尋找關聯');
-        return;
-      }
-  
-      var cdetail = cdetailResult[0];
-  
-      // 查詢產品的資料 (product)
-      const getProduct = `
+    conn.query(getCdetail, [productId], function (err, cdetailResult) {
+        if (err) {
+            console.error('無法取得資料', err);
+            return;
+        }
+
+        if (cdetailResult.length === 0) {
+            console.error('無法尋找關聯');
+            return;
+        }
+
+        var cdetail = cdetailResult[0];
+
+        // 查詢產品的資料 (product)
+        const getProduct = `
         SELECT *
         FROM product
         WHERE pid = ?
       `;
-      conn.query(getProduct, [productId], function(err, productResult) {
-        if (err) {
-          console.error('無法取得產品資料', err);
-          return;
-        }
-  
-        if (productResult.length === 0) {
-          console.error('找不到產品');
-          return;
-        }
-  
-        var product = productResult[0];
-  
-        // 將產品資料傳至 oderdetails
-        var inOD = `
+        conn.query(getProduct, [productId], function (err, productResult) {
+            if (err) {
+                console.error('無法取得產品資料', err);
+                return;
+            }
+
+            if (productResult.length === 0) {
+                console.error('找不到產品');
+                return;
+            }
+
+            var product = productResult[0];
+
+            // 將產品資料傳至 oderdetails
+            var inOD = `
           INSERT INTO oderdetails (cdetailid, pid, quantity, cprice, product_name, product_price)
           VALUES (?, ?, ?, ?, ?, ?)
         `;
-  
-        // 根據產品的價格及數量計算價格總額
-        var totalPrice = price * quantity; 
-        conn.query(inOD, [cdetail.cdetailid, productId, quantity, totalPrice, product.product_name, product.price], function(err, insertResult) {
-          if (err) {
-            console.error('傳入資料錯誤', err);
-            return;
-          }
-  
-          console.log('已成功加入資料');
-  
-          // 取得回應
-          res.json({ message: '已成功加入購物車' });
+
+            // 根據產品的價格及數量計算價格總額
+            var totalPrice = price * quantity;
+            conn.query(inOD, [cdetail.cdetailid, productId, quantity, totalPrice, product.product_name, product.price], function (err, insertResult) {
+                if (err) {
+                    console.error('傳入資料錯誤', err);
+                    return;
+                }
+
+                console.log('已成功加入資料');
+
+                // 取得回應
+                res.json({ message: '已成功加入購物車' });
+            });
         });
-      });
     });
-  });
+});
 
 
 app.get('/cart/fillout', auth_cart2, function (req, res) {
@@ -598,70 +592,70 @@ app.get('/cart/check', function (req, res) {
 });
 
 // 添加到購物車
-app.post('/addToCart', function(req, res) {
+app.post('/addToCart', function (req, res) {
     const { productId, price, quantity } = req.body;
     const userId = req.session.userId;
-  
+
     // 查詢關於客製化的資料 (c_detail2)
     const getCdetail = `
       SELECT *
       FROM c_detail2
       WHERE cdetailid = ?
     `;
-    conn.query(getCdetail, [productId], function(err, cdetailResult) {
-      if (err) {
-        console.error('無法取得資料', err);
-        return;
-      }
-  
-      if (cdetailResult.length === 0) {
-        console.error('無法尋找關聯');
-        return;
-      }
-  
-      var cdetail = cdetailResult[0];
-  
-      // 查詢產品的資料 (product)
-      const getProduct = `
+    conn.query(getCdetail, [productId], function (err, cdetailResult) {
+        if (err) {
+            console.error('無法取得資料', err);
+            return;
+        }
+
+        if (cdetailResult.length === 0) {
+            console.error('無法尋找關聯');
+            return;
+        }
+
+        var cdetail = cdetailResult[0];
+
+        // 查詢產品的資料 (product)
+        const getProduct = `
         SELECT *
         FROM product
         WHERE pid = ?
       `;
-      conn.query(getProduct, [productId], function(err, productResult) {
-        if (err) {
-          console.error('無法取得產品資料', err);
-          return;
-        }
-  
-        if (productResult.length === 0) {
-          console.error('找不到產品');
-          return;
-        }
-  
-        var product = productResult[0];
-  
-        // 將產品資料傳至 oderdetails
-        var inOD = `
+        conn.query(getProduct, [productId], function (err, productResult) {
+            if (err) {
+                console.error('無法取得產品資料', err);
+                return;
+            }
+
+            if (productResult.length === 0) {
+                console.error('找不到產品');
+                return;
+            }
+
+            var product = productResult[0];
+
+            // 將產品資料傳至 oderdetails
+            var inOD = `
           INSERT INTO oderdetails (cdetailid, pid, quantity, cprice, product_name, product_price)
           VALUES (?, ?, ?, ?, ?, ?)
         `;
-  
-        // 根據產品的價格及數量計算價格總額
-        var totalPrice = price * quantity; 
-        conn.query(inOD, [cdetail.cdetailid, productId, quantity, totalPrice, product.product_name, product.price], function(err, insertResult) {
-          if (err) {
-            console.error('傳入資料錯誤', err);
-            return;
-          }
-  
-          console.log('已成功加入資料');
-  
-          // 取得回應
-          res.json({ message: '已成功加入購物車' });
+
+            // 根據產品的價格及數量計算價格總額
+            var totalPrice = price * quantity;
+            conn.query(inOD, [cdetail.cdetailid, productId, quantity, totalPrice, product.product_name, product.price], function (err, insertResult) {
+                if (err) {
+                    console.error('傳入資料錯誤', err);
+                    return;
+                }
+
+                console.log('已成功加入資料');
+
+                // 取得回應
+                res.json({ message: '已成功加入購物車' });
+            });
         });
-      });
     });
-  });
+});
 
 
 app.get('/member', auth, function (req, res) {
@@ -727,6 +721,63 @@ app.get('/logout', (req, res) => {
     });
 });
 
+app.get('/cart/count', (req, res) => {
+    if (!req.session.user) {
+        let cartCount = 0
+        res.json({ cartCount });
+    } else {
+        const uemail = req.session.user.email;
+        // 從 MySQL 資料庫中查詢使用者的購物車商品數量
+        conn.query(`select * from user where uemail = ?`, [uemail], (err, results) => {
+            if (err) {
+                console.error('Error fetching cart count:', err);
+                res.status(500).json({ error: 'Error fetching cart count' });
+            } else {
+                let uid = results[0].uid
+                conn.query('SELECT * FROM orderlist inner join oderdetails on orderlist.oid = oderdetails.oid where uid = ? and order_status = "購物車"', [uid], (err, results) => {
+                    if (err) return console.log(err.message)
+                    var orderdetail_length = JSON.parse(JSON.stringify(results)).length
+                    var cartCount = 0; // 計算商品數
+                    for (let i = 0; i < orderdetail_length; i++) {
+                        cartCount = results[i].quantity + cartCount
+                    }
+                    res.json({
+                        cartCount
+                    });
+                })
+            }
+        });
+    }
+});
+app.post('/cart/add', (req, res) => {
+    if (!req.session.user) {
+        let cartCount = 0
+        res.json({ cartCount });
+    } else {
+        const uemail = req.session.user.email;
+        let total_count = req.body.total_count
+        // 從 MySQL 資料庫中查詢使用者的購物車商品數量
+        conn.query(`select * from user where uemail = ?`, [uemail], (err, results) => {
+            if (err) {
+                console.error('Error fetching cart count:', err);
+                res.status(500).json({ error: 'Error fetching cart count' });
+            } else {
+                let uid = results[0].uid
+                conn.query('SELECT * FROM orderlist inner join oderdetails on orderlist.oid = oderdetails.oid  inner join c_detail2 on oderdetails.cdetailid = c_detail2.cdetailid where uid = ? and order_status = "購物車"', [uid], (err, results) => {
+                    if (err) return console.log(err.message)
+                    var orderdetail_length = JSON.parse(JSON.stringify(results)).length
+                    var cartCount = 0; // 計算商品數
+                    for (let i = 0; i < orderdetail_length; i++) {
+                        cartCount = results[i].quantity + cartCount
+                    }
+                    res.json({
+                        cartCount
+                    });
+                })
+            }
+        });
+    }
+});
 
 function auth(req, res, next) {
     if (req.session.user) {
@@ -739,10 +790,10 @@ function auth(req, res, next) {
 }
 function auth_product(req, res, next) {
     if (req.session.user) {
-        console.log('已登入')
+        // console.log('已登入')
         next()
     } else {
-        console.log('not authenticateda')
+        console.log('not authenticated')
         res.send({
             status: 1,
             msg: '還沒登入'
@@ -763,15 +814,15 @@ function authUid(req, res, next) {
     var userEmail = req.session.user.email;
     var sql = `SELECT * FROM user WHERE uemail = ?`;
     conn.query(sql, [userEmail], (err, data) => {
-      if (err) return console.log(err.message);
-      let userData = data[0];
-      let uid = userData.uid;
-      res.locals.uid = uid;
-      next();
+        if (err) return console.log(err.message);
+        let userData = data[0];
+        let uid = userData.uid;
+        res.locals.uid = uid;
+        next();
     });
 }
 function authOrder(req, res, next) {
-    var uid =  res.locals.uid;
+    var uid = res.locals.uid;
     var sql = ` SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.oid ='${oid}';`;
     conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)

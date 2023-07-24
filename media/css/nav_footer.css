@@ -145,8 +145,7 @@ nav ul li a {
 .cart {
   position: relative;
 }
-.cart:before {
-  content: attr(data-totalitems);
+.cart_number {
   font-size: 12px;
   font-weight: 600;
   position: absolute;

@@ -37,7 +37,7 @@ var s = expressSession({
         path: '/',
         httpOnly: true,
         secure: false,
-        maxAge: 500 * 1000
+        maxAge: 60 * 60 * 1000
     }
 })
 app.use(s);

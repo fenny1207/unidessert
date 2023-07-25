@@ -89,76 +89,167 @@ app.get('/customize', function (req, res) {
             })
         })
 });
-//原本的：
+
 app.post('/customize', auth_product, function (req, res) {
     // res.send('success');
     conn.query(`select * from user where uemail='${req.session.user.email}'`, (err, results) => {
         console.log(results)
         var uid = results[0].uid
         console.log("這是uid" + uid)
-    })
-    var insertc = "INSERT INTO c_detail2 ( size ,cookie1,cookie2,cookie3,cookie4, boxcolor ,bagcolor,cardcontent,quantity,cprice) VALUES (?,?,?,?,?,?,?,?,?,?);";
-    var userInput = [
-        req.body.size,
-        req.body.showcookie1,
-        req.body.showcookie2,
-        req.body.showcookie3,
-        req.body.showcookie4,
-        req.body.showboxcolor,
-        req.body.showbagcolor,
-        req.body.showcard,
-        req.body.quantity,
-        req.body.order_amout];
-    // console.log(insertc);
-    // console.log(userInput);
-    conn.query(insertc, userInput, function (err, data) {
-        if (err) {
-            res.send('無法新增')
-        }
-        const insert_oid = data.insertId
-        console.log('這是insert_oid' + insert_oid);
-        const currentDate = new Date();
 
-        // 使用 Date 物件的方法獲取年、月、日等資訊
-        const year = currentDate.getFullYear(); // 取得年份，例如 2023
-        const month = currentDate.getMonth() + 1; // 月份是從 0 開始的，因此需要加 1，例如 7 (代表 8 月)
-        const day = currentDate.getDate(); // 取得當月的幾號，例如 20
-
-
-        // 將取得的年、月、日組合成字串表示現在的日期
-        const formattedDate = `${year}-${month}-${day}`;
-
-
-        // console.log(formattedDate); // 輸出範例：2023-7-20
-
-        conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, order_status) 
-                    VALUES (null, 1, 150, 600, '${formattedDate}', "", "", "", "", '${formattedDate}', "", "購物車")`, (err, results) => {
+        //更改的：當會員之前沒有加過購物車(完成)
+        conn.query(`select * from orderlist where uid='?' && order_status="購物車"`, [uid], (err, results) => {
             if (err) return console.log(err.message)
-            const insert_oid2 = results.insertId
-            console.log("第2個data" + insert_oid2)
-            console.log("insert_oid" + insert_oid)
+            // 當會員之前沒有加過購物車
+            if (!results[0]) {
+                var insertc = "INSERT INTO c_detail2 ( size ,cookie1,cookie2,cookie3,cookie4, boxcolor ,bagcolor,cardcontent,quantity2,cprice) VALUES (?,?,?,?,?,?,?,?,?,?);";
+                var userInput = [
+                    req.body.size,
+                    req.body.showcookie1,
+                    req.body.showcookie2,
+                    req.body.showcookie3,
+                    req.body.showcookie4,
+                    req.body.showboxcolor,
+                    req.body.showbagcolor,
+                    req.body.showcard,
+                    req.body.quantity,
+                    req.body.order_amout];
+                // console.log(insertc);
+                // console.log(userInput);
+                conn.query(insertc, userInput, function (err, data) {
+                    if (err) {
+                        res.send('無法新增')
+                    }
+                    const insert_oid = data.insertId
+                    console.log('這是insert_oid' + insert_oid);
+                    const currentDate = new Date();
+
+                    // 使用 Date 物件的方法獲取年、月、日等資訊
+                    const year = currentDate.getFullYear(); // 取得年份，例如 2023
+                    const month = currentDate.getMonth() + 1; // 月份是從 0 開始的，因此需要加 1，例如 7 (代表 8 月)
+                    const day = currentDate.getDate(); // 取得當月的幾號，例如 20
 
 
-            conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price,cdetailid)
-                    VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [insert_oid2, "Customize", "", "客製化禮盒", userInput[8], 600, insert_oid], (err, results) => {
+                    // 將取得的年、月、日組合成字串表示現在的日期
+                    const formattedDate = `${year}-${month}-${day}`;
+                    // console.log(formattedDate); // 輸出範例：2023-7-20
+
+
+                    conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, order_status) 
+                    VALUES (null, 1, 150, 600, '${formattedDate}', "", "", "", "", '${formattedDate}', "", "購物車")`, (err, results) => {
+                        if (err) return console.log(err.message)
+                        const insert_oid2 = results.insertId
+                        console.log("第2個data" + insert_oid2)
+                        console.log("insert_oid" + insert_oid)
+
+
+                        conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity2, total_price,cdetailid)
+                    VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [insert_oid2, "Customize", 0, "客製化禮盒", userInput[8], 600, insert_oid], (err, results) => {
+                            if (err) return console.log(err.message)
+                            console.log(results.insertId)
+                        })
+                    })
+                })
+                res.send({
+                    status: 0,
+                    msg: 'insert success'
+                })
+                return
+            }
+
+            // 會員之前有加過購物車
+            conn.query(`SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.uid = 1 AND a.order_status = '購物車'`, [uid], (err, results) => {
                 if (err) return console.log(err.message)
-                console.log(results.insertId)
+                console.log("這次要看results" + JSON.stringify(results));
+                const orderTotal = results[0].order_total;
+                console.log("訂單總金額:", orderTotal);
+                const cdetailid = results[0].cdetailid;
+                console.log("這是上面插入的cdetailid"+cdetailid);
+                //下面這邊還沒完成
+
+                // let order_total = results[0].order_total + parseInt(order_total)
+                let oid = results[0].oid
+                console.log("看這邊的oid" + oid)
+
+                // console.log("order_total:",results.order_total);
+                conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [orderTotal, uid], (err, results) => {
+                    if (err) return console.log(err.message)
+                    console.log('update orderlist: ', results)
+                })
+                conn.query(`select * from oderdetails where oid = ? && cdetailid = ?`, [oid, insert_oid], (err, results) => {
+                    if (err) return console.log(err.message)
+                    if (!results[0]) {
+                        conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity2, total_price,cdetailid)
+                        VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [insert_oid2, "Customize", 0, "客製化禮盒", userInput[8], 600, insert_oid], (err, results) => {
+                            if (err) return console.log(err.message)
+                            console.log(results.insertId)
+                        })
+                        return
+                    }
+                    quantity = results[0].quantity + parseInt(quantity)
+                    total_price = parseInt(quantity) * 600
+
+                    conn.query(`UPDATE oderdetails SET quantity = ?, total_price = ? WHERE oid = ? && cdetailid = ?`, [quantity, total_price, oid, insert_oid], (err, results) => {
+                        if (err) return console.log(err.message)
+                        console.log('update orderdetails: ', results)
+                    })
+                })
             })
 
         })
+        // 這段的最後標籤
     })
+    // 0724原本只有插入，沒有判斷會員有沒有加入過購物車：
+    // var insertc = "INSERT INTO c_detail2 ( size ,cookie1,cookie2,cookie3,cookie4, boxcolor ,bagcolor,cardcontent,quantity,cprice) VALUES (?,?,?,?,?,?,?,?,?,?);";
+    // var userInput = [
+    //     req.body.size,
+    //     req.body.showcookie1,
+    //     req.body.showcookie2,
+    //     req.body.showcookie3,
+    //     req.body.showcookie4,
+    //     req.body.showboxcolor,
+    //     req.body.showbagcolor,
+    //     req.body.showcard,
+    //     req.body.quantity,
+    //     req.body.order_amout];
+
+    // conn.query(insertc, userInput, function (err, data) {
+    //     if (err) {
+    //         res.send('無法新增')
+    //     }
+    //     const insert_oid = data.insertId
+    //     console.log('這是insert_oid' + insert_oid);
+    //     const currentDate = new Date();
+
+    //     // 使用 Date 物件的方法獲取年、月、日等資訊
+    //     const year = currentDate.getFullYear(); // 取得年份，例如 2023
+    //     const month = currentDate.getMonth() + 1; // 月份是從 0 開始的，因此需要加 1，例如 7 (代表 8 月)
+    //     const day = currentDate.getDate(); // 取得當月的幾號，例如 20
+
+
+    //     // 將取得的年、月、日組合成字串表示現在的日期
+    //     const formattedDate = `${year}-${month}-${day}`;
+    //     // console.log(formattedDate); // 輸出範例：2023-7-20
+
+
+    //     conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, order_status) 
+    //                 VALUES (null, 1, 150, 600, '${formattedDate}', "", "", "", "", '${formattedDate}', "", "購物車")`, (err, results) => {
+    //         if (err) return console.log(err.message)
+    //         const insert_oid2 = results.insertId
+    //         console.log("第2個data" + insert_oid2)
+    //         console.log("insert_oid" + insert_oid)
+
+
+    //         conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price,cdetailid)
+    //                 VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [insert_oid2, "Customize", 0, "客製化禮盒", userInput[8], 600, insert_oid], (err, results) => {
+    //             if (err) return console.log(err.message)
+    //             console.log(results.insertId)
+    //         })
+
+    //     })
+    // })
 })
 // })
-
-//新的測試中
-
-
-
-
-
-
-
-
 
 app.get('/product', function (req, res) {
     var p_info

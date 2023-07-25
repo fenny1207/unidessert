@@ -591,9 +591,11 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
     conn.query(`select * from user where uemail=?`, [req.session.user.email], (err, results) => {
         if (err) return console.log(err.message)
         let uid = results[0].uid
+        console.log(uid)
         conn.query('SELECT * FROM orderlist inner join oderdetails on orderlist.oid = oderdetails.oid where uid = ? and order_status = "購物車"', [uid], (err, results) => {
             if (err) return console.log(err.message)
-            var deliever_fee = results[0].deliever_fee;
+            console.log(results)
+            var deliever_fee = 150;
             var orderdetail_length = JSON.parse(JSON.stringify(results)).length
             var sum = parseInt(results[0].order_total)// 商品總額
             var product_quantity = 0; // 計算商品數
@@ -624,9 +626,10 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
         var bill_option = req.body.bill_option
         var bill_option_input = req.body.bill_option_input
         var arrive_date = req.body.arrive_date
+        var order_date = new Date()
         // 資料庫可能要加一欄 recipient_address_code
-        var sql = `UPDATE orderlist SET recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '貨到付款' WHERE uid = ?`
-        conn.query(sql, [recipient, address, tel, email, arrive_date, uid], (err, results) => {
+        var sql = `UPDATE orderlist SET order_date = ?, recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款', order_status ='待出貨' WHERE uid = ?`
+        conn.query(sql, [order_date, recipient, address, tel, email, arrive_date, uid], (err, results) => {
             if (err) return console.log(err.message)
             console.log(results)
             if (results.serverStatus === 2) {

@@ -598,16 +598,13 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
     conn.query(`select * from user where uemail=?`, [req.session.user.email], (err, results) => {
         if (err) return console.log(err.message)
         let uid = results[0].uid
-        console.log(uid)
         conn.query('SELECT * FROM orderlist inner join oderdetails on orderlist.oid = oderdetails.oid where uid = ? and order_status = "購物車"', [uid], (err, results) => {
             if (err) return console.log(err.message)
-            console.log(results)
             var deliever_fee = 150;
             var orderdetail_length = JSON.parse(JSON.stringify(results)).length
             var sum = parseInt(results[0].order_total)// 商品總額
             var product_quantity = 0; // 計算商品數
             var order_total = sum + deliever_fee // 訂單總額
-            console.log(results)
             for (let i = 0; i < orderdetail_length; i++) {
                 product_quantity = parseInt(results[i].quantity) + product_quantity
             }
@@ -638,10 +635,6 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
         var sql = `UPDATE orderlist SET order_date = ?, recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款', order_status ='待出貨' WHERE uid = ?`
         conn.query(sql, [order_date, recipient, address, tel, email, arrive_date, uid], (err, results) => {
             if (err) return console.log(err.message)
-            console.log(results)
-            if (results.serverStatus === 2) {
-                console.log('資料庫資料更新成功')
-            }
         })
     })
 })

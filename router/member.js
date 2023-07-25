@@ -169,7 +169,7 @@ app.post('/login', (req, res) => {
 
   connection.query(selectUserQuery, [email], (err, results) => {
     
-    if (err) {
+    if (err || results.length === 0) {
       res.render('user', { error: true, title: "登入失敗", message: 'Email 尚未被註冊', showAlert: false });
 
     } else {

@@ -136,7 +136,7 @@ app.post('/customize', auth_product, function (req, res) {
 
 
                     conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, order_status) 
-                    VALUES (null, ?, 150, 600, '${formattedDate}', "", "", "", "", '${formattedDate}', "到貨付款", "購物車")`, [uid], (err, results) => {
+                    VALUES (null, ?, 150, 600, '${formattedDate}', "", "", "", "", '${formattedDate}', "貨到付款", "購物車")`, [uid], (err, results) => {
                         if (err) return console.log(err.message)
                         let insert_orderlist = results.insertId
                         // console.log("insert_orderlist" + insert_orderlist)
@@ -205,55 +205,9 @@ app.post('/customize', auth_product, function (req, res) {
         })
         // 這段的最後標籤
     })
-    // 0724原本只有插入，沒有判斷會員有沒有加入過購物車：
-    // var insertc = "INSERT INTO c_detail2 ( size ,cookie1,cookie2,cookie3,cookie4, boxcolor ,bagcolor,cardcontent,quantity,cprice) VALUES (?,?,?,?,?,?,?,?,?,?);";
-    // var userInput = [
-    //     req.body.size,
-    //     req.body.showcookie1,
-    //     req.body.showcookie2,
-    //     req.body.showcookie3,
-    //     req.body.showcookie4,
-    //     req.body.showboxcolor,
-    //     req.body.showbagcolor,
-    //     req.body.showcard,
-    //     req.body.quantity,
-    //     req.body.order_amout];
+    
 
-    // conn.query(insertc, userInput, function (err, data) {
-    //     if (err) {
-    //         res.send('無法新增')
-    //     }
-    //     const insert_oid = data.insertId
-    //     console.log('這是insert_oid' + insert_oid);
-    //     const currentDate = new Date();
-
-    //     // 使用 Date 物件的方法獲取年、月、日等資訊
-    //     const year = currentDate.getFullYear(); // 取得年份，例如 2023
-    //     const month = currentDate.getMonth() + 1; // 月份是從 0 開始的，因此需要加 1，例如 7 (代表 8 月)
-    //     const day = currentDate.getDate(); // 取得當月的幾號，例如 20
-
-
-    //     // 將取得的年、月、日組合成字串表示現在的日期
-    //     const formattedDate = `${year}-${month}-${day}`;
-    //     // console.log(formattedDate); // 輸出範例：2023-7-20
-
-
-    //     conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, order_status) 
-    //                 VALUES (null, 1, 150, 600, '${formattedDate}', "", "", "", "", '${formattedDate}', "", "購物車")`, (err, results) => {
-    //         if (err) return console.log(err.message)
-    //         const insert_oid2 = results.insertId
-    //         console.log("第2個data" + insert_oid2)
-    //         console.log("insert_oid" + insert_oid)
-
-
-    //         conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price,cdetailid)
-    //                 VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [insert_oid2, "Customize", 0, "客製化禮盒", userInput[8], 600, insert_oid], (err, results) => {
-    //             if (err) return console.log(err.message)
-    //             console.log(results.insertId)
-    //         })
-
-    //     })
-    // })
+    
 })
 // })
 
@@ -661,7 +615,7 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
         var bill_option_input = req.body.bill_option_input
         var arrive_date = req.body.arrive_date
         // 資料庫可能要加一欄 recipient_address_code
-        var sql = `UPDATE orderlist SET recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款' WHERE uid = ?`
+        var sql = `UPDATE orderlist SET recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '貨到付款' WHERE uid = ?`
         conn.query(sql, [recipient, address, tel, email, arrive_date, uid], (err, results) => {
             if (err) return console.log(err.message)
             console.log(results)

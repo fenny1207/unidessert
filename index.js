@@ -380,11 +380,19 @@ app.get("/order", authUid, (req, res) => {
             let oid = data[0].oid;
             let order_total = data[0].order_total;
             let deliever_fee = data[0].deliever_fee;
-            let order_all = parseInt(order_total)+parseInt(deliever_fee);
-            console.log(order_all);
+            // let order_all = parseInt(order_total)+parseInt(deliever_fee);
+            // console.log(order_all);
             let order_date = data[0].order_date;
             let order_status = data[0].order_status;
             let quantity = data[0].quantity;
+            let arrive_date = data[0].arrive_date;
+            let order_all = 0;
+            for (let i = 0; i < data.length; i++) {
+                let order_total = data[i].order_total;
+                let deliever_fee = data[i].deliever_fee;
+                let order_all = parseInt(order_total) + parseInt(deliever_fee);
+              }
+
             res.render('order.ejs', {
                 member_info: data,
                 uid: uid,
@@ -393,8 +401,8 @@ app.get("/order", authUid, (req, res) => {
                 order_total: order_total,
                 order_status: order_status,
                 quantity: quantity,
-                order_all:order_all
-    
+                order_all:order_all,
+                arrive_date:arrive_date    
             });
         }
     });
@@ -441,7 +449,7 @@ app.get('/order/historyOrder/:oid', (req, res) => {
                 let quantity = data[0].quantity;
                 let quantity2 = data[0].quantity2;//客製數量
                 let cprice = parseInt(data[0].cprice);
-                let cprice_total = cprice * parseInt(quantity2);
+                let cprice_total = cprice * parseInt(quantity);
                 let p_price = parseInt(data[0].p_price);//價格
                 let price_total = p_price * parseInt(quantity);
                 let pid = data[0].pid;
@@ -449,6 +457,9 @@ app.get('/order/historyOrder/:oid', (req, res) => {
                 let pd_describe_specification = data[0].pd_describe_specification;
                 let p_pic = data[0].p_pic;
                 let pd_content = data[0].pd_content;
+                let recipient = data[0].recipient;
+                let recipient_address = data[0].recipient_address;
+                let recipient_phone = data[0].recipient_phone;
                 // let cp_total = price_total + cprice_total;
                 let cp_total = 0;
                 let order_total = cp_total + deliever_fee;
@@ -473,21 +484,24 @@ app.get('/order/historyOrder/:oid', (req, res) => {
                     boxcolor: boxcolor,
                     bagcolor: bagcolor,
                     cardcontent: cardcontent,
-                    quantity: quantity,
                     cprice: cprice,
                     cprice_total: cprice_total,
                     pid: pid,
                     pd_name: pd_name,
+                    quantity: quantity,
                     p_price: p_price,
                     pd_describe_specification: pd_describe_specification,
                     p_pic: p_pic,
                     pd_content: pd_content,
+                    quantity2:quantity2,
                     price_total: price_total,
                     cp_total: cp_total,
                     order_total: order_total,
-                    quantity2: quantity2,
                     quantity_total: quantity_total,
-                    cpic: cpic
+                    cpic: cpic,
+                    recipient_address:recipient_address,
+                    recipient:recipient,
+                    recipient_phone:recipient_phone,
                 });
             } else {
                 res.send(`找不到訂單編號 '${oid}' 的訂單資料`);

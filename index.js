@@ -371,21 +371,28 @@ app.get("/order", authUid, (req, res) => {
     var sql = `SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.uid ='${uid}'  and a.order_status <> "購物車" GROUP BY a.oid ORDER BY a.order_date DESC;`;
     conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)
-        let uid = data[0].uid;
-        let oid = data[0].oid;
-        let order_total = data[0].order_total;
-        let order_date = data[0].order_date;
-        let order_status = data[0].order_status;
-        let quantity = data[0].quantity;
-        res.render('order.ejs', {
-            member_info: data,
-            uid: uid,
-            oid: oid,
-            order_date: order_date,
-            order_total: order_total,
-            order_status: order_status,
-            quantity: quantity
-        });
+        if (data.length ===0) {
+            res.render('order.ejs', {
+                 noOrder: true 
+            })
+        } else {
+            let uid = data[0].uid;
+            let oid = data[0].oid;
+            let order_total = data[0].order_total;
+            let order_date = data[0].order_date;
+            let order_status = data[0].order_status;
+            let quantity = data[0].quantity;
+            res.render('order.ejs', {
+                member_info: data,
+                uid: uid,
+                oid: oid,
+                order_date: order_date,
+                order_total: order_total,
+                order_status: order_status,
+                quantity: quantity
+    
+            });
+        }
     });
 })
 // .post("/order", (req, res) => {
@@ -515,10 +522,10 @@ app.get('/cart', function (req, res) {
         if (err) {
             console.error('無法取得資料', err);
             return;
-        }
+            }
         res.render('cart1.ejs', { c_detail2: results, product: results });
+                });
     });
-});
 
 // 建立訂單信息
 app.post('/addToCart', function (req, res) {

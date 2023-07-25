@@ -162,10 +162,11 @@ app.post('/customize', auth_product, function (req, res) {
             c_detail2.cdetailid = oderdetails.cdetailid  where orderlist.uid =? AND orderlist.order_status = '購物車'`, [uid], (err, results) => {
                 if (err) return console.log(err.message)
                 // console.log("results" + results);
-                // console.log("這次要看results" + JSON.stringify(results));
+                console.log("這次要看results" + JSON.stringify(results));
+                console.log("這次要看results[0]" + JSON.stringify(results[0]));
                 let orderTotal = results[0].order_total;
                 orderTotal += (number * 600)
-                // console.log("訂單總金額:", orderTotal);
+                console.log("訂單總金額:", orderTotal);
                 let insertc = "INSERT INTO c_detail2 ( size ,cookie1,cookie2,cookie3,cookie4, boxcolor ,bagcolor,cardcontent,quantity2,cprice) VALUES (?,?,?,?,?,?,?,?,?,?);";
                 let quantity = req.body.quantity
                 let userInput = [
@@ -183,12 +184,12 @@ app.post('/customize', auth_product, function (req, res) {
                     if (err) {
                         res.send('無法新增')
                     }
-                    console.log("c_detail2 dddd", results)
+                    console.log("c_detail2 dddd", data)
                     console.log("results[0].oid", results[0].oid)
                     let oid = results[0].oid
-                    let cdetailid = results[0].cdetailid
+                    let cdetailid = data.insertId
 
-                    conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [results[0].order_total, results[0].uid], (err, results) => {
+                    conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [orderTotal, uid], (err, results) => {
                         if (err) return console.log(err.message)
 
                         conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price, cdetailid)
@@ -626,15 +627,16 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
     conn.query(`select * from user where uemail=?`, [req.session.user.email], (err, results) => {
         if (err) return console.log(err.message)
         let uid = results[0].uid
-        conn.query('SELECT * FROM orderlist inner join oderdetails on orderlist.oid = oderdetails.oid  inner join c_detail2 on oderdetails.cdetailid = c_detail2.cdetailid where uid = ? and order_status = "購物車"', [uid], (err, results) => {
+        conn.query('SELECT * FROM orderlist inner join oderdetails on orderlist.oid = oderdetails.oid where uid = ? and order_status = "購物車"', [uid], (err, results) => {
             if (err) return console.log(err.message)
             var deliever_fee = results[0].deliever_fee;
             var orderdetail_length = JSON.parse(JSON.stringify(results)).length
-            var sum = parseInt(results[0].order_total) + parseInt(results[0].cprice)// 商品總額
+            var sum = parseInt(results[0].order_total)// 商品總額
             var product_quantity = 0; // 計算商品數
             var order_total = sum + deliever_fee // 訂單總額
+            console.log(results)
             for (let i = 0; i < orderdetail_length; i++) {
-                product_quantity = parseInt(results[i].quantity) + parseInt(results[i].quantity2) + product_quantity
+                product_quantity = parseInt(results[i].quantity) + product_quantity
             }
             res.render('cart2.ejs',
                 {

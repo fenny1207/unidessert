@@ -621,6 +621,7 @@
                     let showbagcolor = document.getElementById('showbagcolor').value
                     let showcard = document.getElementById('showcard').value
                     let showmoney = document.getElementById('showmoney').value
+                    let number = parseInt(document.getElementById('number').innerHTML)
                     // console.log(size)
                     // console.log(cookie1)
                     // console.log(showbagcolor)
@@ -637,7 +638,8 @@
                         "showcard": showcard,
                         "order_amout": showmoney,
                         "quantity": 1,
-                        "status": "購物車"
+                        "status": "購物車",
+                        "number": number
                     }
                     $.ajax({
                         url: "http://localhost:5678/customize",

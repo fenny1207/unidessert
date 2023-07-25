@@ -95,15 +95,16 @@ app.post('/customize', auth_product, function (req, res) {
     conn.query(`select * from user where uemail='${req.session.user.email}'`, (err, results) => {
         console.log(results)
         var uid = results[0].uid
-        console.log("這是uid" + uid)
+        var number = req.body.number
 
         //更改的：當會員之前沒有加過購物車(完成)
         conn.query(`select * from orderlist where uid='?' && order_status="購物車"`, [uid], (err, results) => {
             if (err) return console.log(err.message)
             // 當會員之前沒有加過購物車
             if (!results[0]) {
-                var insertc = "INSERT INTO c_detail2 ( size ,cookie1,cookie2,cookie3,cookie4, boxcolor ,bagcolor,cardcontent,quantity2,cprice) VALUES (?,?,?,?,?,?,?,?,?,?);";
-                var userInput = [
+                let insertc = "INSERT INTO c_detail2 ( size ,cookie1,cookie2,cookie3,cookie4, boxcolor ,bagcolor,cardcontent,quantity2,cprice) VALUES (?,?,?,?,?,?,?,?,?,?);";
+                let quantity = req.body.quantity
+                let userInput = [
                     req.body.size,
                     req.body.showcookie1,
                     req.body.showcookie2,
@@ -114,14 +115,13 @@ app.post('/customize', auth_product, function (req, res) {
                     req.body.showcard,
                     req.body.quantity,
                     req.body.order_amout];
-                // console.log(insertc);
-                // console.log(userInput);
                 conn.query(insertc, userInput, function (err, data) {
                     if (err) {
                         res.send('無法新增')
                     }
-                    const insert_oid = data.insertId
-                    console.log('這是insert_oid' + insert_oid);
+                    // console.log(data)
+                    const insert_cdetailid = data.insertId  // insert 完的 cdetailid
+                    // console.log('這是cdetailid' + insert_cdetailid);
                     const currentDate = new Date();
 
                     // 使用 Date 物件的方法獲取年、月、日等資訊
@@ -136,17 +136,18 @@ app.post('/customize', auth_product, function (req, res) {
 
 
                     conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, order_status) 
-                    VALUES (null, 1, 150, 600, '${formattedDate}', "", "", "", "", '${formattedDate}', "", "購物車")`, (err, results) => {
+                    VALUES (null, ?, 150, 600, '${formattedDate}', "", "", "", "", '${formattedDate}', "到貨付款", "購物車")`, [uid], (err, results) => {
                         if (err) return console.log(err.message)
-                        const insert_oid2 = results.insertId
-                        console.log("第2個data" + insert_oid2)
-                        console.log("insert_oid" + insert_oid)
+                        let insert_orderlist = results.insertId
+                        // console.log("insert_orderlist" + insert_orderlist)
+                        // console.log("insert_cdetailid" + insert_cdetailid)
+                        // console.log(results)
 
 
-                        conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity2, total_price,cdetailid)
-                    VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [insert_oid2, "Customize", 0, "客製化禮盒", userInput[8], 600, insert_oid], (err, results) => {
+                        conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price, cdetailid)
+                                    VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [insert_orderlist, "Customize", 0, "客製化禮盒", quantity, 600, insert_cdetailid], (err, results) => {
                             if (err) return console.log(err.message)
-                            console.log(results.insertId)
+                            // console.log(results)
                         })
                     })
                 })
@@ -156,44 +157,48 @@ app.post('/customize', auth_product, function (req, res) {
                 })
                 return
             }
-
             // 會員之前有加過購物車
-            conn.query(`SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.uid = 1 AND a.order_status = '購物車'`, [uid], (err, results) => {
+            conn.query(`select * FROM orderlist LEFT JOIN oderdetails ON orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON
+            c_detail2.cdetailid = oderdetails.cdetailid  where orderlist.uid =? AND orderlist.order_status = '購物車'`, [uid], (err, results) => {
                 if (err) return console.log(err.message)
-                console.log("這次要看results" + JSON.stringify(results));
-                const orderTotal = results[0].order_total;
-                console.log("訂單總金額:", orderTotal);
-                const cdetailid = results[0].cdetailid;
-                console.log("這是上面插入的cdetailid"+cdetailid);
-                //下面這邊還沒完成
-
-                // let order_total = results[0].order_total + parseInt(order_total)
-                let oid = results[0].oid
-                console.log("看這邊的oid" + oid)
-
-                // console.log("order_total:",results.order_total);
-                conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [orderTotal, uid], (err, results) => {
-                    if (err) return console.log(err.message)
-                    console.log('update orderlist: ', results)
-                })
-                conn.query(`select * from oderdetails where oid = ? && cdetailid = ?`, [oid, insert_oid], (err, results) => {
-                    if (err) return console.log(err.message)
-                    if (!results[0]) {
-                        conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity2, total_price,cdetailid)
-                        VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [insert_oid2, "Customize", 0, "客製化禮盒", userInput[8], 600, insert_oid], (err, results) => {
-                            if (err) return console.log(err.message)
-                            console.log(results.insertId)
-                        })
-                        return
+                // console.log("results" + results);
+                // console.log("這次要看results" + JSON.stringify(results));
+                let orderTotal = results[0].order_total;
+                orderTotal += (number * 600)
+                // console.log("訂單總金額:", orderTotal);
+                let insertc = "INSERT INTO c_detail2 ( size ,cookie1,cookie2,cookie3,cookie4, boxcolor ,bagcolor,cardcontent,quantity2,cprice) VALUES (?,?,?,?,?,?,?,?,?,?);";
+                let quantity = req.body.quantity
+                let userInput = [
+                    req.body.size,
+                    req.body.showcookie1,
+                    req.body.showcookie2,
+                    req.body.showcookie3,
+                    req.body.showcookie4,
+                    req.body.showboxcolor,
+                    req.body.showbagcolor,
+                    req.body.showcard,
+                    req.body.quantity,
+                    req.body.order_amout];
+                conn.query(insertc, userInput, function (err, data) {
+                    if (err) {
+                        res.send('無法新增')
                     }
-                    quantity = results[0].quantity + parseInt(quantity)
-                    total_price = parseInt(quantity) * 600
+                    console.log("c_detail2 dddd", results)
+                    console.log("results[0].oid", results[0].oid)
+                    let oid = results[0].oid
+                    let cdetailid = results[0].cdetailid
 
-                    conn.query(`UPDATE oderdetails SET quantity = ?, total_price = ? WHERE oid = ? && cdetailid = ?`, [quantity, total_price, oid, insert_oid], (err, results) => {
+                    conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [results[0].order_total, results[0].uid], (err, results) => {
                         if (err) return console.log(err.message)
-                        console.log('update orderdetails: ', results)
+
+                        conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price, cdetailid)
+                        VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [oid, "Customize", 0, "客製化禮盒", quantity, 600, cdetailid], (err, results) => {
+                            if (err) return console.log(err.message)
+                            console.log(results)
+                        })
                     })
                 })
+                    
             })
 
         })
@@ -396,8 +401,8 @@ app.get('/product/productInfo', function (req, res) {
     })
 })
 app.use('/user', member);
-app.get("/order",authUid, (req, res) => {
-    var uid =  res.locals.uid;
+app.get("/order", authUid, (req, res) => {
+    var uid = res.locals.uid;
     var sql = `SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.uid ='${uid}'  and a.order_status <> "購物車" GROUP BY a.oid ORDER BY a.order_date DESC;`;
     conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)
@@ -439,78 +444,78 @@ app.get('/order/historyOrder/:oid', (req, res) => {
     // const sql = `SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b  where uid = ?`;
     const sql = `select * FROM orderlist LEFT JOIN oderdetails ON orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON
      c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  LEFT JOIN customize on c_detail2.boxcolor=customize.cname where oderdetails.oid =?`
-    conn.query(sql,[oid], (err, data) => {
+    conn.query(sql, [oid], (err, data) => {
         // console.log(history_sql);
         if (err) {
             res.send(`失敗，這是訂單編號'${oid}:'`);
         } else {
-            if(data.length >0){
-            let order_date = data[0].order_date;
-            let deliever_fee = data[0].deliever_fee;
-            let cdetailid = data[0].cdetailid;
-            let size = data[0].size;
-            let cookie1 = data[0].cookie1;
-            let cookie2 = data[0].cookie2;
-            let cookie3 = data[0].cookie3;
-            let cookie4 = data[0].cookie4;
-            let boxcolor = data[0].boxcolor;
-            let cpic = data[0].cpic;
-            let bagcolor = data[0].bagcolor;
-            let cardcontent = data[0].cardcontent;
-            let quantity = data[0].quantity;
-            let quantity2 = data[0].quantity2;//客製數量
-            let cprice =parseInt(data[0].cprice);
-            let cprice_total = cprice * parseInt( quantity2);
-            let p_price = parseInt(data[0].p_price);//價格
-            let price_total = p_price * parseInt(quantity);
-            let pid = data[0].pid;
-            let pd_name = data[0].pd_name;
-            let pd_describe_specification = data[0].pd_describe_specification;
-            let p_pic = data[0].p_pic;
-            let pd_content = data[0].pd_content;
-            // let cp_total = price_total + cprice_total;
-            let cp_total =0;
-            let order_total = cp_total+deliever_fee;
-            let quantity_total = 0;
-            for (let i = 0; i < data.length; i++) {
-                let quantity = parseInt(data[i].quantity) || 0;
-                let quantity2 = parseInt(data[i].quantity2) || 0;
-                quantity_total += (quantity + quantity2);
-                 }
-            res.render('historyOrder.ejs', {
-                history_Order: data,
-                oid: oid,
-                order_date: order_date,
-                order_total: order_total,
-                deliever_fee: deliever_fee,
-                cdetailid: cdetailid,
-                size: size,
-                cookie1: cookie1,
-                cookie2: cookie2,
-                cookie3: cookie3,
-                cookie4: cookie4,
-                boxcolor: boxcolor,
-                bagcolor: bagcolor,
-                cardcontent: cardcontent,
-                quantity: quantity,
-                cprice: cprice,
-                cprice_total: cprice_total,
-                pid: pid,
-                pd_name: pd_name,
-                p_price: p_price,
-                pd_describe_specification: pd_describe_specification,
-                p_pic: p_pic,
-                pd_content: pd_content,
-                price_total: price_total,
-                cp_total: cp_total,
-                order_total: order_total,
-                quantity2:quantity2,
-                quantity_total:quantity_total,
-                cpic:cpic
-            });
-         } else{
-            res.send(`找不到訂單編號 '${oid}' 的訂單資料`);
-         }
+            if (data.length > 0) {
+                let order_date = data[0].order_date;
+                let deliever_fee = data[0].deliever_fee;
+                let cdetailid = data[0].cdetailid;
+                let size = data[0].size;
+                let cookie1 = data[0].cookie1;
+                let cookie2 = data[0].cookie2;
+                let cookie3 = data[0].cookie3;
+                let cookie4 = data[0].cookie4;
+                let boxcolor = data[0].boxcolor;
+                let cpic = data[0].cpic;
+                let bagcolor = data[0].bagcolor;
+                let cardcontent = data[0].cardcontent;
+                let quantity = data[0].quantity;
+                let quantity2 = data[0].quantity2;//客製數量
+                let cprice = parseInt(data[0].cprice);
+                let cprice_total = cprice * parseInt(quantity2);
+                let p_price = parseInt(data[0].p_price);//價格
+                let price_total = p_price * parseInt(quantity);
+                let pid = data[0].pid;
+                let pd_name = data[0].pd_name;
+                let pd_describe_specification = data[0].pd_describe_specification;
+                let p_pic = data[0].p_pic;
+                let pd_content = data[0].pd_content;
+                // let cp_total = price_total + cprice_total;
+                let cp_total = 0;
+                let order_total = cp_total + deliever_fee;
+                let quantity_total = 0;
+                for (let i = 0; i < data.length; i++) {
+                    let quantity = parseInt(data[i].quantity) || 0;
+                    let quantity2 = parseInt(data[i].quantity2) || 0;
+                    quantity_total += (quantity + quantity2);
+                }
+                res.render('historyOrder.ejs', {
+                    history_Order: data,
+                    oid: oid,
+                    order_date: order_date,
+                    order_total: order_total,
+                    deliever_fee: deliever_fee,
+                    cdetailid: cdetailid,
+                    size: size,
+                    cookie1: cookie1,
+                    cookie2: cookie2,
+                    cookie3: cookie3,
+                    cookie4: cookie4,
+                    boxcolor: boxcolor,
+                    bagcolor: bagcolor,
+                    cardcontent: cardcontent,
+                    quantity: quantity,
+                    cprice: cprice,
+                    cprice_total: cprice_total,
+                    pid: pid,
+                    pd_name: pd_name,
+                    p_price: p_price,
+                    pd_describe_specification: pd_describe_specification,
+                    p_pic: p_pic,
+                    pd_content: pd_content,
+                    price_total: price_total,
+                    cp_total: cp_total,
+                    order_total: order_total,
+                    quantity2: quantity2,
+                    quantity_total: quantity_total,
+                    cpic: cpic
+                });
+            } else {
+                res.send(`找不到訂單編號 '${oid}' 的訂單資料`);
+            }
         }
     });
 })
@@ -625,11 +630,11 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
             if (err) return console.log(err.message)
             var deliever_fee = results[0].deliever_fee;
             var orderdetail_length = JSON.parse(JSON.stringify(results)).length
-            var sum = parseInt(results[0].order_total) +parseInt( results[0].cprice)// 商品總額
+            var sum = parseInt(results[0].order_total) + parseInt(results[0].cprice)// 商品總額
             var product_quantity = 0; // 計算商品數
             var order_total = sum + deliever_fee // 訂單總額
             for (let i = 0; i < orderdetail_length; i++) {
-                product_quantity =parseInt( results[i].quantity) +parseInt(results[i].quantity2)+ product_quantity
+                product_quantity = parseInt(results[i].quantity) + parseInt(results[i].quantity2) + product_quantity
             }
             res.render('cart2.ejs',
                 {

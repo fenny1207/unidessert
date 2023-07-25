@@ -199,15 +199,15 @@ app.post('/customize', auth_product, function (req, res) {
                         })
                     })
                 })
-                    
+
             })
 
         })
         // 這段的最後標籤
     })
-    
 
-    
+
+
 })
 // })
 
@@ -243,8 +243,18 @@ app.get('/product/single', function (req, res) {
             // 當會員之前沒有加過購物車
             if (!results[0]) {
                 // 抓使用者要加入購物車的單品資訊
+                const currentDate = new Date();
+
+                // 使用 Date 物件的方法獲取年、月、日等資訊
+                const year = currentDate.getFullYear(); // 取得年份，例如 2023
+                const month = currentDate.getMonth() + 1; // 月份是從 0 開始的，因此需要加 1，例如 7 (代表 8 月)
+                const day = currentDate.getDate(); // 取得當月的幾號，例如 20
+
+
+                // 將取得的年、月、日組合成字串表示現在的日期
+                const formattedDate = `${year}-${month}-${day}`;
                 conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, order_status) 
-                        VALUES (null, ?, 150, ?, "", "", "", "", "", "", "貨到付款", "購物車")`,
+                        VALUES (null, ?, 150, ?, "", '${formattedDate}', "", "", "", '${formattedDate}', "貨到付款", "購物車")`,
                     [uid, single_order_total], (err, results) => {
                         if (err) return console.log(err.message)
                         const insert_oid = results.insertId

@@ -379,6 +379,9 @@ app.get("/order", authUid, (req, res) => {
             let uid = data[0].uid;
             let oid = data[0].oid;
             let order_total = data[0].order_total;
+            let deliever_fee = data[0].deliever_fee;
+            let order_all = parseInt(order_total)+parseInt(deliever_fee);
+            console.log(order_all);
             let order_date = data[0].order_date;
             let order_status = data[0].order_status;
             let quantity = data[0].quantity;
@@ -389,7 +392,8 @@ app.get("/order", authUid, (req, res) => {
                 order_date: order_date,
                 order_total: order_total,
                 order_status: order_status,
-                quantity: quantity
+                quantity: quantity,
+                order_all:order_all
     
             });
         }

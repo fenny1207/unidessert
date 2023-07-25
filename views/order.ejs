@@ -10,7 +10,7 @@
   </head>
   <body class="member_body">
     <%-include('nav') %>
-    <% if (noOrder) { %>
+    <% if ( typeof noOrder !== "undefined" && noOrder) { %>
       <section class="mt-130 container-uni page-top-position">
         <div class="row-uni member_section">
           <aside class="col-12-uni col-md-3-uni col-lg-2-uni"> 

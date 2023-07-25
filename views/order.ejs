@@ -32,19 +32,24 @@
           <div class="member_link mb-2-uni"><a class="active member_link_border_left" href="/member">歷史訂單</a></div>
           <% for (let i = 0; i < member_info.length; i++) { %>
             <% if (member_info[i].uid === uid) { %>
+              <% let totalOrderAll = 0; %>
+              <% let order_total = parseInt(member_info[i].order_total);
+              let deliever_fee = parseInt(member_info[i].deliever_fee);
+              let order_all = order_total + deliever_fee; %> 
+           <% totalOrderAll += order_all; %> 
               <div class="member_container">
               <form action="/order" id="oder" method="get">
                 <div class="row">
-                  <div class="col-6 row">
+                  <div class="col-5 row">
                     <p class="member_text">訂單編號: <%= member_info[i].oid %></p>
                     <p class="member_text">訂購日期: <%= member_info[i].order_date %></p>
-                    <p class="member_text">應付金額: $<%= order_all %></p>
+                    <p class="member_text">應付金額: $<%= totalOrderAll %></p>
                     <!-- <p class="member_text">訂購日期: <%= member_info[i].order_date %></p> -->
                   </div>
-                  <div class="col-6 row">
+                  <div class="col-7 row">
                     <!-- <div class="row-nowrap "> -->
                       <div class="row mb-5">
-                        <p class="member_text col-8">訂購數量: <%= member_info[i].quantity %></p>
+                        <p class="member_text col-8">送達日期: <%= member_info[i].arrive_date %></p>
                         <div class="member_order col-4 align-items-end ">
                           <a  href="/order/historyOrder">取消訂單</a>
                         </div>

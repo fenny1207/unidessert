@@ -108,6 +108,7 @@ function getCartCount() {
 // 加入商品到購物車
 $('.addtocart').on('click', function (e) {
   addToCart()
+  getCartCount()
 });
 // 加入商品到購物車
 function addToCart() {

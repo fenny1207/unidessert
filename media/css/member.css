@@ -995,7 +995,16 @@ footer .container-uni-footer .row-nowrap dd a img {
   display: block;
   background-color: #B44A60;
 }
+.noOrder{
+  width: 100%;
+  line-height: 40px;
+  color: #B44A60;
+  font-size: 1.5rem;
+  padding: 10px;
+  text-align: center;
+  font-family: "Noto Sans TC", sans-serif;
 
+}
 .member_link > a:hover {
   color: #fff;
   /* background-color: #F0C7CD; */

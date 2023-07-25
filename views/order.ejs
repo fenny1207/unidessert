@@ -10,7 +10,20 @@
   </head>
   <body class="member_body">
     <%-include('nav') %>
-    <section class="mt-130 container-uni page-top-position">
+    <% if (noOrder) { %>
+      <section class="mt-130 container-uni page-top-position">
+        <div class="row-uni member_section">
+          <aside class="col-12-uni col-md-3-uni col-lg-2-uni"> 
+            <div class="member_linkleft row"><a href="/member">基本資料</a><a class="active" href="/order">訂單紀錄</a></div>
+          </aside>
+          <div class="container-uni col-12-uni col-md-9-uni col-lg-10-uni tab_content" id="">
+            <div class="member_link mb-2-uni"><a class="active member_link_border_left" href="/member">歷史訂單</a></div>
+            <p class="noOrder">尚無訂單紀錄</p>
+          </div>
+        </div>
+        </section>  
+    <% } else { %>
+      <section class="mt-130 container-uni page-top-position">
       <div class="row-uni member_section">
         <aside class="col-12-uni col-md-3-uni col-lg-2-uni"> 
           <div class="member_linkleft row"><a href="/member">基本資料</a><a class="active" href="/order">訂單紀錄</a></div>
@@ -51,7 +64,8 @@
           <%}%>
         </div>
       </div>
-    </section>
+      </section>
+    <% } %>
     <%-include('footer') %>
     <script>
       // function 

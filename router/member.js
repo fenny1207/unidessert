@@ -232,6 +232,23 @@ app.post('/change', (req, res) => {
   }
 });
 
+app.get('/logout', (req, res) => {
+  if (req.session && req.session.user) {
+    // 使用者已登入，銷毀 session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('無法銷毀 session:', err);
+        res.status(500).json({ message: '登出失敗' });
+      } else {
+        // 導向登入頁面或其他頁面
+        res.redirect('/'); // 這裡可以改成你想要導向的頁面
+      }
+    });
+  } else {
+    // 使用者未登入，導向登入頁面或其他頁面
+    res.redirect('/user'); // 這裡可以改成你想要導向的頁面
+  }
+});
 
 
 

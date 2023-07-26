@@ -199,28 +199,6 @@ app.post('/login', (req, res) => {
   });
 });
 
-//更改密碼路由
-// app.post('/change', (req, res) => {
-//   const { email, password } = req.body;
-//   const useremail = req.session.email; // 從 session 中取出之前儲存的 email
-
-//   if (email === useremail) {
-//     // 使用者輸入的 email 和前面驗證的 email 是同一個
-//     const updatequery = 'UPDATE user SET upwd = ? WHERE uemail = ?';
-//     connection.query(updatequery, [password, email], (err, result) => {
-//       if (err) {
-//         console.log('更換密碼失敗');
-//         res.render('change', { error: true, title: "更換密碼失敗", message: '更換密碼發生錯誤', showAlert: false });
-//       } else {
-//         // 更新成功，清除 session 中的 email
-//         req.session.email = null;
-//         res.render('change', { error: false, title: "更換密碼成功", message: "請再重新登入", showAlert: true });
-//       }
-//     });
-//   } else {
-//     res.render('change', { error: true, title: "更換密碼失敗", message: '這不是剛剛驗證的 email', showAlert: false });
-//   }
-// });
 
 // 更改密碼路由
 app.post('/change', (req, res) => {

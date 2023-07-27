@@ -528,7 +528,7 @@ app.get('/order/historyOrder/:oid', (req, res) => {
 // })
 
 app.get('/cart', (req, res) => {
-    let oid = req.params.oid; // 注意這裡使用的是 req.params.oid，確保您的路由中能夠取得 oid 參數
+    let oid = req.params.oid; 
 
     const sql = `
     SELECT DISTINCT a.*, b.*, 
@@ -552,7 +552,7 @@ app.get('/cart', (req, res) => {
 
         let  product_type, product_id, p_name, quantity, total_price, cdetailid;
 
-        // 取得第一筆orderdetails資料的其他相關資訊
+        // 取得orderdetails資料的其他相關資訊
         if (cartdata.length > 0) {
             
             product_type = cartdata[0].product_type;
@@ -565,14 +565,14 @@ app.get('/cart', (req, res) => {
         }
 
         res.render('cart1.ejs', {
-            cartdata: cartdata, // 這裡修正為 cartdata
-            oid: oid, // 請確保您定義了 oid 變數
+            cartdata: cartdata, 
+            oid: oid, 
             quantity: quantity,
             
             product_type: product_type,
             product_id: product_id,
             p_name: p_name,
-            c_quantity:quantity, // 注意這裡有重複的 quantity，請確認您的資料欄位是否正確
+            c_quantity:quantity, 
             total_price: total_price,
             cdetailid: cdetailid
             
@@ -581,8 +581,6 @@ app.get('/cart', (req, res) => {
 });
 
 
-    
-  // Route to render orderdetails page
   app.get('/cart1/:oid', (req, res) => {
     const oid = req.params.oid;
     const sql = `
@@ -608,7 +606,7 @@ app.get('/cart', (req, res) => {
             return;
         }
 
-        // 如果有 c_detail2 資料，將它合併到 cartdata 中
+        //  c_detail2 資料，將它合併到 cartdata 中
         if (orderDetailsForOid.length > 0 && orderDetailsForOid[0].product_type === 'set') {
             const c_detail2Data = {
                 size: orderDetailsForOid[0].size,

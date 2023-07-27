@@ -45,90 +45,93 @@
                 </div>
     
                 <!-- 循環顯示 c_detail2 表的資料 -->
-                <% for (let i = 0; i < c_detail2.length; i++) { %>
+                <% for (var i = 0; i < cartdata.length; i++) { %>
                     <div class="table-row table-row1 order row">
-                        <div class="table-cell col-2 px-2">
-                            <div class="product-info">
-                                <img src="<%= c_detail2[i].p_pic %>" width="150px" alt="Product 1">
-                                <p class="product-name"><%= c_detail2[i].size %></p>
-                            </div>
+                      <div class="table-cell col-2 px-2">
+                        <div class="product-info">
+                          <img src="<%= cartdata[i].p_pic || cartdata[i].cpic1 %>" width="150px" alt="Product 1">
+                          <p class="product-name"><%= cartdata[i].pd_name %></p>
                         </div>
-                        <div class="table-cell item col-2">
-                            <li>大小: <%= c_detail2[i].size %></li>
-                            <li>紙盒: <%= c_detail2[i].boxcolor %></li>
-                            <li>紙袋: <%= c_detail2[i].bagcolor %></li>
+                      </div>
+                      <div class="table-cell item col-2">
+                        <li class="mb-3">規格:<%= cartdata[i].size%></li>
+                                <li class="mb-3">內容物:<%= cartdata[i].cookie1%>,
+                                    <%= cartdata[i].cookie2%>,<br>
+                                    <%= cartdata[i].cookie3%>,
+                                    <%= cartdata[i].cookie4%>
+                                </li>
+                                <li class="mb-3">禮物盒:<%= cartdata[i].boxcolor%></li>
+                                <li>紙袋:<%= cartdata[i].bagcolor%></li>
+                      </div>
+                      <div class="table-cell item col-3 p-0">
+                        <div><%= cartdata[i].cardcontent %></div>
+                      </div>
+                      <div class="table-cell item col-1 row">
+                      </div>
+                      <div class="table-cell item col-3 row">
+                        <div class="table-cell item col-6">數量</div>
+                        <div class="table-cell item col-5 amount m-0 p-0">
+                          <button class="subtractBtn">-</button>
+                          <span class="quantity"><%= cartdata[i].quantity %></span>
+                          <button class="addBtn p-0">+</button>
                         </div>
-                        <div class="table-cell item col-3 p-0">
-                            <div><%= c_detail2[i].cardcontent %></div>
+                        <div class="row">
+                          <div class="table-cell item col-6">價格</div>
+                          <div class="table-cell item col-6 price"><%= cartdata[i].cprice %></div>
                         </div>
-                        <div class="table-cell item col-1 row">
+                        <div class="row">
+                          <div class="table-cell item col-6">小計</div>
+                          <div class="table-cell item col-6 price-total"><%= cartdata[i].c_quantity * cartdata[i].p_price %></div>
                         </div>
-                        <div class="table-cell item col-3 row">
-                            <div class="table-cell item col-6">數量</div>
-                            <div class="table-cell item col-5 amount m-0 p-0">
-                                <button class="subtractBtn">-</button>
-                                <span class="quantity"><%= c_detail2[i].quantity %></span>
-                                <button class="addBtn p-0">+</button>
-                            </div>
-                            <div class="row">
-                                <div class="table-cell item col-6">價格</div>
-                                <div class="table-cell item col-6 price"><%= c_detail2[i].cprice %></div>
-                            </div>
-                            <div class="row">
-                                <div class="table-cell item col-6">小計</div>
-                                <div class="table-cell item col-6 price-total"><%= c_detail2[i].quantity * c_detail2[i].cprice %></div>
-                            </div>
-                        </div>
-                        <div class="table-cell item col-1">
-                            <span class="delete-btn" onclick="deleteOrder(this)"><img src="/pic/backEndPic/delete-24.png" alt=""></span>
-                        </div>
+                      </div>
+                      <div class="table-cell item col-1">
+                        <span class="delete-btn" onclick="deleteOrder(this)"><img src="/pic/backEndPic/delete-24.png" alt=""></span>
+                      </div>
                     </div>
-                <% } %>
-                
-    
-                <!-- 循環顯示 product 表的資料 -->
-                <% for (let j = 0; j < product.length; j++) { %>
+                  <% } %>
+                  
+                  <!-- 循環顯示 product 表的資料 -->
+                  <% for (let j = i; j < cartdata.length; j++) { %>
                     <div class="table-row table-row1 order row">
-                        <div class="table-cell col-2">
-                            <div class="product-info">
-                                <img src="<%= product[j].p_pic %>" width="150px" alt="Product 2">
-                                <p class="product-name"><%= product[j].pd_name %></p>
-                            </div>
+                      <div class="table-cell col-2">
+                        <div class="product-info">
+                          <img src="<%= cartdata[j].p_pic %>" width="150px" alt="Product 2">
+                          <p class="product-name"><%= cartdata[j].pd_name %></p>
                         </div>
-                        <div class="table-cell item col-2">
-                            無
+                      </div>
+                      <div class="table-cell item col-2">
+                       
+                      </div>
+                      <div class="table-cell item col-3 p-0">
+                       
+                      </div>
+                      <div class="table-cell item col-1 row">
+                      </div>
+                      <div class="table-cell item col-3 row">
+                        <div class="table-cell item col-6">數量</div>
+                        <div class="table-cell item col-5 amount m-0 p-0">
+                          <button class="subtractBtn">-</button>
+                          <span class="quantity"><%= cartdata[j].quantity %></span>
+                          <button class="addBtn">+</button>
                         </div>
-                        <div class="table-cell item col-3 p-0">
-                            無
+                        <div class="row">
+                          <div class="table-cell item col-6">價格</div>
+                          <div class="table-cell item col-6 price"><%= cartdata[j].p_price %></div>
                         </div>
-                        <div class="table-cell item col-1 row">
+                        <div class="row">
+                          <div class="table-cell item col-6">小計</div>
+                          <div class="table-cell item col-6 price-total"><%= cartdata[j].quantity * cartdata[j].p_price %></div>
                         </div>
-                        <div class="table-cell item col-3 row">
-                            <div class="table-cell item col-6">數量</div>
-                            <div class="table-cell item col-5 amount m-0 p-0">
-                                <button class="subtractBtn">-</button>
-                                <span class="quantity"><%= product[j].quantity %></span>
-                                <button class="addBtn">+</button>
-                            </div>
-                            <div class="row">
-                                <div class="table-cell item col-6">價格</div>
-                                <div class="table-cell item col-6 price"><%= product[j].p_price %></div>
-                            </div>
-                            <div class="row">
-                                <div class="table-cell item col-6">小計</div>
-                                <div class="table-cell item col-6 price-total"><%= product[j].quantity * product[j].p_price %></div>
-                            </div>
-                        </div>
-                        <div class="table-cell item col-1">
-                            <span class="delete-btn" onclick="deleteOrder(this)"><img src="/pic/backEndPic/delete-24.png" alt=""></span>
-                        </div>
+                      </div>
+                      <div class="table-cell item col-1">
+                        <span class="delete-btn" onclick="deleteOrder(this)"><img src="/pic/backEndPic/delete-24.png" alt=""></span>
+                      </div>
                     </div>
-                <% } %>
-                
+                  <% } %>
+                  
             </div>
         </div>
     </div>
-    
 
                 <div class="table-footer ">
                     <div class="table-row table-row1 row">
@@ -230,7 +233,7 @@
                 var price = parseInt(priceElement.textContent.replace('$', ''));
 
                 var priceTotal = quantity * price;
-                priceTotalElement.textContent = '$' + priceTotal.toFixed(2);
+                priceTotalElement.textContent = '$' + priceTotal;
 
                 productAmount += quantity;
                 productTotal += priceTotal;
@@ -242,13 +245,13 @@
             var cashTotalElement = document.querySelector('.cash-total');
 
             productAmountElement.textContent = productAmount + '件';
-            productTotalElement.textContent = '$' + productTotal.toFixed(2);
+            productTotalElement.textContent = '$' + productTotal;
 
-            var deliverFee = 80;
+            var deliverFee = 150;
             var cashTotal = productTotal + deliverFee;
 
-            deliverFeeElement.textContent = '$' + deliverFee.toFixed(2);
-            cashTotalElement.textContent = '$' + cashTotal.toFixed(2);
+            deliverFeeElement.textContent = '$' + deliverFee;
+            cashTotalElement.textContent = '$' + cashTotal;
         }
 
         // 減少商品數量

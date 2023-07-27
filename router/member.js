@@ -262,6 +262,16 @@ function auth(req, res, next) {
   }
 }
 
+// 路由處理函式，用來檢查使用者登入狀態
+app.get('/checkLogin', (req, res) => {
+  if (req.session.loggedIn) {
+      // 使用者已登入
+      res.json({ loggedIn: true });
+  } else {
+      // 使用者尚未登入
+      res.json({ loggedIn: false });
+  }
+});
 
 app.get('/forgot', (req, res) => {
   res.render('forgot.ejs')

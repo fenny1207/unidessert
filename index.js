@@ -189,7 +189,7 @@ app.post('/customize', auth_product, function (req, res) {
                     let oid = results[0].oid
                     let cdetailid = data.insertId
 
-                    conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [orderTotal, uid], (err, results) => {
+                    conn.query(`UPDATE orderlist Customize order_total = ? WHERE orderlist.uid = ?`, [orderTotal, uid], (err, results) => {
                         if (err) return console.log(err.message)
 
                         conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price, cdetailid)
@@ -213,7 +213,7 @@ app.post('/customize', auth_product, function (req, res) {
 
 app.get('/product', function (req, res) {
     var p_info
-    conn.query('SELECT pd_name, p_price, p_pic FROM product where p_type="set"', (err, results) => {
+    conn.query('SELECT pd_name, p_price, p_pic FROM product where p_type="Customize"', (err, results) => {
         if (err) return console.log(err.message)
         p_info = results;
         res.render('product.ejs', { p_info: p_info });
@@ -271,7 +271,7 @@ app.get('/product/single', function (req, res) {
             var oid = results[0].oid
             order_total = results[0].order_total + single_order_total
             // 更新orderlist
-            conn.query(`UPDATE orderlist SET order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
+            conn.query(`UPDATE orderlist Customize order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
                 if (err) return console.log(err.message)
             })
             // 更新 orderdetails
@@ -290,7 +290,7 @@ app.get('/product/single', function (req, res) {
                 // orderdetails 有相同的產品
                 let total_quantity = results[0].quantity + quantity
                 let total_price = results[0].total_price + single_order_total
-                conn.query(`UPDATE oderdetails SET quantity = ?, total_price= ? WHERE product_id = ?`, [total_quantity, total_price, pid], (err, results) => {
+                conn.query(`UPDATE oderdetails Customize quantity = ?, total_price= ? WHERE product_id = ?`, [total_quantity, total_price, pid], (err, results) => {
                     if (err) return console.log(err.message)
                 })
             })
@@ -299,10 +299,10 @@ app.get('/product/single', function (req, res) {
 })
 
 app.get('/product/productInfo', function (req, res) {
-    conn.query('SELECT * FROM product where p_type="set" && (pid=1 || pid=2)', (err, results) => {
+    conn.query('SELECT * FROM product where p_type="Customize" && (pid=1 || pid=2)', (err, results) => {
         if (err) return console.log(err.message)
         var product_info = results;
-        conn.query('SELECT * FROM product where p_type="set"', (err, results) => {
+        conn.query('SELECT * FROM product where p_type="Customize"', (err, results) => {
             if (err) return console.log(err.message)
             var product = results;
             res.render('productInfo.ejs', { product_info: product_info, product: product });
@@ -344,20 +344,20 @@ app.get('/product/productInfo', function (req, res) {
                 if (err) return console.log(err.message)
                 order_total = results[0].order_total + parseInt(order_total)
                 let oid = results[0].oid
-                conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [order_total, uid], (err, results) => {
+                conn.query(`UPDATE orderlist Customize order_total = ? WHERE orderlist.uid = ?`, [order_total, uid], (err, results) => {
                     if (err) return console.log(err.message)
                 })
                 conn.query(`select * from oderdetails where oid = ? && p_name = ?`, [oid, product_Title], (err, results) => {
                     if (err) return console.log(err.message)
                     if (!results[0]) {
-                        conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price) VALUES (NULL, ?, 'set', 1, ?, ?, ?)`, [oid, product_Title, quantity, productPrice * quantity], (err, results) => {
+                        conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price) VALUES (NULL, ?, 'Customize', 1, ?, ?, ?)`, [oid, product_Title, quantity, productPrice * quantity], (err, results) => {
                             if (err) return console.log(err.message)
                         })
                         return
                     }
                     quantity = results[0].quantity + parseInt(quantity)
                     total_price = parseInt(quantity) * productPrice
-                    conn.query(`UPDATE oderdetails SET quantity = ?, total_price = ? WHERE oid = ? && p_name = ?`, [quantity, total_price, oid, product_Title], (err, results) => {
+                    conn.query(`UPDATE oderdetails Customize quantity = ?, total_price = ? WHERE oid = ? && p_name = ?`, [quantity, total_price, oid, product_Title], (err, results) => {
                         if (err) return console.log(err.message)
                     })
                 })
@@ -528,7 +528,7 @@ app.get('/order/historyOrder/:oid', (req, res) => {
 // })
 
 app.get('/cart', (req, res) => {
-    let oid = req.params.oid; 
+    let oid = req.params.oid; // 注意這裡使用的是 req.params.oid，確保您的路由中能夠取得 oid 參數
 
     const sql = `
     SELECT DISTINCT a.*, b.*, 
@@ -552,7 +552,7 @@ app.get('/cart', (req, res) => {
 
         let  product_type, product_id, p_name, quantity, total_price, cdetailid;
 
-        // 取得orderdetails資料的其他相關資訊
+        // 取得第一筆orderdetails資料的其他相關資訊
         if (cartdata.length > 0) {
             
             product_type = cartdata[0].product_type;
@@ -593,10 +593,11 @@ app.get('/cart', (req, res) => {
     c_detail2.*,
     product.*
     FROM oderdetails
-    LEFT JOIN (SELECT *, 'set' AS product_type FROM c_detail2) AS c_detail2
+    LEFT JOIN (SELECT *, 'Customize' AS product_type FROM c_detail2) AS c_detail2
     ON oderdetails.cdetailid = c_detail2.cdetailid
     LEFT JOIN (SELECT *, 'single' AS product_type FROM product) AS product
     ON product.pid = oderdetails.product_id
+    LEFT JOIN customize on c_detail2.boxcolor=customize.cname
     WHERE oderdetails.oid = ? AND a.order_status = "購物車";  
     `;
   
@@ -607,10 +608,10 @@ app.get('/cart', (req, res) => {
         }
 
         //  c_detail2 資料，將它合併到 cartdata 中
-        if (orderDetailsForOid.length > 0 && orderDetailsForOid[0].product_type === 'set') {
+        if (orderDetailsForOid.length > 0 && orderDetailsForOid[0].product_type === 'Customize') {
             const c_detail2Data = {
                 size: orderDetailsForOid[0].size,
-                cpic1:orderDetailsForOid[0].cpic1,
+                cpic1:orderDetailsForOid[0].boxcolor,
                 cookie1: orderDetailsForOid[0].cookie1,
                 cookie2: orderDetailsForOid[0].cookie2,
                 cookie3: orderDetailsForOid[0].cookie3,
@@ -675,7 +676,7 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
         var arrive_date = req.body.arrive_date
         var order_date = new Date()
         // 資料庫可能要加一欄 recipient_address_code
-        var sql = `UPDATE orderlist SET order_date = ?, recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款', order_status ='待出貨' WHERE uid = ?`
+        var sql = `UPDATE orderlist Customize order_date = ?, recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款', order_status ='待出貨' WHERE uid = ?`
         conn.query(sql, [order_date, recipient, address, tel, email, arrive_date, uid], (err, results) => {
             if (err) return console.log(err.message)
         })
@@ -795,7 +796,7 @@ app.get('/member', auth, function (req, res) {
     const { uname, umobile, ubirth } = req.body;
     var uid = res.locals.uid;
     // var sql = 'SELECT * FROM user WHERE uemail =?'
-    var sql = `UPDATE  user SET uname =?,umobile=?,ubirth =? WHERE uid = ?`;
+    var sql = `UPDATE  user Customize uname =?,umobile=?,ubirth =? WHERE uid = ?`;
     conn.query(sql, [uname, umobile, ubirth, uid], (err, data) => {
         console.log(uid + '0720');
         console.log(data)

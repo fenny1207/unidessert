@@ -31,28 +31,28 @@ $(window).scroll(function () {
 // });//.tab-link>a end
 
 //購物車
-$(document).ready(function () {
-  let addtocart = document.querySelectorAll('.addtocart');
+// $(document).ready(function () {
+//   let addtocart = document.querySelectorAll('.addtocart');
 
-  for (var i = 0; i < addtocart.length; i++) {
-    addtocart[i].addEventListener('click', function (e) {
-      // console.log(e)
-      var button = $(this);
-      var cart = $("#cart");
-      var cartTotal = cart.attr("data-totalitems");
-      var newCartTotal = parseInt(cartTotal) + 1;
+//   for (var i = 0; i < addtocart.length; i++) {
+//     addtocart[i].addEventListener('click', function (e) {
+//       // console.log(e)
+//       var button = $(this);
+//       var cart = $("#cart");
+//       var cartTotal = cart.attr("data-totalitems");
+//       var newCartTotal = parseInt(cartTotal) + 1;
 
-      button.addClass("sendtocart");
-      setTimeout(function () {
-        button.removeClass("sendtocart");
-        cart.addClass("shake").attr("data-totalitems", newCartTotal);
-        setTimeout(function () {
-          cart.removeClass("shake");
-        }, 500);
-      }, 300);
-    }, false);
-  }
-});
+//       button.addClass("sendtocart");
+//       setTimeout(function () {
+//         button.removeClass("sendtocart");
+//         cart.addClass("shake").attr("data-totalitems", newCartTotal);
+//         setTimeout(function () {
+//           cart.removeClass("shake");
+//         }, 500);
+//       }, 300);
+//     }, false);
+//   }
+// });
 
 // 改寫上面的購物車
 // 確認使用者登入後才可以加商品到購物車，購物車上的數字才可以加 1
@@ -108,8 +108,28 @@ $(document).ready(function () {
 //     }, false);
 //   }
 // });
-
 // =============================================
+// $(document).ready(function () {
+//   // 檢查使用者登入狀態的 AJAX 請求
+//   $.ajax({
+//     type: 'GET',
+//     url: '/user/checkLogin',
+//     dataType: 'json',
+//     success: function (data) {
+//       if (data.loggedIn) {
+//         // 使用者已登入，隱藏登入按鈕
+//         $('.signin').hide();
+//       } else {
+//         // 使用者尚未登入，隱藏登出按鈕
+//         $('.dropdown .signout').hide();
+//       }
+//     },
+//     error: function (err) {
+//       console.error('無法檢查使用者登入狀態:', err);
+//     },
+//   });
+// });
+// ========================================
 // 導覽列購物車 icon 數字跟著購物車數量變化
 function updateCartIconCount(count) {
   $('#cartNumber').text(count);
@@ -121,6 +141,7 @@ function getCartCount() {
     url: '/cart/count',
     type: 'GET',
     dataType: 'json',
+    cache: false,
     success: function (data) {
       var cartCount = data.cartCount;
       updateCartIconCount(cartCount);
@@ -132,17 +153,13 @@ function getCartCount() {
 }
 
 // 加入商品到購物車
-$('.addtocart').on('click', function (e) {
-  addToCart()
-  getCartCount()
-});
-// 加入商品到購物車
 function addToCart() {
   $.ajax({
     url: '/cart/add',
     type: 'POST',
     data: {},
     dataType: 'json',
+    cache: false,
     success: function (data) {
       getCartCount()
     },
@@ -151,29 +168,10 @@ function addToCart() {
     },
   });
 }
+$('.addtocart').on('click', function (e) {
+  addToCart()
+  // getCartCount()
+});
 
 // 初始化時獲取購物車數量
 getCartCount();
-
-
-//------
-$(document).ready(function () {
-  // 檢查使用者登入狀態的 AJAX 請求
-  $.ajax({
-    type: 'GET',
-    url: '/user/checkLogin',
-    dataType: 'json',
-    success: function (data) {
-      if (data.loggedIn) {
-        // 使用者已登入，隱藏登入按鈕
-        $('.signin').hide();
-      } else {
-        // 使用者尚未登入，隱藏登出按鈕
-        $('.dropdown .signout').hide();
-      }
-    },
-    error: function (err) {
-      console.error('無法檢查使用者登入狀態:', err);
-    },
-  });
-});

@@ -98,7 +98,7 @@ app.post('/customize', auth_product, function (req, res) {
         var number = req.body.number
 
         //更改的：當會員之前沒有加過購物車(完成)
-        conn.query(`select * from orderlist where uid='?' && order_status="購物車"`, [uid], (err, results) => {
+        conn.query(`select * from orderlist where uid=? && order_status="購物車"`, [uid], (err, results) => {
             if (err) return console.log(err.message)
             // 當會員之前沒有加過購物車
             if (!results[0]) {
@@ -189,7 +189,7 @@ app.post('/customize', auth_product, function (req, res) {
                     let oid = results[0].oid
                     let cdetailid = data.insertId
 
-                    conn.query(`UPDATE orderlist Customize order_total = ? WHERE orderlist.uid = ?`, [orderTotal, uid], (err, results) => {
+                    conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [orderTotal, uid], (err, results) => {
                         if (err) return console.log(err.message)
 
                         conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price, cdetailid)
@@ -213,7 +213,7 @@ app.post('/customize', auth_product, function (req, res) {
 
 app.get('/product', function (req, res) {
     var p_info
-    conn.query('SELECT pd_name, p_price, p_pic FROM product where p_type="Customize"', (err, results) => {
+    conn.query('SELECT pd_name, p_price, p_pic FROM product where p_type="set"', (err, results) => {
         if (err) return console.log(err.message)
         p_info = results;
         res.render('product.ejs', { p_info: p_info });
@@ -226,7 +226,8 @@ app.get('/product/single', function (req, res) {
         p_single_info = results;
         res.render('product_single.ejs', { p_single_info: p_single_info });
     })
-}).post('/product/single', auth_product, function (req, res) {
+})
+app.post('/product/single', auth_product, function (req, res) {
     // 抓會員的資料
     conn.query(`select * from user where uemail=?`, [req.session.user.email], (err, results) => {
         if (err) return console.log(err.message)
@@ -237,9 +238,11 @@ app.get('/product/single', function (req, res) {
         var p_price = req.body.p_price
         var single_order_total = req.body.order_total
         var p_type = req.body.p_type
+
         // 抓會員在資料庫的購物車的紀錄，看會員是否有加過商品到購物車
         conn.query(`select * from orderlist where uid='?' && order_status = "購物車"`, [uid], (err, results) => {
             if (err) return console.log(err.message)
+            
             // 當會員之前沒有加過購物車
             if (!results[0]) {
                 // 抓使用者要加入購物車的單品資訊
@@ -271,7 +274,7 @@ app.get('/product/single', function (req, res) {
             var oid = results[0].oid
             order_total = results[0].order_total + single_order_total
             // 更新orderlist
-            conn.query(`UPDATE orderlist Customize order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
+            conn.query(`UPDATE orderlist SET order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
                 if (err) return console.log(err.message)
             })
             // 更新 orderdetails
@@ -281,28 +284,27 @@ app.get('/product/single', function (req, res) {
                 // orderdetails 沒有相同的產品
                 if (!results[0]) {
                     conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price, cdetailid) VALUES (NULL, ?, ?, ?, ?, ?, ?, NULL)`,
-                        [oid, p_type, pid, p_name, quantity, single_order_total],
-                        (err, results) => {
-                            if (err) return console.log(err.message)
-                        })
+                    [oid, p_type, pid, p_name, quantity, single_order_total],
+                    (err, results) => {
+                        if (err) return console.log(err.message)
+                    })
                     return
                 }
                 // orderdetails 有相同的產品
                 let total_quantity = results[0].quantity + quantity
                 let total_price = results[0].total_price + single_order_total
-                conn.query(`UPDATE oderdetails Customize quantity = ?, total_price= ? WHERE product_id = ?`, [total_quantity, total_price, pid], (err, results) => {
+                conn.query(`UPDATE oderdetails SET quantity = ?, total_price= ? WHERE product_id = ?`, [total_quantity, total_price, pid], (err, results) => {
                     if (err) return console.log(err.message)
                 })
             })
         })
     })
 })
-
 app.get('/product/productInfo', function (req, res) {
-    conn.query('SELECT * FROM product where p_type="Customize" && (pid=1 || pid=2)', (err, results) => {
+    conn.query('SELECT * FROM product where p_type="set" && (pid=1 || pid=2)', (err, results) => {
         if (err) return console.log(err.message)
         var product_info = results;
-        conn.query('SELECT * FROM product where p_type="Customize"', (err, results) => {
+        conn.query('SELECT * FROM product where p_type="set"', (err, results) => {
             if (err) return console.log(err.message)
             var product = results;
             res.render('productInfo.ejs', { product_info: product_info, product: product });
@@ -315,7 +317,7 @@ app.get('/product/productInfo', function (req, res) {
         var product_Title = req.body.product_Title
         var productPrice = req.body.productPrice
         var quantity = req.body.quantity
-        conn.query(`select * from orderlist where uid='?' && order_status="購物車"`, [uid], (err, results) => {
+        conn.query(`select * from orderlist where uid=? && order_status="購物車"`, [uid], (err, results) => {
             if (err) return console.log(err.message)
             // 當會員之前沒有加過購物車
             if (!results[0]) {
@@ -340,24 +342,24 @@ app.get('/product/productInfo', function (req, res) {
                 return
             }
             // 會員之前有加過購物車
-            conn.query(`select * from orderlist where uid = '?' && order_status = '購物車'`, [uid], (err, results) => {
+            conn.query(`select * from orderlist where uid = ? && order_status = '購物車'`, [uid], (err, results) => {
                 if (err) return console.log(err.message)
                 order_total = results[0].order_total + parseInt(order_total)
                 let oid = results[0].oid
-                conn.query(`UPDATE orderlist Customize order_total = ? WHERE orderlist.uid = ?`, [order_total, uid], (err, results) => {
+                conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [order_total, uid], (err, results) => {
                     if (err) return console.log(err.message)
                 })
                 conn.query(`select * from oderdetails where oid = ? && p_name = ?`, [oid, product_Title], (err, results) => {
                     if (err) return console.log(err.message)
                     if (!results[0]) {
-                        conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price) VALUES (NULL, ?, 'Customize', 1, ?, ?, ?)`, [oid, product_Title, quantity, productPrice * quantity], (err, results) => {
+                        conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price) VALUES (NULL, ?, 'set', 1, ?, ?, ?)`, [oid, product_Title, quantity, productPrice * quantity], (err, results) => {
                             if (err) return console.log(err.message)
                         })
                         return
                     }
                     quantity = results[0].quantity + parseInt(quantity)
                     total_price = parseInt(quantity) * productPrice
-                    conn.query(`UPDATE oderdetails Customize quantity = ?, total_price = ? WHERE oid = ? && p_name = ?`, [quantity, total_price, oid, product_Title], (err, results) => {
+                    conn.query(`UPDATE oderdetails SET quantity = ?, total_price = ? WHERE oid = ? && p_name = ?`, [quantity, total_price, oid, product_Title], (err, results) => {
                         if (err) return console.log(err.message)
                     })
                 })

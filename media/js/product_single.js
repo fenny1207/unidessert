@@ -1,12 +1,11 @@
-$(document).ready(function () {
+$(function () {
     $(".add_to_cart_button").on('click', function (e) {
         let target_id = e.target.id.substr(18)
-        // console.log(target_id)
 
         let p_name = document.getElementById(`p_name${target_id}`).innerHTML
-        // console.log(`p_name${target_id}`)
+
         let p_price = parseInt(document.getElementById(`product_price${target_id}`).innerHTML.substring(3))
-        // console.log(`product_price${target_id}`)
+
         let quantity = 1
         let order_total = p_price * quantity
         console.log(order_total)
@@ -25,6 +24,7 @@ $(document).ready(function () {
             method: "post",
             contentType: "application/json",
             data: JSON.stringify(data),
+            cache: false,
             success: function(res) {
                 if(res.status === 1 ) {
                     alert('請先登入後再進行此操作')

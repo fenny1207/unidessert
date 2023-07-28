@@ -92,39 +92,38 @@
                             </div>
                         </div>
                         <div class="table-cell item col-1">
-                            <span class="delete-btn" onclick="deleteOrder(this)"><img style="width: 40%;" src="/pic/cart/Waste.png" alt=""></span>
+                            <span class="delete-btn" onclick="deleteOrder(<%= cartdata[i].orderdetails_id%>)"><img style="width: 40%;" src="/pic/cart/Waste.png" alt=""></span>
                         </div>
                     </div>
                 <% } %>
-             <% } %>   
-                  
+                
             </div>
         </div>
     </div>
-
-                <div class="table-footer ">
-                    <div class="table-row table-row1 row">
-                        <div class="table-cell col-3"></div>
-                        <div class="table-cell col-3"></div>
-                        <div class="table-cell col-2"></div>
-                        <div class="table-cell item col-2">總計商品數：</div>
-                        <div class="table-cell item col-2 product-amount">2件</div>
-                    </div>
-                    <div class="table-row table-row1 row">
-                        <div class="table-cell col-3"></div>
-                        <div class="table-cell col-3"></div>
-                        <div class="table-cell col-2"></div>
-                        <div class="table-cell item col-2">商品金額：</div>
-                        <div class="table-cell item col-2 product-total">$<%= order_total%></div>
-                    </div>
-                    <div class="table-row table-row1 row">
-                        <div class="table-cell col-3"></div>
-                        <div class="table-cell col-3"></div>
-                        <div class="table-cell col-2"></div>
-                        <div class="table-cell item col-2">運費：</div>
-                        <div class="table-cell item col-2 deliver-fee">$<%=deliever_fee%></div>
-                    </div>
-                    <div class="table-row table-row1 row">
+    
+    <div class="table-footer ">
+        <div class="table-row table-row1 row">
+            <div class="table-cell col-3"></div>
+            <div class="table-cell col-3"></div>
+            <div class="table-cell col-2"></div>
+            <div class="table-cell item col-2">總計商品數：</div>
+            <div class="table-cell item col-2 product-amount">2件</div>
+        </div>
+        <div class="table-row table-row1 row">
+            <div class="table-cell col-3"></div>
+            <div class="table-cell col-3"></div>
+            <div class="table-cell col-2"></div>
+            <div class="table-cell item col-2">商品金額：</div>
+            <div class="table-cell item col-2 product-total">$<%= order_total%></div>
+        </div>
+        <div class="table-row table-row1 row">
+            <div class="table-cell col-3"></div>
+            <div class="table-cell col-3"></div>
+            <div class="table-cell col-2"></div>
+            <div class="table-cell item col-2">運費：</div>
+            <div class="table-cell item col-2 deliver-fee">$<%=deliever_fee%></div>
+        </div>
+        <div class="table-row table-row1 row">
                         <div class="table-cell col-3"></div>
                         <div class="table-cell col-3"></div>
                         <div class="table-cell col-2"></div>
@@ -144,6 +143,7 @@
             </div>
         </div>
     </div>
+    <% } %>   
     <hr>
     <!-- <div class="mycontainer container">
         <div class="row">
@@ -178,126 +178,147 @@
 
 
     <script>
-    
-
-        // 刪除訂單項目並更新購物車
-        function deleteOrder(element) {
-            var row = element.closest('.table-row');
-            row.remove();
-            updateCart();
+        function deleteOrder(orderdetails_id) {
+            var JSONData = { "orderdetails_id": orderdetails_id };
+            JSONData = JSON.stringify(JSONData);
+            $.ajax({
+                url: "/cart/" + orderdetails_id, // 注意這裡的修改
+                type: "DELETE", // 注意這裡的修改
+                contentType: "application/json; charset=utf-8",
+                data: JSONData,
+                success: function (res) {
+                    var res = JSON.parse(res);
+                    if (res.errno === 1) {
+                        alert("刪除成功!");
+                        location.reload();
+                    } else if (res.errno === 0) {
+                        alert("刪除失敗!");
+                    }
+                },
+                error: function () {
+                    alert("系統錯誤!");
+                }
+            });
         }
 
-        // 更新購物車
-        function updateCart() {
-            var rows = document.querySelectorAll('.table-row1.order');
-            var productAmount = 0;
-            var productTotal = 0;
+        // // 刪除訂單項目並更新購物車
+        // function deleteOrder(element) {
+        //     var row = element.closest('.table-row');
+        //     row.remove();
+        //     updateCart();
+        // }
 
-            rows.forEach(function (row, index) {
-                var quantityElement = row.querySelector('.quantity');
-                var priceElement = row.querySelector('.price');
-                var priceTotalElement = row.querySelector('.price-total');
+        // // 更新購物車
+        // function updateCart() {
+        //     var rows = document.querySelectorAll('.table-row1.order');
+        //     var productAmount = 0;
+        //     var productTotal = 0;
 
-                var quantity = parseInt(quantityElement.textContent);
-                var price = parseInt(priceElement.textContent.replace('$', ''));
+        //     rows.forEach(function (row, index) {
+        //         var quantityElement = row.querySelector('.quantity');
+        //         var priceElement = row.querySelector('.price');
+        //         var priceTotalElement = row.querySelector('.price-total');
 
-                var priceTotal = quantity * price;
-                priceTotalElement.textContent = '$' + priceTotal;
+        //         var quantity = parseInt(quantityElement.textContent);
+        //         var price = parseInt(priceElement.textContent.replace('$', ''));
 
-                productAmount += quantity;
-                productTotal += priceTotal;
-            });
+        //         var priceTotal = quantity * price;
+        //         priceTotalElement.textContent = '$' + priceTotal;
 
-            var productAmountElement = document.querySelector('.product-amount');
-            var productTotalElement = document.querySelector('.product-total');
-            var deliverFeeElement = document.querySelector('.deliver-fee');
-            var cashTotalElement = document.querySelector('.cash-total');
+        //         productAmount += quantity;
+        //         productTotal += priceTotal;
+        //     });
 
-            productAmountElement.textContent = productAmount + '件';
-            productTotalElement.textContent = '$' + productTotal;
+        //     var productAmountElement = document.querySelector('.product-amount');
+        //     var productTotalElement = document.querySelector('.product-total');
+        //     var deliverFeeElement = document.querySelector('.deliver-fee');
+        //     var cashTotalElement = document.querySelector('.cash-total');
 
-            var deliverFee = 150;
-            var cashTotal = productTotal + deliverFee;
+        //     productAmountElement.textContent = productAmount + '件';
+        //     productTotalElement.textContent = '$' + productTotal;
 
-            deliverFeeElement.textContent = '$' + deliverFee;
-            cashTotalElement.textContent = '$' + cashTotal;
-        }
+        //     var deliverFee = 150;
+        //     var cashTotal = productTotal + deliverFee;
 
-        // 減少商品數量
-        function subtractQuantity(element) {
-            var quantityElement = element.nextElementSibling;
-            var quantity = parseInt(quantityElement.textContent);
+        //     deliverFeeElement.textContent = '$' + deliverFee;
+        //     cashTotalElement.textContent = '$' + cashTotal;
+        // }
 
-            if (quantity > 1) {
-                quantity--;
-                quantityElement.textContent = quantity;
-                updateCart();
-            }
-        }
+        // // 減少商品數量
+        // function subtractQuantity(element) {
+        //     var quantityElement = element.nextElementSibling;
+        //     var quantity = parseInt(quantityElement.textContent);
 
-        // 增加商品數量
-        function addQuantity(element) {
-            var quantityElement = element.previousElementSibling;
-            var quantity = parseInt(quantityElement.textContent);
+        //     if (quantity > 1) {
+        //         quantity--;
+        //         quantityElement.textContent = quantity;
+        //         updateCart();
+        //     }
+        // }
 
-            quantity++;
-            quantityElement.textContent = quantity;
-            updateCart();
-        }
+        // // 增加商品數量
+        // function addQuantity(element) {
+        //     var quantityElement = element.previousElementSibling;
+        //     var quantity = parseInt(quantityElement.textContent);
 
-        // 監聽刪除按鈕的點擊事件
-        var deleteButtons = document.querySelectorAll('.delete-btn');
-        deleteButtons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                deleteOrder(this);
-            });
-        });
+        //     quantity++;
+        //     quantityElement.textContent = quantity;
+        //     updateCart();
+        // }
 
-        // 監聽減少按鈕的點擊事件
-        var subtractButtons = document.querySelectorAll('.subtractBtn');
-        subtractButtons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                subtractQuantity(this);
-            });
-        });
+        // // 監聽刪除按鈕的點擊事件
+        // var deleteButtons = document.querySelectorAll('.delete-btn');
+        // deleteButtons.forEach(function (button) {
+        //     button.addEventListener('click', function () {
+        //         deleteOrder(this);
+        //     });
+        // });
 
-        // 監聽增加按鈕的點擊事件
-        var addButtons = document.querySelectorAll('.addBtn');
-        addButtons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                addQuantity(this);
-            });
-        });
+        // // 監聽減少按鈕的點擊事件
+        // var subtractButtons = document.querySelectorAll('.subtractBtn');
+        // subtractButtons.forEach(function (button) {
+        //     button.addEventListener('click', function () {
+        //         subtractQuantity(this);
+        //     });
+        // });
 
-        // 頁面載入時更新購物車
-        window.addEventListener('load', function () {
-            updateCart();
-        });
+        // // 監聽增加按鈕的點擊事件
+        // var addButtons = document.querySelectorAll('.addBtn');
+        // addButtons.forEach(function (button) {
+        //     button.addEventListener('click', function () {
+        //         addQuantity(this);
+        //     });
+        // });
+
+        // // 頁面載入時更新購物車
+        // window.addEventListener('load', function () {
+        //     updateCart();
+        // });
 
 
 
 
         //熱門商品循環撥放
-        $(".owl-carousel").owlCarousel({
-            loop: true, // 循環播放
-            margin: 10, // 外距 10px
-            nav: false,
-            autoplay: true, // 自動撥放
-            autoplayTimeout: 3000, // 自動撥放間隔時間（以毫秒為單位）
-            navContainer: '.owl-nav', // 指定控制按鈕的容器元素
+        // $(".owl-carousel").owlCarousel({
+        //     loop: true, // 循環播放
+        //     margin: 10, // 外距 10px
+        //     nav: false,
+        //     autoplay: true, // 自動撥放
+        //     autoplayTimeout: 3000, // 自動撥放間隔時間（以毫秒為單位）
+        //     navContainer: '.owl-nav', // 指定控制按鈕的容器元素
 
-            responsive: {
-                0: {
-                    items: 1 // 螢幕大小為 0~600 顯示 1 個項目
-                },
-                600: {
-                    items: 3 // 螢幕大小為 600~1000 顯示 3 個項目
-                },
-                1000: {
-                    items: 5 // 螢幕大小為 1000 以上 顯示 5 個項目
-                }
-            }
-        });
+        //     responsive: {
+        //         0: {
+        //             items: 1 // 螢幕大小為 0~600 顯示 1 個項目
+        //         },
+        //         600: {
+        //             items: 3 // 螢幕大小為 600~1000 顯示 3 個項目
+        //         },
+        //         1000: {
+        //             items: 5 // 螢幕大小為 1000 以上 顯示 5 個項目
+        //         }
+        //     }
+        // });
 
 
     </script>

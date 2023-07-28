@@ -61,7 +61,16 @@ body {
     border-bottom: 1px solid #ddd;
 }
 
-
+.noOder{
+    width: 100%;
+    line-height: 40px;
+    color: #B44A60;
+    font-size: 2rem;
+    padding: 10px;
+    text-align: center;
+    font-family: "Noto Sans TC", sans-serif;
+  
+}
 .item>button {
     border: none;
 }

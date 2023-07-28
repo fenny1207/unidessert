@@ -9,6 +9,7 @@ var mysql = require('mysql');
 var bcrypt = require('bcrypt');
 var saltRounds = 10; // 設定 salt 的複雜度，數字越大越安全，但計算時間也越長
 var member = require('./router/member');
+var { Success, Error } = require('./response');
 // var users = require('./routes/user.js');
 
 
@@ -623,24 +624,6 @@ app.get('/order/historyOrder/:oid', (req, res) => {
         }
     });
 })
-// app.post('/order/historyOrder', (req, res) => {
-//     const { oid, order_date, order_total, order_status, quantity } = req.body;
-//     const sql = [
-//         'SELECT a.*, b.* FROM `orderlist` as a NATURAL JOIN `oderdetails` as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?',
-//         'SELECT c.*, d.* FROM `c_detail2` as c NATURAL JOIN `product` as d WHERE pid = ? and pd_name = ? and pd_content = ? and pd_describe_contents = ? and pd_describe_specification= ? and p_pic =? and cdetailid =? and size =? and cookie1=? and cookie2=? and cookie3=? and cookie4=? and boxcolor=? and bagcolor=? and cardcontent=? and quantity=? and cprice=? '
-//     ];
-
-//     conn.query(sql.join(';'), [oid, order_date, order_total, order_status, quantity], (err, data) => {
-//         console.log(data)
-//         if (err) {
-//             res.send("無法新增");
-//         };
-//         // const { size, cookie1, cookie2,cookie3,cookie4,boxcolor,bagcolor, cardcontent,quantity,cprice} = req.body;
-//         // const sql ='SELECT a.*, b.* FROM `c_detail2` as a NATURAL JOIN `product` as b WHERE oid = ? and DATE(order_date) = ? and order_total = ? and order_status = ? and quantity = ?;';
-
-//     });
-// })
-
 
 
 app.get('/cart',authUid, (req, res) => {
@@ -654,6 +637,8 @@ app.get('/cart',authUid, (req, res) => {
             })
         } else {
             let product_type = data[0].product_type;
+            let orderdetails_id = data[0].orderdetails_id;
+            console.log(orderdetails_id + "卡比");
             let product_id = data[0].product_id;
             let p_name = data[0].p_name;
             let quantity = data[0].quantity;
@@ -681,13 +666,36 @@ app.get('/cart',authUid, (req, res) => {
                 order_total:order_total,
                 deliever_fee:deliever_fee,
                 cpic:cpic,
-                order_all:order_all
+                order_all:order_all,
+                orderdetails_id:orderdetails_id
             });
         }
     });
 })
 
-
+app.delete('/cart/:orderdetails_id', (req, res) => {
+    let orderdetails_id = req.params.orderdetails_id;
+    console.log(orderdetails_id);
+    const sql = 'DELETE FROM oderdetails WHERE orderdetails_id = ?;';
+    conn.query(sql, [orderdetails_id], function (err, results, fields) {
+        console.log(results);
+        if (err) {
+            res.end(
+                JSON.stringify(new Error('delete failed'))
+            );
+        } else {
+            if (results.affectedRows > 0) {
+                res.end(
+                    JSON.stringify(new Success('delete success'))
+                );
+            } else {
+                res.end(
+                    JSON.stringify(new Error('delete failed'))
+                );
+            }
+        }
+    });
+});
 
 
 // app.get('/cart', (req, res) => {

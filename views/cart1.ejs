@@ -12,16 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&family=Satisfy&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/bootstrap.css">
     <script src="/js/jquery-3.7.0.min.js"></script>
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/asCustomizes/owl.theme.default.min.css"
-        integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/asCustomizes/owl.carousel.min.css"
-        integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
-        integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="/css/order1.css" type="text/css">
 </head>
 
@@ -32,15 +22,30 @@
         <source media="(max-width: 768px)" srcCustomize="/pic/cart/order1.png">
         <img class="statement" src="/pic/cart/order1(2x).png">
     </picture>
-    
+    <% if ( typeof noOrder !== "undefined" && noOrder) { %>
+        <div class="mycontainer container">
+            <div class="table">
+                <div class="ps-5 bigform">
+                    <div class="table-header row">
+                        <div class="table-cell col-2 px-2">商品明细</div>
+                        <div class="table-cell col-2">客製化規格</div>
+                        <div class="table-cell col-4">客製化卡片</div>
+                        <div class="table-cell col-3"></div>
+                        <div class="table-cell col-1"></div>
+                    </div>
+                    <p class="noOder">尚無加入商品</p>
+                </div>
+            </div>
+        </div>
+    <% } else { %>   
     <div class="mycontainer container">
         <div class="table">
             <div class="ps-5 bigform">
                 <div class="table-header row">
                     <div class="table-cell col-2 px-2">商品明细</div>
-                    <div class="table-cell col-2">客製化規格</div>
+                    <div class="table-cell col-3">客製化規格</div>
                     <div class="table-cell col-4">客製化卡片</div>
-                    <div class="table-cell col-3"></div>
+                    <div class="table-cell col-2"></div>
                     <div class="table-cell col-1"></div>
                 </div>
     
@@ -49,28 +54,28 @@
                     <div class="table-row table-row1 order row">
                         <div class="table-cell col-2 px-2">
                             <div class="product-info">
-                                <img src="<%= cartdata[i].p_pic || cartdata[i].cpic1 %>" width="150px" alt="Product 1">
+                                <img src="<%= cartdata[i].p_pic || cartdata[i].cpic %>" width="150px" alt="Product 1">
                                 <p class="product-name"><%= cartdata[i].pd_name %></p>
                             </div>
                         </div>
-                        <div class="table-cell item col-2">
+                        <div class="table-cell item col-3">
                             <% if (cartdata[i].product_type === 'Customize') { %>
                                 <li class="mb-3">規格:<%= cartdata[i].size %></li>
-                                <li class="mb-3">內容物:<%= cartdata[i].cookie1 %>, <%= cartdata[i].cookie2 %>,<br>
-                                    <%= cartdata[i].cookie3 %>, <%= cartdata[i].cookie4 %>
+                                <li class="mb-3">內容物:<%= cartdata[i].cookie1 %>, <br>
+                                    <%= cartdata[i].cookie2 %>,<br>
+                                    <%= cartdata[i].cookie3 %>, <br><%= cartdata[i].cookie4 %>
                                 </li>
                                 <li class="mb-3">禮物盒:<%= cartdata[i].boxcolor %></li>
                                 <li>紙袋:<%= cartdata[i].bagcolor %></li>
                             <% } %>
                         </div>
-                        <div class="table-cell item col-3 p-0">
+                        <div class="table-cell item col-4 p-0">
                             <% if (cartdata[i].product_type === 'Customize') { %>
                                 <div><%= cartdata[i].cardcontent %></div>
                             <% } %>
                         </div>
-                        <div class="table-cell item col-1 row">
-                        </div>
-                        <div class="table-cell item col-3 row">
+
+                        <div class="table-cell item col-2 row">
                             <div class="table-cell item col-6">數量</div>
                             <div class="table-cell item col-5 amount m-0 p-0">
                                 <button class="subtractBtn">-</button>
@@ -87,11 +92,11 @@
                             </div>
                         </div>
                         <div class="table-cell item col-1">
-                            <span class="delete-btn" onclick="deleteOrder(this)"><img src="/pic/backEndPic/delete-24.png" alt=""></span>
+                            <span class="delete-btn" onclick="deleteOrder(this)"><img style="width: 40%;" src="/pic/cart/Waste.png" alt=""></span>
                         </div>
                     </div>
                 <% } %>
-                
+             <% } %>   
                   
             </div>
         </div>
@@ -110,21 +115,21 @@
                         <div class="table-cell col-3"></div>
                         <div class="table-cell col-2"></div>
                         <div class="table-cell item col-2">商品金額：</div>
-                        <div class="table-cell item col-2 product-total">$910</div>
+                        <div class="table-cell item col-2 product-total">$<%= order_total%></div>
                     </div>
                     <div class="table-row table-row1 row">
                         <div class="table-cell col-3"></div>
                         <div class="table-cell col-3"></div>
                         <div class="table-cell col-2"></div>
                         <div class="table-cell item col-2">運費：</div>
-                        <div class="table-cell item col-2 deliver-fee">$80</div>
+                        <div class="table-cell item col-2 deliver-fee">$<%=deliever_fee%></div>
                     </div>
                     <div class="table-row table-row1 row">
                         <div class="table-cell col-3"></div>
                         <div class="table-cell col-3"></div>
                         <div class="table-cell col-2"></div>
                         <div class="table-cell item col-2">訂單總額：</div>
-                        <div class="table-cell item col-2 cash-total">$990</div>
+                        <div class="table-cell item col-2 cash-total">$<%=order_all%></div>
                     </div>
                     <div class="table-row row pay">
                         <div class="table-cell col-3"></div>
@@ -140,7 +145,7 @@
         </div>
     </div>
     <hr>
-    <div class="mycontainer container">
+    <!-- <div class="mycontainer container">
         <div class="row">
             <p class="hot">熱門商品推薦</p>
             <div class="owl-carousel owl-theme">
@@ -166,7 +171,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
 
 

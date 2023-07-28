@@ -529,115 +529,163 @@ app.get('/order/historyOrder/:oid', (req, res) => {
 //     });
 // })
 
-app.get('/cart', (req, res) => {
-    let oid = req.params.oid; // 注意這裡使用的是 req.params.oid，確保您的路由中能夠取得 oid 參數
-
-    const sql = `
-    SELECT DISTINCT a.*, b.*, 
-    product.*, 
-    c_detail2.*
-    FROM orderlist AS a
-    INNER JOIN oderdetails AS b ON a.oid = b.oid
-    LEFT JOIN product ON b.product_id = product.pid
-    LEFT JOIN c_detail2 ON b.cdetailid = c_detail2.cdetailid
-    WHERE a.order_status = "購物車"
-    ORDER BY a.order_date DESC;
-        
-    `;
-    
-    
-    conn.query(sql, function (err, cartdata) {
-        if (err) {
-            console.error('無法傳遞', err);
-            return;
-        }
-
-        let  product_type, product_id, p_name, quantity, total_price, cdetailid;
-
-        // 取得第一筆orderdetails資料的其他相關資訊
-        if (cartdata.length > 0) {
-            
-            product_type = cartdata[0].product_type;
-            product_id = cartdata[0].product_id;
-            p_name = cartdata[0].p_name;
-            quantity = cartdata[0].quantity;
-            total_price = cartdata[0].total_price;
-            cdetailid = cartdata[0].cdetailid;
-                
-        }
-
-        res.render('cart1.ejs', {
-            cartdata: cartdata, 
-            oid: oid, 
-            quantity: quantity,
-            
-            product_type: product_type,
-            product_id: product_id,
-            p_name: p_name,
-            c_quantity:quantity, 
-            total_price: total_price,
-            cdetailid: cdetailid
-            
-        });
-    });
-});
 
 
-  app.get('/cart1/:oid', (req, res) => {
-    const oid = req.params.oid;
-    const sql = `
-    SELECT oderdetails.*,
-    CASE
-        WHEN c_detail2.cdetailid IS NOT NULL THEN 'Customize'
-        WHEN product.pid IS NOT NULL THEN 'single'
-        ELSE NULL
-    END AS product_type,
-    c_detail2.*,
-    product.*
-    FROM oderdetails
-    LEFT JOIN (SELECT *, 'Customize' AS product_type FROM c_detail2) AS c_detail2
-    ON oderdetails.cdetailid = c_detail2.cdetailid
-    LEFT JOIN (SELECT *, 'single' AS product_type FROM product) AS product
-    ON product.pid = oderdetails.product_id
-    LEFT JOIN customize on c_detail2.boxcolor=customize.cname
-    WHERE oderdetails.oid = ? AND a.order_status = "購物車";  
-    `;
-  
-    conn.query(sql, [oid], function (err, orderDetailsForOid) {
-        if (err) {
-            console.error('无法取得orderdetails数据', err);
-            return;
-        }
-
-        //  c_detail2 資料，將它合併到 cartdata 中
-        if (orderDetailsForOid.length > 0 && orderDetailsForOid[0].product_type === 'Customize') {
-            const c_detail2Data = {
-                size: orderDetailsForOid[0].size,
-                cpic1:orderDetailsForOid[0].boxcolor,
-                cookie1: orderDetailsForOid[0].cookie1,
-                cookie2: orderDetailsForOid[0].cookie2,
-                cookie3: orderDetailsForOid[0].cookie3,
-                cookie4: orderDetailsForOid[0].cookie4,
-                boxcolor: orderDetailsForOid[0].boxcolor,
-                bagcolor: orderDetailsForOid[0].bagcolor,
-                cardcontent: orderDetailsForOid[0].cardcontent,
-                cprice: orderDetailsForOid[0].cprice,
-            };
-
-            // 合併 c_detail2 資料到 cartdata 中
-            const cartdataWithCDetail2 = {
-                ...orderDetailsForOid[0],
-                ...c_detail2Data,
-            };
-
-            // 將合併後的資料傳遞給 EJS 模板進行渲染
-            res.render('cart1.ejs', { cartdata: cartdataWithCDetail2 });
+app.get('/cart',authUid, (req, res) => {
+    var uid = res.locals.uid;
+    var sql = ` SELECT * FROM orderlist LEFT JOIN oderdetails on orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  LEFT JOIN customize on c_detail2.boxcolor=customize.cname where orderlist.order_status = "購物車" AND orderlist.uid =?`;
+    conn.query(sql,[uid], (err, data) => {
+        if (err) return console.log(err.message)
+        if (data.length ===0) {
+            res.render('cart1.ejs', {
+                 noOrder: true 
+            })
         } else {
-            // 如果沒有 c_detail2 資料，直接將 orderDetailsForOid 傳遞給 EJS 模板進行渲染
-            res.render('cart1.ejs', { cartdata: orderDetailsForOid });
+            let product_type = data[0].product_type;
+            let product_id = data[0].product_id;
+            let p_name = data[0].p_name;
+            let quantity = data[0].quantity;
+            let total_price = data[0].total_price;
+            let oid = data[0].oid;
+            let cpic = data[0].cpic
+            let order_total = data[0].order_total;
+            let deliever_fee = data[0].deliever_fee;
+            let order_all = parseInt(data[0].order_total)+parseInt(data[0].deliever_fee);
+            for (let i = 0; i < data.length; i++) {
+                let order_total = data[i].order_total;
+                let deliever_fee = data[i].deliever_fee;
+                let order_all = parseInt(order_total) + parseInt(deliever_fee);
+              }
+
+              res.render('cart1.ejs', {
+                cartdata: data, 
+                oid: oid, 
+                quantity: quantity,
+                product_type: product_type,
+                product_id: product_id,
+                p_name: p_name,
+                c_quantity:quantity, 
+                total_price: total_price,
+                order_total:order_total,
+                deliever_fee:deliever_fee,
+                cpic:cpic,
+                order_all:order_all
+            });
         }
     });
-});
+})
+
+
+
+// app.get('/cart', (req, res) => {
+//     let oid = req.params.oid; // 注意這裡使用的是 req.params.oid，確保您的路由中能夠取得 oid 參數
+
+//     const sql = `
+//     SELECT DISTINCT a.*, b.*, 
+//     product.*, 
+//     c_detail2.*
+//     FROM orderlist AS a
+//     INNER JOIN oderdetails AS b ON a.oid = b.oid
+//     LEFT JOIN product ON b.product_id = product.pid
+//     LEFT JOIN c_detail2 ON b.cdetailid = c_detail2.cdetailid
+//     WHERE a.order_status = "購物車"
+//     ORDER BY a.order_date DESC;
+        
+//     `;
+    
+    
+//     conn.query(sql, function (err, cartdata) {
+//         if (err) {
+//             console.error('無法傳遞', err);
+//             return;
+//         }
+
+//         let  product_type, product_id, p_name, quantity, total_price, cdetailid;
+
+//         // 取得第一筆orderdetails資料的其他相關資訊
+//         if (cartdata.length > 0) {
+            
+//             product_type = cartdata[0].product_type;
+//             product_id = cartdata[0].product_id;
+//             p_name = cartdata[0].p_name;
+//             quantity = cartdata[0].quantity;
+//             total_price = cartdata[0].total_price;
+//             cdetailid = cartdata[0].cdetailid;
+                
+//         }
+
+//         res.render('cart1.ejs', {
+//             cartdata: cartdata, 
+//             oid: oid, 
+//             quantity: quantity,
+            
+//             product_type: product_type,
+//             product_id: product_id,
+//             p_name: p_name,
+//             c_quantity:quantity, 
+//             total_price: total_price,
+//             cdetailid: cdetailid
+            
+//         });
+//     });
+// });
+
+
+//   app.get('/cart1/:oid', (req, res) => {
+//     const oid = req.params.oid;
+//     const sql = `
+//     SELECT oderdetails.*,
+//     CASE
+//         WHEN c_detail2.cdetailid IS NOT NULL THEN 'Customize'
+//         WHEN product.pid IS NOT NULL THEN 'single'
+//         ELSE NULL
+//     END AS product_type,
+//     c_detail2.*,
+//     product.*
+//     FROM oderdetails
+//     LEFT JOIN (SELECT *, 'Customize' AS product_type FROM c_detail2) AS c_detail2
+//     ON oderdetails.cdetailid = c_detail2.cdetailid
+//     LEFT JOIN (SELECT *, 'single' AS product_type FROM product) AS product
+//     ON product.pid = oderdetails.product_id
+//     LEFT JOIN customize on c_detail2.boxcolor=customize.cname
+//     WHERE oderdetails.oid = ? AND a.order_status = "購物車";  
+//     `;
+  
+//     conn.query(sql, [oid], function (err, orderDetailsForOid) {
+//         if (err) {
+//             console.error('无法取得orderdetails数据', err);
+//             return;
+//         }
+
+//         //  c_detail2 資料，將它合併到 cartdata 中
+//         if (orderDetailsForOid.length > 0 && orderDetailsForOid[0].product_type === 'Customize') {
+//             const c_detail2Data = {
+//                 size: orderDetailsForOid[0].size,
+//                 cpic1:orderDetailsForOid[0].boxcolor,
+//                 cookie1: orderDetailsForOid[0].cookie1,
+//                 cookie2: orderDetailsForOid[0].cookie2,
+//                 cookie3: orderDetailsForOid[0].cookie3,
+//                 cookie4: orderDetailsForOid[0].cookie4,
+//                 boxcolor: orderDetailsForOid[0].boxcolor,
+//                 bagcolor: orderDetailsForOid[0].bagcolor,
+//                 cardcontent: orderDetailsForOid[0].cardcontent,
+//                 cprice: orderDetailsForOid[0].cprice,
+//             };
+
+//             // 合併 c_detail2 資料到 cartdata 中
+//             const cartdataWithCDetail2 = {
+//                 ...orderDetailsForOid[0],
+//                 ...c_detail2Data,
+//             };
+
+//             // 將合併後的資料傳遞給 EJS 模板進行渲染
+//             res.render('cart1.ejs', { cartdata: cartdataWithCDetail2 });
+//         } else {
+//             // 如果沒有 c_detail2 資料，直接將 orderDetailsForOid 傳遞給 EJS 模板進行渲染
+//             res.render('cart1.ejs', { cartdata: orderDetailsForOid });
+//         }
+//     });
+// });
 
 
 app.get('/cart/fillout', auth_cart2, function (req, res) {

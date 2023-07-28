@@ -91,15 +91,30 @@ app.get('/customize', function (req, res) {
 });
 
 app.post('/customize', auth_product, function (req, res) {
-    // res.send('success');
     conn.query(`select * from user where uemail='${req.session.user.email}'`, (err, results) => {
-        console.log(results)
+        if (err) {
+            console.log(err.message);
+            res.status(500).send({
+                status: -1,
+                msg: 'insert failed'
+            });
+            return;
+        }
+
         var uid = results[0].uid
         var number = req.body.number
 
         //更改的：當會員之前沒有加過購物車(完成)
         conn.query(`select * from orderlist where uid=? && order_status="購物車"`, [uid], (err, results) => {
-            if (err) return console.log(err.message)
+            if (err) {
+                console.log(err.message);
+                res.status(500).send({
+                    status: -1,
+                    msg: 'insert failed'
+                });
+                return;
+            }
+
             // 當會員之前沒有加過購物車
             if (!results[0]) {
                 let insertc = "INSERT INTO c_detail2 ( size ,cookie1,cookie2,cookie3,cookie4, boxcolor ,bagcolor,cardcontent,quantity2,cprice) VALUES (?,?,?,?,?,?,?,?,?,?);";
@@ -117,11 +132,15 @@ app.post('/customize', auth_product, function (req, res) {
                     req.body.order_amout];
                 conn.query(insertc, userInput, function (err, data) {
                     if (err) {
-                        res.send('無法新增')
+                        console.log(err.message);
+                        res.status(500).send({
+                            status: -1,
+                            msg: 'insert failed'
+                        });
+                        return;
                     }
-                    // console.log(data)
+
                     const insert_cdetailid = data.insertId  // insert 完的 cdetailid
-                    // console.log('這是cdetailid' + insert_cdetailid);
                     const currentDate = new Date();
 
                     // 使用 Date 物件的方法獲取年、月、日等資訊
@@ -129,44 +148,57 @@ app.post('/customize', auth_product, function (req, res) {
                     const month = currentDate.getMonth() + 1; // 月份是從 0 開始的，因此需要加 1，例如 7 (代表 8 月)
                     const day = currentDate.getDate(); // 取得當月的幾號，例如 20
 
-
                     // 將取得的年、月、日組合成字串表示現在的日期
                     const formattedDate = `${year}-${month}-${day}`;
-                    // console.log(formattedDate); // 輸出範例：2023-7-20
-
 
                     conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, order_status) 
                     VALUES (null, ?, 150, 600, '${formattedDate}', "", "", "", "", '${formattedDate}', "貨到付款", "購物車")`, [uid], (err, results) => {
-                        if (err) return console.log(err.message)
-                        let insert_orderlist = results.insertId
-                        // console.log("insert_orderlist" + insert_orderlist)
-                        // console.log("insert_cdetailid" + insert_cdetailid)
-                        // console.log(results)
+                        if (err) {
+                            console.log(err.message);
+                            res.status(500).send({
+                                status: -1,
+                                msg: 'insert failed'
+                            });
+                            return;
+                        }
 
+                        let insert_orderlist = results.insertId
 
                         conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price, cdetailid)
                                     VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [insert_orderlist, "Customize", 0, "客製化禮盒", quantity, 600, insert_cdetailid], (err, results) => {
-                            if (err) return console.log(err.message)
-                            // console.log(results)
-                        })
-                    })
-                })
-                res.send({
-                    status: 0,
-                    msg: 'insert success'
-                })
-                return
+                            if (err) {
+                                console.log(err.message);
+                                res.status(500).send({
+                                    status: -1,
+                                    msg: 'insert failed'
+                                });
+                                return;
+                            }
+
+                            res.send({
+                                status: 0,
+                                msg: 'insert success'
+                            });
+                        });
+                    });
+                });
+                return;
             }
+
             // 會員之前有加過購物車
             conn.query(`select * FROM orderlist LEFT JOIN oderdetails ON orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON
             c_detail2.cdetailid = oderdetails.cdetailid  where orderlist.uid =? AND orderlist.order_status = '購物車'`, [uid], (err, results) => {
-                if (err) return console.log(err.message)
-                // console.log("results" + results);
-                console.log("這次要看results" + JSON.stringify(results));
-                console.log("這次要看results[0]" + JSON.stringify(results[0]));
+                if (err) {
+                    console.log(err.message);
+                    res.status(500).send({
+                        status: -1,
+                        msg: 'insert failed'
+                    });
+                    return;
+                }
+
                 let orderTotal = results[0].order_total;
                 orderTotal += (number * 600)
-                console.log("訂單總金額:", orderTotal);
                 let insertc = "INSERT INTO c_detail2 ( size ,cookie1,cookie2,cookie3,cookie4, boxcolor ,bagcolor,cardcontent,quantity2,cprice) VALUES (?,?,?,?,?,?,?,?,?,?);";
                 let quantity = req.body.quantity
                 let userInput = [
@@ -182,34 +214,47 @@ app.post('/customize', auth_product, function (req, res) {
                     req.body.order_amout];
                 conn.query(insertc, userInput, function (err, data) {
                     if (err) {
-                        res.send('無法新增')
+                        console.log(err.message);
+                        res.status(500).send({
+                            status: -1,
+                            msg: 'insert failed'
+                        });
+                        return;
                     }
-                    console.log("c_detail2 dddd", data)
-                    console.log("results[0].oid", results[0].oid)
+
                     let oid = results[0].oid
                     let cdetailid = data.insertId
-
                     conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [orderTotal, uid], (err, results) => {
-                        if (err) return console.log(err.message)
-
+                        if (err) {
+                            console.log(err.message);
+                            res.status(500).send({
+                                status: -1,
+                                msg: 'insert failed'
+                            });
+                            return;
+                        }
                         conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price, cdetailid)
                         VALUES (NULL, ?, ?, ?, ?, ?, ?,?)`, [oid, "Customize", 0, "客製化禮盒", quantity, 600, cdetailid], (err, results) => {
-                            if (err) return console.log(err.message)
-                            console.log(results)
-                        })
-                    })
-                })
+                            if (err) {
+                                console.log(err.message);
+                                res.status(500).send({
+                                    status: -1,
+                                    msg: 'insert failed'
+                                });
+                                return;
+                            }
+                            res.send({
+                                status: 0,
+                                msg: 'insert success'
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
 
-            })
-
-        })
-        // 這段的最後標籤
-    })
-
-
-
-})
-// })
 
 app.get('/product', function (req, res) {
     var p_info
@@ -242,7 +287,7 @@ app.post('/product/single', auth_product, function (req, res) {
         // 抓會員在資料庫的購物車的紀錄，看會員是否有加過商品到購物車
         conn.query(`select * from orderlist where uid='?' && order_status = "購物車"`, [uid], (err, results) => {
             if (err) return console.log(err.message)
-            
+
             // 當會員之前沒有加過購物車
             if (!results[0]) {
                 // 抓使用者要加入購物車的單品資訊
@@ -284,10 +329,11 @@ app.post('/product/single', auth_product, function (req, res) {
                 // orderdetails 沒有相同的產品
                 if (!results[0]) {
                     conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price, cdetailid) VALUES (NULL, ?, ?, ?, ?, ?, ?, NULL)`,
-                    [oid, p_type, pid, p_name, quantity, single_order_total],
-                    (err, results) => {
-                        if (err) return console.log(err.message)
-                    })
+                        [oid, p_type, pid, p_name, quantity, single_order_total],
+                        (err, results) => {
+                            if (err) return console.log(err.message)
+                        })
+                    res.json({});
                     return
                 }
                 // orderdetails 有相同的產品
@@ -296,6 +342,7 @@ app.post('/product/single', auth_product, function (req, res) {
                 conn.query(`UPDATE oderdetails SET quantity = ?, total_price= ? WHERE product_id = ?`, [total_quantity, total_price, pid], (err, results) => {
                     if (err) return console.log(err.message)
                 })
+                res.json({});
             })
         })
     })
@@ -318,54 +365,119 @@ app.get('/product/productInfo', function (req, res) {
         var productPrice = req.body.productPrice
         var quantity = req.body.quantity
         conn.query(`select * from orderlist where uid=? && order_status="購物車"`, [uid], (err, results) => {
-            if (err) return console.log(err.message)
+            if (err) {
+                console.log(err.message);
+                res.status(500).send({
+                    status: -1,
+                    msg: 'insert failed'
+                });
+                return;
+            }
             // 當會員之前沒有加過購物車
             if (!results[0]) {
                 conn.query(`INSERT INTO orderlist (oid, uid, deliever_fee, order_total, order_date, recipient, recipient_address, recipient_phone, recipient_email, arrive_date, payment_type, order_status) VALUES (NULL, ?, 150, ?, "", "", "", "", "", "", "", "購物車")`,
                     [uid, order_total],
                     (err, results) => {
-                        if (err) return console.log(err.message)
+                        if (err) {
+                            console.log(err.message);
+                            res.status(500).send({
+                                status: -1,
+                                msg: 'insert failed'
+                            });
+                            return;
+                        }
                         var oid = results.insertId
                         conn.query(`select * from product where pd_name = ?`, [product_Title], (err, results) => {
-                            if (err) return console.log(err.message)
+                            if (err) {
+                                console.log(err.message);
+                                res.status(500).send({
+                                    status: -1,
+                                    msg: 'insert failed'
+                                });
+                                return;
+                            }
                             conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price) VALUES (NULL, ?, ?, ?, ?, ?, ?)`,
                                 [oid, results[0].p_type, results[0].pid, results[0].pd_name, quantity, order_total],
                                 (err, results) => {
-                                    if (err) return console.log(err.message)
-                                })
-                        })
-                    })
-                res.send({
-                    status: 0,
-                    msg: 'insert success'
-                })
-                return
+                                    if (err) {
+                                        console.log(err.message);
+                                        res.status(500).send({
+                                            status: -1,
+                                            msg: 'insert failed'
+                                        });
+                                        return;
+                                    }
+                                    res.send({
+                                        status: 0,
+                                        msg: 'insert success'
+                                    });
+                                });
+                        });
+                    });
+                return;
             }
+
             // 會員之前有加過購物車
-            conn.query(`select * from orderlist where uid = ? && order_status = '購物車'`, [uid], (err, results) => {
-                if (err) return console.log(err.message)
-                order_total = results[0].order_total + parseInt(order_total)
-                let oid = results[0].oid
-                conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [order_total, uid], (err, results) => {
-                    if (err) return console.log(err.message)
-                })
+            order_total = results[0].order_total + parseInt(order_total)
+            let oid = results[0].oid
+            conn.query(`UPDATE orderlist SET order_total = ? WHERE orderlist.uid = ?`, [order_total, uid], (err, results) => {
+                if (err) {
+                    console.log(err.message);
+                    res.status(500).send({
+                        status: -1,
+                        msg: 'insert failed'
+                    });
+                    return;
+                }
+
                 conn.query(`select * from oderdetails where oid = ? && p_name = ?`, [oid, product_Title], (err, results) => {
-                    if (err) return console.log(err.message)
+                    if (err) {
+                        console.log(err.message);
+                        res.status(500).send({
+                            status: -1,
+                            msg: 'insert failed'
+                        });
+                        return;
+                    }
+
                     if (!results[0]) {
                         conn.query(`INSERT INTO oderdetails (orderdetails_id, oid, product_type, product_id, p_name, quantity, total_price) VALUES (NULL, ?, 'set', 1, ?, ?, ?)`, [oid, product_Title, quantity, productPrice * quantity], (err, results) => {
-                            if (err) return console.log(err.message)
+                            if (err) {
+                                console.log(err.message);
+                                res.status(500).send({
+                                    status: -1,
+                                    msg: 'insert failed'
+                                });
+                                return;
+                            }
+
+                            res.send({
+                                status: 0,
+                                msg: 'insert success'
+                            });
                         })
-                        return
+                        return;
                     }
                     quantity = results[0].quantity + parseInt(quantity)
                     total_price = parseInt(quantity) * productPrice
                     conn.query(`UPDATE oderdetails SET quantity = ?, total_price = ? WHERE oid = ? && p_name = ?`, [quantity, total_price, oid, product_Title], (err, results) => {
-                        if (err) return console.log(err.message)
-                    })
-                })
-            })
-        })
-    })
+                        if (err) {
+                            console.log(err.message);
+                            res.status(500).send({
+                                status: -1,
+                                msg: 'insert failed'
+                            });
+                            return;
+                        }
+                        res.send({
+                            status: 0,
+                            msg: 'insert success'
+                        });
+                    });
+                });
+            });
+        });
+    });
 })
 app.use('/user', member);
 app.get("/order", authUid, (req, res) => {
@@ -373,9 +485,9 @@ app.get("/order", authUid, (req, res) => {
     var sql = `SELECT DISTINCT a.*, b.* FROM orderlist AS a INNER JOIN oderdetails AS b ON a.oid = b.oid WHERE a.uid ='${uid}'  and a.order_status <> "購物車" GROUP BY a.oid ORDER BY a.order_date DESC;`;
     conn.query(sql, (err, data) => {
         if (err) return console.log(err.message)
-        if (data.length ===0) {
+        if (data.length === 0) {
             res.render('order.ejs', {
-                 noOrder: true 
+                noOrder: true
             })
         } else {
             let uid = data[0].uid;
@@ -393,7 +505,7 @@ app.get("/order", authUid, (req, res) => {
                 let order_total = data[i].order_total;
                 let deliever_fee = data[i].deliever_fee;
                 let order_all = parseInt(order_total) + parseInt(deliever_fee);
-              }
+            }
 
             res.render('order.ejs', {
                 member_info: data,
@@ -403,8 +515,8 @@ app.get("/order", authUid, (req, res) => {
                 order_total: order_total,
                 order_status: order_status,
                 quantity: quantity,
-                order_all:order_all,
-                arrive_date:arrive_date    
+                order_all: order_all,
+                arrive_date: arrive_date
             });
         }
     });
@@ -495,15 +607,15 @@ app.get('/order/historyOrder/:oid', (req, res) => {
                     pd_describe_specification: pd_describe_specification,
                     p_pic: p_pic,
                     pd_content: pd_content,
-                    quantity2:quantity2,
+                    quantity2: quantity2,
                     price_total: price_total,
                     cp_total: cp_total,
                     order_total: order_total,
                     quantity_total: quantity_total,
                     cpic: cpic,
-                    recipient_address:recipient_address,
-                    recipient:recipient,
-                    recipient_phone:recipient_phone,
+                    recipient_address: recipient_address,
+                    recipient: recipient,
+                    recipient_phone: recipient_phone,
                 });
             } else {
                 res.send(`找不到訂單編號 '${oid}' 的訂單資料`);
@@ -574,6 +686,7 @@ app.get('/cart',authUid, (req, res) => {
         }
     });
 })
+
 
 
 
@@ -724,14 +837,24 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
         var bill_option = req.body.bill_option
         var bill_option_input = req.body.bill_option_input
         var arrive_date = req.body.arrive_date
-        var order_date = new Date()
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        const currentDate = new Date();
+        const order_date = formatDate(currentDate);
+          
         // 資料庫可能要加一欄 recipient_address_code
-        var sql = `UPDATE orderlist Customize order_date = ?, recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款', order_status ='待出貨' WHERE uid = ?`
+        var sql = `UPDATE orderlist SET order_date = ?, recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款', order_status ='待出貨' WHERE uid = ?`
         conn.query(sql, [order_date, recipient, address, tel, email, arrive_date, uid], (err, results) => {
             if (err) return console.log(err.message)
-        })
-    })
-})
+            return;
+        });
+    });
+});
+
 
 app.get('/cart/check', function (req, res) {
     const sql = `
@@ -846,7 +969,7 @@ app.get('/member', auth, function (req, res) {
     const { uname, umobile, ubirth } = req.body;
     var uid = res.locals.uid;
     // var sql = 'SELECT * FROM user WHERE uemail =?'
-    var sql = `UPDATE  user Customize uname =?,umobile=?,ubirth =? WHERE uid = ?`;
+    var sql = `UPDATE user SET uname =?,umobile=?,ubirth =? WHERE uid = ?`;
     conn.query(sql, [uname, umobile, ubirth, uid], (err, data) => {
         console.log(uid + '0720');
         console.log(data)

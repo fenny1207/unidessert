@@ -626,19 +626,20 @@ app.get('/order/historyOrder/:oid', (req, res) => {
 })
 
 
-app.get('/cart',authUid, (req, res) => {
+
+
+app.get('/cart', authUid, (req, res) => {
     var uid = res.locals.uid;
-    var sql = ` SELECT * FROM orderlist LEFT JOIN oderdetails on orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  LEFT JOIN customize on c_detail2.boxcolor=customize.cname where orderlist.order_status = "購物車" AND orderlist.uid =?`;
-    conn.query(sql,[uid], (err, data) => {
+    var sql = `SELECT * FROM orderlist LEFT JOIN oderdetails on orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  LEFT JOIN customize on c_detail2.boxcolor=customize.cname where orderlist.order_status = "購物車" AND orderlist.uid =?`;
+    conn.query(sql, [uid], (err, data) => {
         if (err) return console.log(err.message)
-        if (data.length ===0) {
+        if (data.length === 0) {
             res.render('cart1.ejs', {
-                 noOrder: true 
+                noOrder: true
             })
         } else {
             let product_type = data[0].product_type;
             let orderdetails_id = data[0].orderdetails_id;
-            console.log(orderdetails_id + "卡比");
             let product_id = data[0].product_id;
             let p_name = data[0].p_name;
             let quantity = data[0].quantity;
@@ -647,67 +648,278 @@ app.get('/cart',authUid, (req, res) => {
             let cpic = data[0].cpic
             let order_total = data[0].order_total;
             let deliever_fee = data[0].deliever_fee;
-            let order_all = parseInt(data[0].order_total)+parseInt(data[0].deliever_fee);
+            let order_all = parseInt(data[0].order_total) + parseInt(data[0].deliever_fee);
             for (let i = 0; i < data.length; i++) {
                 let order_total = data[i].order_total;
                 let deliever_fee = data[i].deliever_fee;
                 let order_all = parseInt(order_total) + parseInt(deliever_fee);
-              }
+            }
 
-              res.render('cart1.ejs', {
-                cartdata: data, 
-                oid: oid, 
+            res.render('cart1.ejs', {
+                cartdata: data,
+                oid: oid,
                 quantity: quantity,
                 product_type: product_type,
                 product_id: product_id,
                 p_name: p_name,
-                c_quantity:quantity, 
+                c_quantity: quantity,
                 total_price: total_price,
-                order_total:order_total,
-                deliever_fee:deliever_fee,
-                cpic:cpic,
-                order_all:order_all,
-                orderdetails_id:orderdetails_id
+                order_total: order_total,
+                deliever_fee: deliever_fee,
+                cpic: cpic,
+                order_all: order_all,
+                orderdetails_id: orderdetails_id
             });
         }
     });
 })
-
+app.post('/cart/id', (req, res) => {
+    let delete_click_target = parseInt(req.body.delete_click_target);
+    var orderdetails_id
+    conn.query(`select uid from user where uemail=?`, [req.session.user.email], (err, results) => {
+        if (err) {
+            res.status(500).send({
+                status: -1,
+                msg: 'select uid failed'
+            });
+            return;
+        }
+        let uid = results[0].uid
+        var sql = `SELECT orderdetails_id FROM orderlist LEFT JOIN oderdetails on orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  LEFT JOIN customize on c_detail2.boxcolor=customize.cname where orderlist.order_status = "購物車" AND orderlist.uid =?`;
+        conn.query(sql, [uid], (err, data) => {
+            if (err) return console.log(err.message)
+            // console.log("data", data)
+            let data_length = 0
+            let orderdetails_id_arr = []
+            // console.log("data", data[0].orderdetails_id)
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) {
+                    data_length++;
+                }
+            }
+            console.log(data_length)
+            for (let i = 0; i < data_length; i++) {
+                orderdetails_id_arr[i] = data[i].orderdetails_id;
+            }
+            console.log(orderdetails_id_arr)
+            orderdetails_id = data[delete_click_target].orderdetails_id
+            // console.log("orderdetails_id", orderdetails_id)
+            res.send({
+                "status": 1,
+                "orderdetails_id_arr": orderdetails_id_arr,
+                "orderdetails_id": orderdetails_id
+            });
+        })
+    })
+})
 app.delete('/cart/:orderdetails_id', (req, res) => {
     let orderdetails_id = req.params.orderdetails_id;
-    console.log(orderdetails_id);
-    
-    var oid = req.body.oid;
-    var single_order_total = req.body.single_order_total;
-    var order_total = 0;
-
-    const sql = 'DELETE FROM oderdetails WHERE orderdetails_id = ?;';
-    conn.query(sql, [orderdetails_id], function (err, results, fields) {
-        console.log(results);
+    conn.query(`select uid from user where uemail=?`, [req.session.user.email], (err, results) => {
         if (err) {
-            res.end(JSON.stringify(new Error('刪除失敗')));
-        } else {
-            if (results && results.length > 0 && results[0].hasOwnProperty('order_total')) {
-                // 刪除成功，現在更新 order_total
-                order_total = results[0].order_total + single_order_total;
-                conn.query(`UPDATE orderlist SET order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
-                    if (err) {
-                        return console.log(err.message);
-                    } else {
-                        res.end(JSON.stringify(new Success('刪除成功')));
-                    }
-                });
-            } else {
-                res.end(JSON.stringify(new Error('刪除失敗')));
-            }
+            res.status(500).send({
+                status: -1,
+                msg: 'select uid failed'
+            });
+            return;
         }
+        var uid = results[0].uid;
+        // conn.query(`SELECT * FROM orderlist LEFT JOIN oderdetails on orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON c_detail2.cdetailid = oderdetails.cdetailid where orderlist.order_status = "購物車" AND orderlist.uid = ? AND orderdetails_id = ?`,
+        //     [uid, orderdetails_id],
+        //     (err, data) => {
+        //         if (err) {
+        //             console.log(err.message);
+        //             res.status(500).send({
+        //                 status: -1,
+        //                 msg: 'select failed'
+        //             });
+        //             return;
+        //         }
+        //         console.log("DATA", data)
+        //         console.log("data[0]", data[0])
+        //     });
+
+        const sql = 'DELETE FROM oderdetails WHERE orderdetails_id = ?;';
+        conn.query(sql, [orderdetails_id], function (err, results) {
+            if (err) {
+                console.log(err.message);
+                res.status(500).send({
+                    status: -1,
+                    msg: 'select failed'
+                });
+                return;
+            } else {
+                if (results && results.length > 0 && results[0].hasOwnProperty('order_total')) {
+                    // 刪除成功，現在更新 order_total
+                    order_total = results[0].order_total + single_order_total;
+                    conn.query(`UPDATE orderlist SET order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
+                        if (err) {
+                            return console.log(err.message);
+                        } else {
+                            res.end(JSON.stringify(new Success('刪除成功')));
+                        }
+                    });
+                } else {
+                    res.end(JSON.stringify(new Error('刪除失敗')));
+                }
+            }
+        });
     });
 });
 
+// 購物車 cart1 點擊增加，更新資料庫數量的路由 
+app.put('/cart/increase', function (req, res) {
+    let add_click_target = parseInt(req.body.add_click_target);
+    conn.query(`select uid from user where uemail=?`, [req.session.user.email], (err, results) => {
+        if (err) {
+            res.status(500).send({
+                status: -1,
+                msg: 'select uid failed'
+            });
+            return;
+        }
+        let uid = results[0].uid
+        conn.query(`SELECT * FROM orderlist LEFT JOIN oderdetails on orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  LEFT JOIN customize on c_detail2.boxcolor=customize.cname where orderlist.order_status = "購物車" AND orderlist.uid =?`,
+            [uid],
+            (err, data) => {
+                if (err) {
+                    console.log(err.message);
+                    res.status(500).send({
+                        status: -1,
+                        msg: 'select failed'
+                    });
+                    return;
+                }
+                let orderdetails_id = data[add_click_target].orderdetails_id
+                let order_total = data[add_click_target].order_total + (data[add_click_target].p_price || 600)
+                let quantity = data[add_click_target].quantity + 1
+                let total_price = data[add_click_target].total_price + (data[add_click_target].p_price || 600)
+                let quantity2 = data[add_click_target].quantity2 + 1
+                let cprice = null
+                if (!data[add_click_target].cprice) {
+                    cprice = null
+                } else {
+                    let cdetailid = data[add_click_target].cdetailid;
+                    cprice = parseInt(data[add_click_target].cprice) + 600;
+                    conn.query('UPDATE c_detail2 SET quantity2 = ?, cprice = ? WHERE cdetailid = ?',
+                        [quantity2, cprice, cdetailid],
+                        (err, data) => {
+                            if (err) {
+                                console.error('Error updating c_detail2:', err.message);
+                            } else {
+                                // console.log('c_detail2 updated successfully.');
+                            }
+                        });
+                }
+                conn.query('UPDATE orderlist SET order_total = ? WHERE uid = ?',
+                    [order_total, uid],
+                    (err, data) => {
+                        if (err) {
+                            console.error('Error updating orderlist:', err.message);
+                        } else {
+                            // console.log('orderlist updated successfully.');
+                        }
+                    })
+                conn.query('UPDATE oderdetails SET quantity = ?, total_price = ? WHERE orderdetails_id = ?',
+                    [quantity, total_price, orderdetails_id],
+                    (err, data) => {
+                        if (err) {
+                            console.error('Error updating oderdetails:', err.message);
+                        } else {
+                            // console.log('oderdetails updated successfully.');
+                        }
+                    })
 
+            });
+    });
+    res.json({});
+});
+
+// 購物車cart1 點擊減，更新資料庫數量的路由
+app.put('/cart/decrease', function (req, res) {
+    let subtract_click_target = parseInt(req.body.subtract_click_target);
+    conn.query(`select uid from user where uemail=?`, [req.session.user.email], (err, results) => {
+        if (err) {
+            res.status(500).send({
+                status: -1,
+                msg: 'select uid failed'
+            });
+            return;
+        }
+        let uid = results[0].uid
+        conn.query(`SELECT * FROM orderlist LEFT JOIN oderdetails on orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  LEFT JOIN customize on c_detail2.boxcolor=customize.cname where orderlist.order_status = "購物車" AND orderlist.uid =?`,
+            [uid],
+            (err, data) => {
+                if (err) {
+                    console.log(err.message);
+                    res.status(500).send({
+                        status: -1,
+                        msg: 'select failed'
+                    });
+                    return;
+                }
+                let orderdetails_id = data[subtract_click_target].orderdetails_id
+                let order_total = 0;
+                // console.log(minimum_total)
+                // console.log(data[subtract_click_target].order_total)
+                if (data[subtract_click_target].quantity === 1) {
+                    // order_total = data[subtract_click_target].order_total - (data[subtract_click_target].p_price || 600)
+                    order_total = data[subtract_click_target].order_total
+                } else {
+                    order_total = data[subtract_click_target].order_total - (data[subtract_click_target].p_price || 600)
+                }
+                let quantity = (data[subtract_click_target].quantity - 1) || 1
+                let quantity2 = (data[subtract_click_target].quantity2 - 1) || 1
+                let total_price = 0
+                if (!data[subtract_click_target].cdetailid) {
+                    // if(data[subtract_click_target].total_price === data[subtract_click_target].p_price) {
+                    //     total_price = data[subtract_click_target].p_price
+                    // } else {
+                    //     total_price = data[subtract_click_target].total_price - data[subtract_click_target].p_price
+                    // }
+                    total_price = (data[subtract_click_target].total_price - data[subtract_click_target].p_price) || data[subtract_click_target].p_price
+                } else {
+                    total_price = (data[subtract_click_target].total_price - 600) || 600
+                }
+                if (data[subtract_click_target].cprice) {
+                    let cdetailid = data[subtract_click_target].cdetailid
+                    let cprice = (parseInt(data[subtract_click_target].cprice) - 600) || 600
+                    conn.query('UPDATE c_detail2 SET quantity2 = ?, cprice = ? WHERE cdetailid = ?',
+                        [quantity2, cprice, cdetailid],
+                        (err, data) => {
+                            if (err) {
+                                console.error('Error updating c_detail2:', err.message);
+                            } else {
+                                // console.log('/decrease c_detail2 updated successfully.');
+                            }
+                        })
+                }
+                conn.query('UPDATE orderlist SET order_total = ? WHERE uid = ?',
+                    [order_total, uid],
+                    (err, data) => {
+                        if (err) {
+                            console.error('Error updating orderlist:', err.message);
+                        } else {
+                            // console.log('/decrease orderlist updated successfully.');
+                        }
+                    })
+                conn.query('UPDATE oderdetails SET quantity = ?, total_price = ? WHERE orderdetails_id = ?',
+                    [quantity, total_price, orderdetails_id],
+                    (err, data) => {
+                        if (err) {
+                            console.error('Error updating oderdetails:', err.message);
+                        } else {
+                            // console.log('/decrease oderdetails updated successfully.');
+                        }
+                    })
+
+            });
+    });
+    res.json({});
+});
+
+//  ================================
 // app.get('/cart', (req, res) => {
 //     let oid = req.params.oid; // 注意這裡使用的是 req.params.oid，確保您的路由中能夠取得 oid 參數
-
 //     const sql = `
 //     SELECT DISTINCT a.*, b.*, 
 //     product.*, 
@@ -718,47 +930,36 @@ app.delete('/cart/:orderdetails_id', (req, res) => {
 //     LEFT JOIN c_detail2 ON b.cdetailid = c_detail2.cdetailid
 //     WHERE a.order_status = "購物車"
 //     ORDER BY a.order_date DESC;
-        
 //     `;
-    
-    
 //     conn.query(sql, function (err, cartdata) {
 //         if (err) {
 //             console.error('無法傳遞', err);
 //             return;
 //         }
-
 //         let  product_type, product_id, p_name, quantity, total_price, cdetailid;
 
 //         // 取得第一筆orderdetails資料的其他相關資訊
 //         if (cartdata.length > 0) {
-            
 //             product_type = cartdata[0].product_type;
 //             product_id = cartdata[0].product_id;
 //             p_name = cartdata[0].p_name;
 //             quantity = cartdata[0].quantity;
 //             total_price = cartdata[0].total_price;
 //             cdetailid = cartdata[0].cdetailid;
-                
 //         }
-
 //         res.render('cart1.ejs', {
 //             cartdata: cartdata, 
 //             oid: oid, 
 //             quantity: quantity,
-            
 //             product_type: product_type,
 //             product_id: product_id,
 //             p_name: p_name,
 //             c_quantity:quantity, 
 //             total_price: total_price,
 //             cdetailid: cdetailid
-            
 //         });
 //     });
 // });
-
-
 //   app.get('/cart1/:oid', (req, res) => {
 //     const oid = req.params.oid;
 //     const sql = `
@@ -778,13 +979,11 @@ app.delete('/cart/:orderdetails_id', (req, res) => {
 //     LEFT JOIN customize on c_detail2.boxcolor=customize.cname
 //     WHERE oderdetails.oid = ? AND a.order_status = "購物車";  
 //     `;
-  
 //     conn.query(sql, [oid], function (err, orderDetailsForOid) {
 //         if (err) {
 //             console.error('无法取得orderdetails数据', err);
 //             return;
 //         }
-
 //         //  c_detail2 資料，將它合併到 cartdata 中
 //         if (orderDetailsForOid.length > 0 && orderDetailsForOid[0].product_type === 'Customize') {
 //             const c_detail2Data = {
@@ -799,13 +998,11 @@ app.delete('/cart/:orderdetails_id', (req, res) => {
 //                 cardcontent: orderDetailsForOid[0].cardcontent,
 //                 cprice: orderDetailsForOid[0].cprice,
 //             };
-
 //             // 合併 c_detail2 資料到 cartdata 中
 //             const cartdataWithCDetail2 = {
 //                 ...orderDetailsForOid[0],
 //                 ...c_detail2Data,
 //             };
-
 //             // 將合併後的資料傳遞給 EJS 模板進行渲染
 //             res.render('cart1.ejs', { cartdata: cartdataWithCDetail2 });
 //         } else {
@@ -814,8 +1011,9 @@ app.delete('/cart/:orderdetails_id', (req, res) => {
 //         }
 //     });
 // });
+// ==================================
 
-
+// 購物車填寫資料路由
 app.get('/cart/fillout', auth_cart2, function (req, res) {
     conn.query(`select * from user where uemail=?`, [req.session.user.email], (err, results) => {
         if (err) return console.log(err.message)
@@ -860,7 +1058,7 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
         }
         const currentDate = new Date();
         const order_date = formatDate(currentDate);
-          
+
         // 資料庫可能要加一欄 recipient_address_code
         var sql = `UPDATE orderlist SET order_date = ?, recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款', order_status ='待出貨' WHERE uid = ?`
         conn.query(sql, [order_date, recipient, address, tel, email, arrive_date, uid], (err, results) => {
@@ -869,7 +1067,6 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
         });
     });
 });
-
 
 app.get('/cart/check', function (req, res) {
     const sql = `
@@ -888,73 +1085,6 @@ app.get('/cart/check', function (req, res) {
     });
 });
 
-// 添加到購物車
-app.post('/addToCart', function (req, res) {
-    const { productId, price, quantity } = req.body;
-    const userId = req.session.userId;
-
-    // 查詢關於客製化的資料 (c_detail2)
-    const getCdetail = `
-      SELECT *
-      FROM c_detail2
-      WHERE cdetailid = ?
-    `;
-    conn.query(getCdetail, [productId], function (err, cdetailResult) {
-        if (err) {
-            console.error('無法取得資料', err);
-            return;
-        }
-
-        if (cdetailResult.length === 0) {
-            console.error('無法尋找關聯');
-            return;
-        }
-
-        var cdetail = cdetailResult[0];
-
-        // 查詢產品的資料 (product)
-        const getProduct = `
-        SELECT *
-        FROM product
-        WHERE pid = ?
-      `;
-        conn.query(getProduct, [productId], function (err, productResult) {
-            if (err) {
-                console.error('無法取得產品資料', err);
-                return;
-            }
-
-            if (productResult.length === 0) {
-                console.error('找不到產品');
-                return;
-            }
-
-            var product = productResult[0];
-
-            // 將產品資料傳至 oderdetails
-            var inOD = `
-          INSERT INTO oderdetails (cdetailid, pid, quantity, cprice, product_name, product_price)
-          VALUES (?, ?, ?, ?, ?, ?)
-        `;
-
-            // 根據產品的價格及數量計算價格總額
-            var totalPrice = price * quantity;
-            conn.query(inOD, [cdetail.cdetailid, productId, quantity, totalPrice, product.product_name, product.price], function (err, insertResult) {
-                if (err) {
-                    console.error('傳入資料錯誤', err);
-                    return;
-                }
-
-                console.log('已成功加入資料');
-
-                // 取得回應
-                res.json({ message: '已成功加入購物車' });
-            });
-        });
-    });
-});
-
-
 app.get('/member', auth, function (req, res) {
     var userEmail = req.session.user.email;
     var sql = `SELECT uid, uname, umobile, uemail, ubirth FROM user where uemail=?`;
@@ -967,9 +1097,6 @@ app.get('/member', auth, function (req, res) {
         let umobile = userData.umobile;
         let ubirth = userData.ubirth;
         let uname = userData.uname;
-        // console.log(uemail);
-        // console.log(umobile);
-        // console.log(ubirth);
         res.render('member.ejs', {
             member_user: data,
             uid: uid,
@@ -1018,6 +1145,8 @@ app.get('/logout', (req, res) => {
     });
 });
 
+
+// nav 購物車數字的路由
 app.get('/cart/count', (req, res) => {
     if (!req.session.user) {
         let cartCount = 0
@@ -1046,6 +1175,7 @@ app.get('/cart/count', (req, res) => {
         });
     }
 });
+// nav 購物車數字的路由
 app.post('/cart/add', (req, res) => {
     if (!req.session.user) {
         let cartCount = 0

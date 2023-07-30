@@ -98,6 +98,12 @@ $(document).ready(function () {
   $('.addtocart').on('click', function (e) {
     addToCart();
   });
+  $('.addBtn').on('click', function (e) {
+    getAndSetCartCount()
+  });
+  $('.subtractBtn').on('click', function (e) {
+    getAndSetCartCount()
+  });
 
   // 初始化時獲取購物車數量
   getAndSetCartCount();

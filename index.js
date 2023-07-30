@@ -676,22 +676,29 @@ app.get('/cart',authUid, (req, res) => {
 app.delete('/cart/:orderdetails_id', (req, res) => {
     let orderdetails_id = req.params.orderdetails_id;
     console.log(orderdetails_id);
+    
+    var oid = req.body.oid;
+    var single_order_total = req.body.single_order_total;
+    var order_total = 0;
+
     const sql = 'DELETE FROM oderdetails WHERE orderdetails_id = ?;';
     conn.query(sql, [orderdetails_id], function (err, results, fields) {
         console.log(results);
         if (err) {
-            res.end(
-                JSON.stringify(new Error('delete failed'))
-            );
+            res.end(JSON.stringify(new Error('刪除失敗')));
         } else {
-            if (results.affectedRows > 0) {
-                res.end(
-                    JSON.stringify(new Success('delete success'))
-                );
+            if (results && results.length > 0 && results[0].hasOwnProperty('order_total')) {
+                // 刪除成功，現在更新 order_total
+                order_total = results[0].order_total + single_order_total;
+                conn.query(`UPDATE orderlist SET order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
+                    if (err) {
+                        return console.log(err.message);
+                    } else {
+                        res.end(JSON.stringify(new Success('刪除成功')));
+                    }
+                });
             } else {
-                res.end(
-                    JSON.stringify(new Error('delete failed'))
-                );
+                res.end(JSON.stringify(new Error('刪除失敗')));
             }
         }
     });

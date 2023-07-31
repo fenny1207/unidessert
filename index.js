@@ -712,10 +712,11 @@ app.post('/cart/id', (req, res) => {
         })
     })
 })
-app.delete('/cart/:orderdetails_id',authUid, (req, res) => {
+app.delete('/cart/:orderdetails_id', authUid, (req, res) => {
     let orderdetails_id = req.params.orderdetails_id;
     var uid = res.locals.uid;
-    let order_total =0;
+    let order_total = 0;
+    let cdetailid = 0;
     // conn.query(`select uid from user where uemail=?`, [req.session.user.email], (err, results) => {
     //     if (err) {
     //         res.status(500).send({
@@ -724,49 +725,73 @@ app.delete('/cart/:orderdetails_id',authUid, (req, res) => {
     //         });
     //         return;
     //     }
-    console.log(uid+"這裡是刪除");
-        conn.query(`SELECT * FROM orderlist LEFT JOIN oderdetails on orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON c_detail2.cdetailid = oderdetails.cdetailid where orderlist.order_status = "購物車" AND orderlist.uid = ? AND oderdetails.orderdetails_id = ?`,
-            [uid, orderdetails_id],
-            (err, data) => {
-                if (err) return console.log(err.message)
-                if (data.length>0){
-                     order_total = data[0].order_total;
-                    // console.log(order_total +"這裡是刪除2");
-                    // console.log(data[0] +"這裡是刪除2");
-                    return;
-                }
-                console.log("DATA", data)
-                console.log("data[0]", data[0])
-            });
+    // console.log(uid + "這裡是刪除");
+    let oid = 0;
 
-        const sql = 'DELETE FROM oderdetails WHERE orderdetails_id = ?;';
-        conn.query(sql, [orderdetails_id], function (err, results) {
-                if (err) {
-                    console.log(err.message);
-                    res.status(500).send({
-                        status: -1,
-                        msg: 'select failed'
-                    });
-                    return;
-                } else {
-                    if (results && results.length > 0 && results[0].hasOwnProperty('order_total')) {
-                        // 刪除成功，現在更新 order_total
-                        order_total = results[0].order_total + single_order_total;
-                        console.log(order_total+"這是刪除3");
-                        conn.query(`UPDATE orderlist SET order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
-                            if (err) {
-                                return console.log(err.message);
-                            } else {
-                                res.end(JSON.stringify(new Success('刪除成功')));
+    conn.query(`SELECT * FROM orderlist LEFT JOIN oderdetails on orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON c_detail2.cdetailid = oderdetails.cdetailid where orderlist.order_status = "購物車" AND orderlist.uid = ? AND oderdetails.orderdetails_id = ?`,
+        [uid, orderdetails_id],
+        (err, data) => {
+            if (err) return console.log(err.message)
+            if (data.length > 0) {
+                let total_price = data[0].total_price;
+                order_total = data[0].order_total - total_price;
+                oid = data[0].oid
+                cdetailid = data[0].cdetailid
+                console.log("data[0]", data[0])
+                conn.query(`UPDATE orderlist SET order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
+                                if (err) {
+                                    return console.log(err.message);
+                                } else {
+                                    res.end(JSON.stringify(new Success('刪除成功')));
+                                }
+                            });
+
+                            if(cdetailid) {
+                                conn.query('DELETE FROM c_detail2 WHERE cdetailid = ?', [cdetailid], function (err, results) {
+                                    if (err) {
+                                        console.log(err.message);
+                                        res.status(500).send({
+                                            status: -1,
+                                            msg: 'select failed'
+                                        });
+                                        return;
+                                    } 
+                                })
+                        
                             }
-                        });
-                    } else {
-                        res.end(JSON.stringify(new Error('刪除失敗')));
-                    }
-                }
+                return;
+            }
         });
+
+    const sql = 'DELETE FROM oderdetails WHERE orderdetails_id = ?;';
+    conn.query(sql, [orderdetails_id], function (err, results) {
+        if (err) {
+            console.log(err.message);
+            res.status(500).send({
+                status: -1,
+                msg: 'select failed'
+            });
+            return;
+        } 
+                // else {
+                //     if (results && results.length > 0 && results[0].hasOwnProperty('order_total')) {
+                //         // 刪除成功，現在更新 order_total
+                //         order_total = results[0].order_total + single_order_total;
+                //         console.log(order_total + "這是刪除3");
+                //         conn.query(`UPDATE orderlist SET order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
+                //             if (err) {
+                //                 return console.log(err.message);
+                //             } else {
+                //                 res.end(JSON.stringify(new Success('刪除成功')));
+                //             }
+                //         });
+                //     } else {
+                //         res.end(JSON.stringify(new Error('刪除失敗')));
+                //     }
+                // }
     });
-// });
+        
+});
 
 // 購物車 cart1 點擊增加，更新資料庫數量的路由 
 app.put('/cart/increase', function (req, res) {

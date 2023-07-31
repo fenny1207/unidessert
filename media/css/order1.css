@@ -124,6 +124,13 @@ body {
     margin-top: 1rem;
     text-align: center;
 }
+#cart_img {
+    display:block;
+    margin:auto;
+}
+#cart_text {
+    text-align: center;
+}
 
 
 @media (max-width: 768px) {

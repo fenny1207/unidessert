@@ -737,26 +737,26 @@ app.delete('/cart/:orderdetails_id', authUid, (req, res) => {
                 cdetailid = data[0].cdetailid
                 console.log("data[0]", data[0])
                 conn.query(`UPDATE orderlist SET order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
-                                if (err) {
-                                    return console.log(err.message);
-                                } else {
-                                    res.end(JSON.stringify(new Success('刪除成功')));
-                                }
-                            });
+                    if (err) {
+                        return console.log(err.message);
+                    } else {
+                        res.end(JSON.stringify(new Success('刪除成功')));
+                    }
+                });
 
-                            if(cdetailid) {
-                                conn.query('DELETE FROM c_detail2 WHERE cdetailid = ?', [cdetailid], function (err, results) {
-                                    if (err) {
-                                        console.log(err.message);
-                                        res.status(500).send({
-                                            status: -1,
-                                            msg: 'select failed'
-                                        });
-                                        return;
-                                    } 
-                                })
-                        
-                            }
+                if (cdetailid) {
+                    conn.query('DELETE FROM c_detail2 WHERE cdetailid = ?', [cdetailid], function (err, results) {
+                        if (err) {
+                            console.log(err.message);
+                            res.status(500).send({
+                                status: -1,
+                                msg: 'select failed'
+                            });
+                            return;
+                        }
+                    })
+
+                }
                 return;
             }
         });
@@ -770,25 +770,25 @@ app.delete('/cart/:orderdetails_id', authUid, (req, res) => {
                 msg: 'select failed'
             });
             return;
-        } 
-                // else {
-                //     if (results && results.length > 0 && results[0].hasOwnProperty('order_total')) {
-                //         // 刪除成功，現在更新 order_total
-                //         order_total = results[0].order_total + single_order_total;
-                //         console.log(order_total + "這是刪除3");
-                //         conn.query(`UPDATE orderlist SET order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
-                //             if (err) {
-                //                 return console.log(err.message);
-                //             } else {
-                //                 res.end(JSON.stringify(new Success('刪除成功')));
-                //             }
-                //         });
-                //     } else {
-                //         res.end(JSON.stringify(new Error('刪除失敗')));
-                //     }
-                // }
+        }
+        // else {
+        //     if (results && results.length > 0 && results[0].hasOwnProperty('order_total')) {
+        //         // 刪除成功，現在更新 order_total
+        //         order_total = results[0].order_total + single_order_total;
+        //         console.log(order_total + "這是刪除3");
+        //         conn.query(`UPDATE orderlist SET order_total = ? WHERE oid = ?`, [order_total, oid], (err, results) => {
+        //             if (err) {
+        //                 return console.log(err.message);
+        //             } else {
+        //                 res.end(JSON.stringify(new Success('刪除成功')));
+        //             }
+        //         });
+        //     } else {
+        //         res.end(JSON.stringify(new Error('刪除失敗')));
+        //     }
+        // }
     });
-        
+
 });
 
 // 購物車 cart1 點擊增加，更新資料庫數量的路由 
@@ -1058,7 +1058,7 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
                 {
                     product_quantity: product_quantity,
                     sum: sum,
-                    oid:oid,
+                    oid: oid,
                     deliever_fee: deliever_fee,
                     order_total: order_total
                 }
@@ -1069,39 +1069,37 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
     conn.query(`select * from user where uemail=?`, [req.session.user.email], (err, results) => {
         if (err) return console.log(err.message)
         var uid = results[0].uid
-        var oid = results[0].oid
-        var recipient = req.body.recipient
-        // var recipient_address_code = req.body.address_code
-        var address = req.body.address
-        var tel = req.body.tel
-        var email = req.body.email
-        var bill_option = req.body.bill_option
-        var bill_option_input = req.body.bill_option_input
-        var arrive_date = req.body.arrive_date
-        function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-        const currentDate = new Date();
-        const order_date = formatDate(currentDate);
+        conn.query(`select oid from orderlist where uid = ?`, [uid], (err, results) => {
+            if (err) return console.log(err.message)
+            var oid = results[0].oid
+            var recipient = req.body.recipient
+            // var recipient_address_code = req.body.address_code
+            var address = req.body.address
+            var tel = req.body.tel
+            var email = req.body.email
+            // var bill_option = req.body.bill_option
+            // var bill_option_input = req.body.bill_option_input
+            var arrive_date = req.body.arrive_date
+            function formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+            const currentDate = new Date();
+            const order_date = formatDate(currentDate);
 
-        // 資料庫可能要加一欄 recipient_address_code
-        var sql = `UPDATE orderlist SET order_date = ?, recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款', order_status ='待出貨' WHERE uid = ?`
-        conn.query(sql, [order_date,recipient, address, tel, email, arrive_date, uid], (err, results) => {
-            if (err) return console.log(err.message);
-            console.log(oid+"這裡是oid");
-            res.render('cart2.ejs',{
-                cart_fillout:results,
-                oid:oid
-            })
-            return;
+            // 資料庫可能要加一欄 recipient_address_code
+            var sql = `UPDATE orderlist SET order_date = ?, recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款', order_status ='待出貨' WHERE uid = ?`
+            conn.query(sql, [order_date, recipient, address, tel, email, arrive_date, uid], (err, results) => {
+                if (err) return console.log(err.message);
+            });
+            res.send({ oid: oid });
         });
     });
 });
 
-app.get('/cart/fillout/:oid',function (req, res) {
+app.get('/cart/check/:oid',function (req, res) {
     // var uid = res.locals.uid;
     let oid = req.params.oid;
     const sql = `select * FROM orderlist LEFT JOIN oderdetails ON orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON

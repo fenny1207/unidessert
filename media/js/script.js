@@ -104,6 +104,9 @@ $(document).ready(function () {
   $('.subtractBtn').on('click', function (e) {
     getAndSetCartCount()
   });
+  $('.deleteBtn').on('click', function (e) {
+    addToCart();
+  });
 
   // 初始化時獲取購物車數量
   getAndSetCartCount();

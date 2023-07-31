@@ -739,8 +739,8 @@ app.delete('/cart/:orderdetails_id',authUid, (req, res) => {
                 console.log("data[0]", data[0])
             });
 
-            const sql = 'DELETE FROM oderdetails WHERE orderdetails_id = ?;';
-            conn.query(sql, [orderdetails_id], function (err, results) {
+        const sql = 'DELETE FROM oderdetails WHERE orderdetails_id = ?;';
+        conn.query(sql, [orderdetails_id], function (err, results) {
                 if (err) {
                     console.log(err.message);
                     res.status(500).send({
@@ -764,7 +764,7 @@ app.delete('/cart/:orderdetails_id',authUid, (req, res) => {
                         res.end(JSON.stringify(new Error('刪除失敗')));
                     }
                 }
-            });
+        });
     });
 // });
 

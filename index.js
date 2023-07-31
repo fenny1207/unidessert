@@ -1088,22 +1088,21 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
         const order_date = formatDate(currentDate);
 
         // 資料庫可能要加一欄 recipient_address_code
-        var sql = `UPDATE orderlist SET order_date = ?,oid=?, recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款', order_status ='待出貨' WHERE uid = ?`
-        conn.query(sql, [order_date, oid,recipient, address, tel, email, arrive_date, uid], (err, results) => {
+        var sql = `UPDATE orderlist SET order_date = ?, recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款', order_status ='待出貨' WHERE uid = ?`
+        conn.query(sql, [order_date,recipient, address, tel, email, arrive_date, uid], (err, results) => {
             if (err) return console.log(err.message);
-            var oid = results[0].oid;
             console.log(oid+"這裡是oid");
             res.render('cart2.ejs',{
                 cart_fillout:results,
-                oid:oid,
+                oid:oid
             })
             return;
         });
     });
 });
 
-app.get('/cart/check/:oid', authUid,function (req, res) {
-    var uid = res.locals.uid;
+app.get('/cart/fillout/:oid',function (req, res) {
+    // var uid = res.locals.uid;
     let oid = req.params.oid;
     const sql = `select * FROM orderlist LEFT JOIN oderdetails ON orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON
      c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  LEFT JOIN customize on c_detail2.boxcolor=customize.cname where orderlist.oid =?`

@@ -155,21 +155,33 @@
                 <% let order_total = cp_total +deliever_fee%>
                 <div class="table-footer">
                     <div class="table-row table-row1 row" style="border: none;">
-                        <div class="table-cell col-6"></div>
                         <div class="table-cell col-3"></div>
+                        <div class="table-cell col-6">收件人:<%= recipient%></div>
+                        <div class="table-cell item col-3 row">
+                        </div>
+                    </div>
+                    <div class="table-row table-row1 row" style="border: none;">
+                        <div class="table-cell col-3 ps-4">收件人明細</div>
+                        <div class="table-cell col-6">收件人手機:<%= recipient_phone%></div>
                         <div class="table-cell item col-3 row">
                         </div>
                     </div>
                     <div class="table-row table-row1 row">
-                        <div class="table-cell col-6"></div>
                         <div class="table-cell col-3"></div>
+                        <div class="table-cell col-6">收件人地址:<%= recipient_address%></div>
+                        <div class="table-cell item col-3 row">
+                        </div>
+                    </div>
+                    <div class="table-row table-row1 row">
+                        <div class="table-cell col-3"></div>
+                        <div class="table-cell col-6"></div>
                         <div class="table-cell item col-3 row">
                             <div class="col-7">商品總計:</div>
                             <div class="col-5"><%= quantity_total%>件</div>
                         </div>
                     </div>
                     <div class="table-row table-row1 row">
-                        <div class="table-cell col-6">收件人:<%= recipient%></div>
+                        <div class="table-cell col-6"></div>
                         <div class="table-cell col-3"></div>
                         <div class="table-cell item col-3 row">
                             <div class="col-7">商品金額:</div>
@@ -178,7 +190,7 @@
                         <!-- <div class="table-cell item col-1 product-amount ">2件</div> -->
                     </div>
                     <div class="table-row table-row1 row">
-                        <div class="table-cell col-6">收件人手機:<%= recipient_phone%></div>
+                        <div class="table-cell col-6"></div>
                         <div class="table-cell col-3"></div>
                         <div class="table-cell item col-3 row">
                             <div class="col-7">運費金額:</div>
@@ -187,7 +199,7 @@
                         <!-- <div class="table-cell item col-1 product-amount ">2件</div> -->
                     </div>
                     <div class="table-row table-row1 row" style="border: none;">
-                        <div class="table-cell col-6">收件人地址:<%= recipient_address%></div>
+                        <div class="table-cell col-6"></div>
                         <div class="table-cell col-3"></div>
                         <div class="table-cell item col-3 row">
                             <div class="col-7">訂單總計:</div>

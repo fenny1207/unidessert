@@ -37,7 +37,7 @@
                                     <div class="row mb-3">
                                         <label for="recipient" class="form-label col-2">收件人*:</label>
                                         <div class="col-10">
-                                            <input name="recipient" type="text" id="recipient" class="form-control"
+                                            <input name="recipient" type="text" id="recipient" required class="form-control"
                                                 required placeholder="王大明">
                                         </div>
                                     </div>
@@ -69,7 +69,7 @@
                                     <div class="row mb-3">
                                         <label for="arrive_date" class="form-label col-2">到貨日期*:</label>
                                         <div class="col-10">
-                                            <input name="arrive_date" type="date" id="arrive_date" class="form-control"
+                                            <input name="arrive_date" required type="date" id="arrive_date" class="form-control"
                                                 required>
                                         </div>
                                     </div>
@@ -238,8 +238,8 @@
                                         <div class="button-row">
                                             <a href="/cart"><input type="button" value="返回購物車"
                                                     class="my-button "></a>
-                                            <a href="#" id="cart_check_btn">
-                                                <input type="button" value="確認訂單" class="my-button" id="cartform_button">
+                                            <a href="/cart/fillout/<%= oid%>" id="cartform_button">
+                                                <input type="button" value="確認訂單" required class="my-button" id="cartform_button">
                                             </a>
                                         </div>
                                     </div>

@@ -155,7 +155,7 @@ $(document).ready(function () {
             }
         })
         if (cartform.checkValidity()) {
-            window.location.assign('/cart/check')
+            window.location.assign('/cart/check/:oid')
         } else {
             alert('資料未填寫完成')
         }

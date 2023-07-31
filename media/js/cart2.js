@@ -103,14 +103,18 @@ function validateForm() {
 //     return true; // 允許表單提交
 // }
 
-$(document).ready(function () {
+window.addEventListener('load', function () {
+    // ========================================
+    var cartform = document.getElementById('cartform');
+
+
     const today = new Date();
     let formattedToday = today.setDate(today.getDate() + 7)  // 最快到貨時間為七天後
     formattedToday = today.toISOString().split('T')[0];  //格式化成 YYYY-MM-DD
     document.getElementById('arrive_date').min = formattedToday;
 
     $("#cartform_button").on('click', function (e) {
-        // e.preventDefault();
+        e.preventDefault();
         var recipient = document.getElementById('recipient').value
         var address_code = document.getElementById('address_code').value
         var address = document.getElementById('address').value
@@ -131,17 +135,18 @@ $(document).ready(function () {
             bill_option = '捐贈發票'
             bill_option_input = document.getElementById('donate_bill_option').value
         }
-        let data = {
-            recipient: recipient,
-            recipient_address_code: address_code,
-            address_code: address_code,
-            address: address,
-            tel: tel,
-            email: email,
-            bill_option: bill_option,
-            bill_option_input: bill_option_input,
-            arrive_date: arrive_date
-        }
+        if (cartform.checkValidity()) {
+            var data = {
+                recipient: recipient,
+                recipient_address_code: address_code,
+                address_code: address_code,
+                address: address,
+                tel: tel,
+                email: email,
+                bill_option: bill_option,
+                bill_option_input: bill_option_input,
+                arrive_date: arrive_date
+            };
         $.ajax({
             url: "http://localhost:5678/cart/fillout",
             method: "post",
@@ -149,18 +154,17 @@ $(document).ready(function () {
             data: JSON.stringify(data),
             success: function (res) {
                 console.log('表單填寫完成')
+                window.location.assign(`/cart/check/${res.oid}`);
             },
             error: function (err) {
                 alert("發生錯誤 請重新操作");
             }
-        })
-        if (cartform.checkValidity()) {
-            window.location.assign('/cart/check/:oid')
+        });
         } else {
             alert('資料未填寫完成')
         }
-    })
-})
+    });
+});
 
 // function submitForms() {
 

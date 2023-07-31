@@ -540,11 +540,9 @@ app.get("/order", authUid, (req, res) => {
 // SELECT user.uid, orderlist.oid,orderlist.order_total,orderlist.order_date,orderlist.payment_type FROM user LEFT JOIN orderlist ON user.uid=orderlist.uid;
 app.get('/order/historyOrder/:oid', (req, res) => {
     let oid = req.params.oid;
-    // const sql = `SELECT a.*, b.* FROM orderlist as a NATURAL JOIN oderdetails as b  where uid = ?`;
     const sql = `select * FROM orderlist LEFT JOIN oderdetails ON orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON
      c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  LEFT JOIN customize on c_detail2.boxcolor=customize.cname where oderdetails.oid =?`
     conn.query(sql, [oid], (err, data) => {
-        // console.log(history_sql);
         if (err) {
             res.send(`失敗，這是訂單編號'${oid}:'`);
         } else {
@@ -1048,6 +1046,7 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
         conn.query('SELECT * FROM orderlist inner join oderdetails on orderlist.oid = oderdetails.oid where uid = ? and order_status = "購物車"', [uid], (err, results) => {
             if (err) return console.log(err.message)
             var deliever_fee = 150;
+            var oid = results[0].oid;
             var orderdetail_length = JSON.parse(JSON.stringify(results)).length
             var sum = parseInt(results[0].order_total)// 商品總額
             var product_quantity = 0; // 計算商品數
@@ -1059,6 +1058,7 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
                 {
                     product_quantity: product_quantity,
                     sum: sum,
+                    oid:oid,
                     deliever_fee: deliever_fee,
                     order_total: order_total
                 }
@@ -1069,6 +1069,7 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
     conn.query(`select * from user where uemail=?`, [req.session.user.email], (err, results) => {
         if (err) return console.log(err.message)
         var uid = results[0].uid
+        var oid = results[0].oid
         var recipient = req.body.recipient
         // var recipient_address_code = req.body.address_code
         var address = req.body.address
@@ -1087,30 +1088,124 @@ app.get('/cart/fillout', auth_cart2, function (req, res) {
         const order_date = formatDate(currentDate);
 
         // 資料庫可能要加一欄 recipient_address_code
-        var sql = `UPDATE orderlist SET order_date = ?, recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款', order_status ='待出貨' WHERE uid = ?`
-        conn.query(sql, [order_date, recipient, address, tel, email, arrive_date, uid], (err, results) => {
-            if (err) return console.log(err.message)
+        var sql = `UPDATE orderlist SET order_date = ?,oid=?, recipient = ?, recipient_address = ?, recipient_phone = ?, recipient_email = ?, arrive_date = ?, payment_type = '到貨付款', order_status ='待出貨' WHERE uid = ?`
+        conn.query(sql, [order_date, oid,recipient, address, tel, email, arrive_date, uid], (err, results) => {
+            if (err) return console.log(err.message);
+            var oid = results[0].oid;
+            console.log(oid+"這裡是oid");
+            res.render('cart2.ejs',{
+                cart_fillout:results,
+                oid:oid,
+            })
             return;
         });
     });
 });
 
-app.get('/cart/check', function (req, res) {
-    const sql = `
-    SELECT oderdetails.*, c_detail2.*, product.*
-    FROM oderdetails
-    JOIN c_detail2 ON oderdetails.cdetailid = c_detail2.cdetailid
-    JOIN product ON product.pid = oderdetails.product_id;
-  `;
-
-    conn.query(sql, function (err, results) {
+app.get('/cart/check/:oid', authUid,function (req, res) {
+    var uid = res.locals.uid;
+    let oid = req.params.oid;
+    const sql = `select * FROM orderlist LEFT JOIN oderdetails ON orderlist.oid = oderdetails.oid LEFT JOIN c_detail2 ON
+     c_detail2.cdetailid = oderdetails.cdetailid LEFT JOIN product ON product.pid = oderdetails.product_id  LEFT JOIN customize on c_detail2.boxcolor=customize.cname where orderlist.oid =?`
+    conn.query(sql, [oid], (err, data) => {
         if (err) {
-            console.error('無法取得資料：', err);
-            return;
+            res.send(`失敗，這是訂單編號'${oid}:'`);
+        } else {
+            if (data.length > 0) {
+                let order_date = data[0].order_date;
+                let deliever_fee = data[0].deliever_fee;
+                let cdetailid = data[0].cdetailid;
+                let size = data[0].size;
+                let cookie1 = data[0].cookie1;
+                let cookie2 = data[0].cookie2;
+                let cookie3 = data[0].cookie3;
+                let cookie4 = data[0].cookie4;
+                let boxcolor = data[0].boxcolor;
+                let cpic = data[0].cpic;
+                let bagcolor = data[0].bagcolor;
+                let cardcontent = data[0].cardcontent;
+                let quantity = data[0].quantity;
+                let quantity2 = data[0].quantity2;//客製數量
+                let cprice = parseInt(data[0].cprice);
+                let cprice_total = cprice * parseInt(quantity);
+                let p_price = parseInt(data[0].p_price);//價格
+                let price_total = p_price * parseInt(quantity);
+                let pid = data[0].pid;
+                let pd_name = data[0].pd_name;
+                let pd_describe_specification = data[0].pd_describe_specification;
+                let p_pic = data[0].p_pic;
+                let pd_content = data[0].pd_content;
+                let recipient = data[0].recipient;
+                let recipient_address = data[0].recipient_address;
+                let recipient_phone = data[0].recipient_phone;
+                // let cp_total = price_total + cprice_total;
+                let cp_total = 0;
+                let order_total = cp_total + deliever_fee;
+                let quantity_total = 0;
+                for (let i = 0; i < data.length; i++) {
+                    let quantity = parseInt(data[i].quantity) || 0;
+                    let quantity2 = parseInt(data[i].quantity2) || 0;
+                    quantity_total += (quantity + quantity2);
+                }
+                res.render('cart3.ejs', {
+                    check_cart: data,
+                    oid: oid,
+                    order_date: order_date,
+                    order_total: order_total,
+                    deliever_fee: deliever_fee,
+                    cdetailid: cdetailid,
+                    size: size,
+                    cookie1: cookie1,
+                    cookie2: cookie2,
+                    cookie3: cookie3,
+                    cookie4: cookie4,
+                    boxcolor: boxcolor,
+                    bagcolor: bagcolor,
+                    cardcontent: cardcontent,
+                    cprice: cprice,
+                    cprice_total: cprice_total,
+                    pid: pid,
+                    pd_name: pd_name,
+                    quantity: quantity,
+                    p_price: p_price,
+                    pd_describe_specification: pd_describe_specification,
+                    p_pic: p_pic,
+                    pd_content: pd_content,
+                    quantity2: quantity2,
+                    price_total: price_total,
+                    cp_total: cp_total,
+                    order_total: order_total,
+                    quantity_total: quantity_total,
+                    cpic: cpic,
+                    recipient_address: recipient_address,
+                    recipient: recipient,
+                    recipient_phone: recipient_phone,
+                });
+            } else {
+                res.send(`找不到訂單編號 '${oid}' 的訂單資料`);
+            }
         }
-        res.render('cart3.ejs', { c_detail2: results, product: results });
     });
 });
+// app.get('/cart/check', function (req, res) {
+//     const sql = `
+//     SELECT oderdetails.*, c_detail2.*, product.*
+//     FROM oderdetails
+//     JOIN c_detail2 ON oderdetails.cdetailid = c_detail2.cdetailid
+//     JOIN product ON product.pid = oderdetails.product_id;
+//   `;
+
+//     conn.query(sql, function (err, results) {
+//         if (err) {
+//             console.error('無法取得資料：', err);
+//             return;
+//         }
+//         res.render('cart3.ejs', { 
+//             c_detail2: results,
+//              product: results 
+//             });
+//     });
+// });
 
 app.get('/member', auth, function (req, res) {
     var userEmail = req.session.user.email;

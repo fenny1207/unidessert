@@ -95,10 +95,11 @@ body {
 }
 
 .checkout {
-    padding: 10px;
+    padding: 10px 90px;
     background-color: #F0C7CD;
-    border-radius: 15px;
-    margin: 10px;
+    border-radius: 8px;
+    margin-bottom: 50px;
+    /* margin-left: 20px; */
 }
 
 .mycontainer .owl-theme .item {

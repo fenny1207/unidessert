@@ -52,7 +52,7 @@
                 <!-- 循環顯示 c_detail2 表的資料 -->
                 <% for (var i = 0; i < cartdata.length; i++) { %>
                     <div style="justify-items: center" class="table-row table-row1 order row my-2">
-                        <div class="table-cell col-3 px-2">
+                        <div class="table-cell col-2 px-2">
                             <div class="product-info">
                                 <img id="cart_img" src="<%= cartdata[i].p_pic || cartdata[i].cpic %>" width="180px" alt="Product 1">
                                 <p id="cart_text" class="mt-2 product-name"><%= cartdata[i].pd_name %></p>
@@ -75,7 +75,7 @@
                             <% } %>
                         </div>
 
-                        <div class="table-cell item col-3 row d-flex justify-content-center">
+                        <div class="table-cell item col-4 row d-flex justify-content-center">
                             <div class="table-cell item col-6  text-right">數量</div>
                             <div class="table-cell item col-6 amount d-flex justify-content-end">
                                 <button id="subtract_btn<%= i %>" class="subtractBtn">-</button>
@@ -103,22 +103,22 @@
                 <div class="table-footer ps-4 pe-4 mx-5">
                     <div class="table-row table-row1 row ">
                         <div class="table-cell col-7"></div>
-                        <div class="table-cell item col-2">總計商品數：</div>
+                        <div class="table-cell item col-2" style="padding-left: 100px; padding-right: 0%;">總計：</div>
                         <div class="table-cell item col-3 text-left product-amount">2件</div>
                     </div>
                     <div class="table-row table-row1 row">
                         <div class="table-cell col-7"></div>
-                        <div class="table-cell item col-2">商品金額：</div>
+                        <div class="table-cell item col-2" style="padding-left: 100px; padding-right: 0%;">商品金額：</div>
                         <div class="table-cell item col-3 text-left product-total">$<%= order_total %></div>
                     </div>
                     <div class="table-row table-row1 row">
                         <div class="table-cell col-7"></div>
-                        <div class="table-cell item col-2">運費：</div>
+                        <div class="table-cell item col-2" style="padding-left: 100px; padding-right: 0%;">運費：</div>
                         <div class="table-cell item col-3 text-left deliver-fee">$<%=deliever_fee%></div>
                     </div>
                     <div class="table-row table-row1 row">
                         <div class="table-cell col-7"></div>
-                        <div class="table-cell item col-2">訂單總額：</div>
+                        <div class="table-cell item col-2" style="padding-left: 100px; padding-right: 0%;">訂單總額：</div>
                         <div class="table-cell item col-3 text-left cash-total">$<%=order_all%></div>
                     </div>
                     <div class="table-row row pay">
